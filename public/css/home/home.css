@@ -1,6 +1,5 @@
 #title-banner {
     text-align: center;
-    font-family: 'Garet-Book';
     margin: 0;
     padding-bottom: 10%;
     display: flex;
@@ -14,7 +13,6 @@
 }
 
 #title-banner h1{
-    font-family: 'Garet-Heavy';
     font-size: 6vw;
 }
 
@@ -24,4 +22,12 @@
     outline-style: solid;
     margin-left: 25vw;
     margin-right: 25vw;
+}
+
+#repositories {
+    background-color: #00000025;
+    text-align: center;
+    border-radius: 10%;
+    margin-left: 15vw;
+    margin-right: 15vw;
 }

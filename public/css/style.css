@@ -1,10 +1,5 @@
 @import url('./global/rounded.css');
 
-body{
-    margin: 0;
-    padding: 0;
-}
-
 @font-face {
     font-family: 'Garet-Heavy';
     src: url('./fonts/garet/Garet-Heavy.ttf');
@@ -13,4 +8,14 @@ body{
 @font-face {
     font-family: 'Garet-Book';
     src: url('./fonts/garet/Garet-Book.ttf');
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Garet-Book';
+}
+
+h1 {
+    font-family: 'Garet-Heavy';
 }
