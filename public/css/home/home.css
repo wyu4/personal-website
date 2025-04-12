@@ -1,0 +1,27 @@
+#title-banner {
+    text-align: center;
+    font-family: 'Garet-Book';
+    margin: 0;
+    padding-bottom: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    font-size: 2vw;
+    background-color: #eff0f2;
+    outline-color: #8c8c8c;
+    outline-width: 0.5%;
+    outline-style: dotted;
+}
+
+#title-banner h1{
+    font-family: 'Garet-Heavy';
+    font-size: 6vw;
+}
+
+#title-banner #description{
+    outline-color: #000000;
+    outline-width: 0.1em;
+    outline-style: solid;
+    margin-left: 25vw;
+    margin-right: 25vw;
+}
