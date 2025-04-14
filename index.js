@@ -9,6 +9,10 @@ app.get("/test", (req, res) => {
     res.send({ message: "The GET request to /test worked!" });
 });
 
+app.get("/repos", (req, res) => {
+    res.send({ message: "The GET request to /test worked!" });
+});
+
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
 module.exports = app;

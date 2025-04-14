@@ -4,29 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="https://avatars.githubusercontent.com/u/139521392">
     <link rel="preload" href="./css/fonts/garet/Garet-Heavy.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="preload" href="./css/fonts/garet/Garet-Book.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="https://avatars.githubusercontent.com/u/139521392" as="image" type="image/png" crossorigin>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/home/home.css">
+    <link rel="icon" type="image/x-icon" href="https://avatars.githubusercontent.com/u/139521392">
     <title>Home - Wilson</title>
 </head>
 
 <body>
+    <!-- The introductory banner -->
     <section id="title-banner">
         <h1>Wilson Yu</h1>
         <span id="description" class="rounded">
             A Personal Website
         </span>
+        <p>(Scroll Down)</p>
     </section>
+
+    <!-- A short description of myself including some of my work -->
     <section id="bio">
         <h2>About Me</h2>
-        <p>I am a 16 year old highschooler living in Ottawa, Canada, who enjoys coding and other stuff. Here is some of my work:</p>
+        <p>I am a 16 year old highschooler living in Ottawa, Canada, who enjoys coding and other stuff. Here are some of
+            my work:</p>
         <div id="repositories">
             Loading...
             <script src="./js/work.js"></script>
         </div>
-        <p>Here are some statistics:</p>
+        <p>My primary coding interests involve desktop/web app development, and anything involving AI.</p>
+    </section>
+
+    <!-- GitHub and other coding related stats -->
+    <section id="statistics">
+        <h2>Coding Statistics</h2>
+        <p>As I said, coding is one of my primary hobbies. Here are some cool statistics:</p>
+        <div>
+            <!-- Using an API provided at https://github.com/anuraghazra/github-readme-stats -->
+            <a href="https://github.com/wyu4" target="_blank">
+                <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=wyu4&langs_count=14&theme=graywhite&layout=donut-vertical" />
+            </a>
+            <a href="https://github.com/wyu4" target="_blank">
+                <img src="https://github-readme-stats.vercel.app/api?username=wyu4&show_icons=true&theme=graywhite&include_all_commits=true&show=prs_merged&rank_icon=github" />
+            </a>
+        </div>
     </section>
 </body>
 
