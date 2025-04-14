@@ -10,14 +10,14 @@
     src: url('./fonts/garet/Garet-Book.ttf');
 }
 
-body {
+html, body {
     margin: 0;
     padding: 0;
     font-family: 'Garet-Book';
     scroll-behavior: smooth;
     overflow-x: hidden;
+    overflow-y: scroll;
     max-width: 100%;
-    
 }
 
 h1 {
