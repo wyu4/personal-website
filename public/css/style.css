@@ -23,3 +23,7 @@ html, body {
 h1 {
     font-family: 'Garet-Heavy';
 }
+
+a {
+    color: #020030;
+}

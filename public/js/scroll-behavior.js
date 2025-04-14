@@ -22,7 +22,7 @@ window.addEventListener('scroll', updateScroll);
  */
 function updateSpacer() {
     spacer.style.width = '100vw';
-    spacer.style.height = `${banner.scrollHeight + Math.max(screen.height, content.scrollHeight)}px`;
+    spacer.style.height = `${banner.scrollHeight + content.scrollHeight}px`;
 }
 
 window.addEventListener('load', () => {
