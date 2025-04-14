@@ -1,27 +1,18 @@
 const banner = document.getElementById('title-banner');
+const scrollText = document.getElementById('scroll-text');
 const content = document.getElementById('content');
 const spacer = document.getElementById('spacer');
-
-/**
- * Get the banner height with an offset
- * @returns Banner Scroll-Height with additional height
- */
-function getBannerHeight() {
-    return banner.scrollHeight * 1.15;
-}
 
 /**
  * Dynamicalyl update the position of the elements based on the page's scroll position
  */
 function updateScroll() {
     const scrollY = window.scrollY;
-    const bannerHeight = getBannerHeight();
-    banner.style.transform = `translateY(-${scrollY}px)`;
-    if (scrollY >= bannerHeight) {
-        content.style.transform = `translateY(-${scrollY - bannerHeight}px)`;
-    } else {
-        content.style.transform = 'translateY(0px)';
-    }
+    const scrollPercent = Math.min((scrollY / banner.scrollHeight) * 100, 100); // Percent of banner that would be covered by content
+
+    content.style.transform = `translateY(${banner.scrollHeight-scrollY}px)`;
+    content.style.opacity = Math.min(scrollPercent*0.03, 1);
+    banner.style.filter = `blur(${scrollPercent*0.00005*banner.scrollWidth}px)`;
 }
 
 window.addEventListener('scroll', updateScroll);
@@ -31,7 +22,7 @@ window.addEventListener('scroll', updateScroll);
  */
 function updateSpacer() {
     spacer.style.width = '100vw';
-    spacer.style.height = `${getBannerHeight() + Math.max(screen.height, content.scrollHeight)}px`;
+    spacer.style.height = `${banner.scrollHeight + Math.max(screen.height, content.scrollHeight)}px`;
 }
 
 window.addEventListener('load', () => {
