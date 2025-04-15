@@ -3,14 +3,26 @@ const app = express();
 const path = require("path");
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json()); 
 
-app.get("/test", (req, res) => {
-    console.log("GET request to /test received");
-    res.send({ message: "The GET request to /test worked!" });
-});
+app.post("/api/ticket", (req, res) => {
+    var returnMessage = '';
+    var returnStatus = true;
+    try {
+        const { body } = req;
+        console.log(body);
 
-app.get("/repos", (req, res) => {
-    res.send({ message: "The GET request to /test worked!" });
+        returnMessage = 'Ticket submitted!';
+        returnStatus = true;
+    } catch (err) {
+        console.error(err);
+        returnMessage = 'An internal error has occurred.';
+        returnStatus = false;
+    }
+    res.send(JSON.stringify({
+        message: returnMessage,
+        status: returnStatus
+    }));
 });
 
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));

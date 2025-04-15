@@ -5,6 +5,7 @@
         "email email"
         "first last"
         "message message"
+        "status status"
         "submit submit";
     gap: 0.25cm;
     justify-content: center;
@@ -39,6 +40,10 @@
 
 #ticket-form #ticket-message input{
     width: 100%;
+}
+
+#ticket-form #ticket-status{
+    grid-area: status;
 }
 
 #ticket-form #ticket-submit{
