@@ -60,8 +60,14 @@ function submit() {
                 })
             }).then(response => {
                 submitting = false;
-                response.json();
+                return response.json();
             }).then(responseData => {
+                const message = responseData.message;
+                const status = responseData.status;
+                if (!status) {
+                    setStatusMessage(message, ERROR_COLOR);
+                    return;
+                }
                 setStatusMessage('Ticket Submitted!', SUCCESS_COLOR);
             }).catch(err => {
                 console.error(err);
@@ -69,6 +75,7 @@ function submit() {
             });
         } else {
             setStatusMessage(statusMessage, ERROR_COLOR);
+            submitting = false;
         }
     } catch (err) {
         console.log(err);
