@@ -11,6 +11,8 @@
 }
 
 html, body {
+    --default-border-radius: 0.1cm;
+
     margin: 0;
     padding: 0;
     font-family: 'Garet-Book';
@@ -26,4 +28,10 @@ h1 {
 
 a {
     color: #020030;
+}
+
+body input {
+    border-radius: var(--default-border-radius);
+    border-color: #000000;
+    border-width: 3px;
 }

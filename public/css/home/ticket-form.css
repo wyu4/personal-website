@@ -1,0 +1,46 @@
+#ticket-form {
+    display: grid;
+    grid-template: 
+        "title title"
+        "email email"
+        "first last"
+        "message message"
+        "submit submit";
+    gap: 0.25cm;
+    justify-content: center;
+    background-color: #e2f2ff;
+    border-radius: 0.1cm;
+}
+
+#ticket-form #title{
+    grid-area: title;
+    text-align: center;
+}
+
+#ticket-form #ticket-email{
+    grid-area: email;
+}
+
+#ticket-form #ticket-email input{
+    width: 100%;
+}
+
+#ticket-form #ticket-first{
+    grid-area: first;
+}
+
+#ticket-form #ticket-last{
+    grid-area: last;
+}
+
+#ticket-form #ticket-message{
+    grid-area: message;
+}
+
+#ticket-form #ticket-message input{
+    width: 100%;
+}
+
+#ticket-form #ticket-submit{
+    grid-area: submit;
+}
