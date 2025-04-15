@@ -12,6 +12,8 @@ app.post("/api/ticket", (req, res) => {
         const { body } = req;
         console.log(body);
 
+        const webhook = process.env.TICKET_WEBHOOK_URL;
+
         returnMessage = 'Ticket submitted!';
         returnStatus = true;
     } catch (err) {
