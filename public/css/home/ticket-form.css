@@ -13,7 +13,7 @@
         ;
     justify-content: center;
     align-items: center;
-    background-color: #e2f2ff;
+    background-color: #f8f8f8;
     border-radius: 0.1cm;
 }
 
@@ -34,7 +34,7 @@
 
 .ticket-form-component{
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: stretch;
     flex-direction: column;
 
