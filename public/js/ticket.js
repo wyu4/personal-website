@@ -5,7 +5,7 @@ const messageInput = document.getElementById('ticket-message-input');
 const statusMessage = document.getElementById('ticket-status');
 const submitButton = document.getElementById('ticket-submit');
 
-const EMAIL_EMPTY = 'Please enter an email.';
+const EMAIL_INVALID = 'Please enter a valid email.';
 const MESSAGE_EMPTY = 'Please enter a short message.';
 
 const ERROR_COLOR = '#700000';
@@ -13,6 +13,15 @@ const SUCCESS_COLOR = '#00a527';
 const DEFAULT_COLOR = '#000000';
 
 var submitting = false;
+
+/**
+ * Check if the email format is valid
+ * @param {String} email 
+ * @returns true/false
+ */
+function emailFormatValid(email) {
+    return Boolean(email.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/));
+}
 
 /**
  * Set the status message
@@ -28,7 +37,7 @@ function setStatusMessage(message, color) {
 }
 
 function submissionisValid(email, message) {
-    if (email == null || email == '') return [false, EMAIL_EMPTY];
+    if (!emailFormatValid(email)) return [false, EMAIL_INVALID];
     if (message == null || message == '') return [false, MESSAGE_EMPTY];
     return [true, ''];
 }
