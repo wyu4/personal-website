@@ -25,57 +25,63 @@
         <p id="scroll-text">(Keep Scrolling)</p>
     </section>
 
-    <section id="content">
-        <!-- A short description of myself including some of my work -->
-        <section id="intro">
-            <h2>About Me</h2>
-            <p>I am a highschooler in Canada who enjoys coding, and tinkering with new things.
-        </section>
-        
-        <!-- GitHub and other coding related stuff -->
+    <div id="content">
         <section id="bio">
-            <h2>Coding Stuff</h2>
-            <p>It all started when I was in grade school. My teacher introduced the class to <a href="https://scratch.mit.edu/about" target="_blank">Scratch</a> — a block-based visual coding website that people from all over the world use to create and share apps and games. When I saw this, I took full advantage of it. I created cool arcade games, story boards, and even went as far as make a calculator that would calculate properties of polygons to help me understand a school assignment.</p>
-            <p>Fast forward a couple of years, and I moved onto <a href="https://www.roblox.com/" target="_blank">Roblox</a> — a slightly more mature online game platform where people can make and share their creations. This was my first time using any sort of text-based language (this one in particular was called <a href="https://www.lua.org/about.html" target="_blank">Lua</a>).</p>
-            <span id="coding-stats">
+            <!-- A short description of myself including some of my work -->
+            <section id="intro">
+                <h2>About Me</h2>
+                <p>I am a highschooler in Canada who enjoys coding, and tinkering with new things.
+            </section>
+            
+            <!-- GitHub and other coding related stuff -->
+            <section id="coding-stuff">
+                <h2>Coding Stuff</h2>
+                <p>It all started when I was in grade school. My teacher introduced the class to <a href="https://scratch.mit.edu/about" target="_blank">Scratch</a> — a block-based visual coding website that people from all over the world use to create and share apps and games. When I saw this, I took full advantage of it. I created cool arcade games, story boards, and even went as far as make a calculator that would calculate properties of polygons to help me understand a school assignment.</p>
+                <p>Fast forward a couple of years, and I moved onto <a href="https://www.roblox.com/" target="_blank">Roblox</a> — a slightly more mature online game platform where people can make and share their creations. This was my first time using any sort of text-based language (this one in particular was called <a href="https://www.lua.org/about.html" target="_blank">Lua</a>).</p>
+            </section>
+
+            <section id="contact">
+                <h2>Contact Me!</h2>
+                <p>Feel free to contact me using any of the listed services below!</p>
+
+                <span id="ticket-form">
+                    <h3 id="title">Or submit a ticket!</h3>
+                    <span class="ticket-form-component" id="ticket-email">
+                        <p>A <b>Valid</b> Email Address *</p>
+                        <input type="email" id="ticket-email-input">
+                    </span>
+
+                    <span class="ticket-form-component" id="ticket-first">
+                        <p>First Name (optional)</p>
+                        <input type="text" id="ticket-first-name-input">
+                    </span>
+
+                    <span class="ticket-form-component" id="ticket-last">
+                        <p>Last Name (optional)</p>
+                        <input type="text" id="ticket-last-name-input">
+                    </span>
+
+                    <span class="ticket-form-component" id="ticket-message">
+                        <p>A Short Message *</p>
+                        <textarea type="text" id="ticket-message-input"></textarea>
+                    </span>
+                    <p id="ticket-status"></p>
+                    <button id="ticket-submit"><h3>Submit Ticket</h3></button>
+                </span>
+            </section>
+        </section>
+
+        <section id="info-cards">
+            <span id="github-stats" class="info-card">
+                <h2>GitHub Stats</h2>
                 <!-- Using an API provided at https://github.com/anuraghazra/github-readme-stats -->
                 <a href="https://github.com/wyu4" target="_blank">
-                    <img width="25%" height="auto" src="https://github-readme-stats.vercel.app/api/top-langs/?username=wyu4&langs_count=14&theme=graywhite&layout=donut-vertical"/>
+                    <img id="github-lang-stats" width="100%" height="auto"/>
                 </a>
             </span>
+            <script src="./js/github-readme-stats.js"></script>
         </section>
-
-
-        <section id="contact">
-            <h2>Contact Me!</h2>
-            <p>Feel free to contact me using any of the listed services below!</p>
-
-            <span id="ticket-form">
-                <h3 id="title">Or submit a ticket!</h3>
-                <span class="ticket-form-component" id="ticket-email">
-                    <p>A <b>Valid</b> Email Address *</p>
-                    <input type="email" id="ticket-email-input">
-                </span>
-
-                <span class="ticket-form-component" id="ticket-first">
-                    <p>First Name (optional)</p>
-                    <input type="text" id="ticket-first-name-input">
-                </span>
-
-                <span class="ticket-form-component" id="ticket-last">
-                    <p>Last Name (optional)</p>
-                    <input type="text" id="ticket-last-name-input">
-                </span>
-
-                <span class="ticket-form-component" id="ticket-message">
-                    <p>A Short Message *</p>
-                    <textarea type="text" id="ticket-message-input"></textarea>
-                </span>
-                <p id="ticket-status"></p>
-                <button id="ticket-submit"><h3>Submit Ticket</h3></button>
-            </span>
-        </section>
-    </section>
+    </div>
 
     <div id="spacer"></div>
     <script src="./js/scroll-behavior.js"></script>

@@ -12,6 +12,7 @@
 
 html, body {
     --default-border-radius: 0.1cm;
+    --default-gap: 1cm;
 
     margin: 0;
     padding: 0;

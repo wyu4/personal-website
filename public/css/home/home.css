@@ -1,3 +1,2 @@
 @import url('./title-banner.css');
-@import url('./content.css');
-@import url('./ticket-form.css');
+@import url('./content/content.css');
