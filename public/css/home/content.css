@@ -1,12 +1,16 @@
 #content {
     --content-bg: #ffffff;
+    --default-gap: 1cm;
 
     position: fixed;
     background-color: var(--content-bg);
     z-index: 1;
-    width: 100vw;
     height: auto;
     opacity: 0;
+    padding: var(--default-gap);
+    margin-left: var(--default-gap);
+    margin-right: 40%;
+    border-radius: var(--default-border-radius);
 }
 
 #content #repositories {
@@ -16,8 +20,6 @@
     margin-left: 15vw;
     margin-right: 15vw;
 }
-
-
 
 #content #statistics div{
     background-color: #00000000;

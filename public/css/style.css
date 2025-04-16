@@ -30,8 +30,19 @@ a {
     color: #020030;
 }
 
-body input {
+textarea {
+    vertical-align: top;
+    padding-top: 0.5em;
+    line-height: 1.2;
+    resize: none;
+}
+
+body input, textarea, button {
     border-radius: var(--default-border-radius);
     border-color: #000000;
     border-width: 3px;
+}
+
+button:hover {
+    cursor: grab;
 }

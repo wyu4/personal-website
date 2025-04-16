@@ -81,6 +81,7 @@ function submit() {
         console.log(err);
         submitting = false;
     }
+    submitting = false;
 }
 
 submitButton.addEventListener('click', submit);

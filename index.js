@@ -34,7 +34,6 @@ app.post("/api/ticket", (req, res) => {
                 }
             }]
         });
-        console.log(webhookBody);
 
         fetch(webhookURL, {
             method: 'POST',

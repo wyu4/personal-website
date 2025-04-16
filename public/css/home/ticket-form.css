@@ -1,16 +1,44 @@
 #ticket-form {
+    --default-padding: 0.1cm;
     display: grid;
     grid-template: 
-        "title title"
-        "email email"
-        "first last"
-        "message message"
-        "status status"
-        "submit submit";
-    gap: 0.25cm;
+        "title title" 1fr
+        "email email" 1fr
+        "first last" 1fr
+        "message message" 1fr
+        "message message" 1fr
+        "status status" 1fr
+        "submit submit" 1fr
+        / 1fr 1fr
+        ;
     justify-content: center;
+    align-items: center;
     background-color: #e2f2ff;
     border-radius: 0.1cm;
+}
+
+@media screen and (max-width: 600px) {
+    #ticket-form {
+        grid-template: 
+        "title" 1fr
+        "email" 1fr
+        "first" 1fr
+        "last" 1fr
+        "message" 1fr
+        "status" 1fr
+        "submit" 1fr
+        / 1fr 1fr
+        ; 
+    }
+}
+
+.ticket-form-component{
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    flex-direction: column;
+
+    padding: var(--default-padding);
 }
 
 #ticket-form #title{
@@ -20,10 +48,6 @@
 
 #ticket-form #ticket-email{
     grid-area: email;
-}
-
-#ticket-form #ticket-email input{
-    width: 100%;
 }
 
 #ticket-form #ticket-first{
@@ -38,14 +62,20 @@
     grid-area: message;
 }
 
-#ticket-form #ticket-message input{
-    width: 100%;
+#ticket-form #ticket-message textarea{
+    height: 2cm;
 }
 
 #ticket-form #ticket-status{
     grid-area: status;
+    text-align: center;
 }
 
 #ticket-form #ticket-submit{
     grid-area: submit;
+}
+
+#ticket-form button{
+    margin-left: 30%;
+    margin-right: 30%;
 }
