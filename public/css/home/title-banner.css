@@ -31,12 +31,3 @@
 #title-banner p{
     font-size: 0.5em;
 }
-
-#title-banner #scroll-text{
-    opacity: 0;
-    transition: opacity 1s;
-}
-
-#title-banner #scroll-text{
-    opacity: 0;
-}
