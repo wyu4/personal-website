@@ -77,8 +77,15 @@ function submit() {
                     setStatusMessage(message, ERROR_COLOR);
                     return;
                 }
+
+                emailInput.value = '';
+                firstInput.value = '';
+                lastInput.value = '';
+                messageInput.value = '';
+
                 setStatusMessage('Ticket Submitted!', SUCCESS_COLOR);
             }).catch(err => {
+                submitting = false;
                 console.error(err);
                 setStatusMessage('An error occurred.', ERROR_COLOR);
             });
@@ -90,7 +97,6 @@ function submit() {
         console.log(err);
         submitting = false;
     }
-    submitting = false;
 }
 
 submitButton.addEventListener('click', submit);
