@@ -4,7 +4,8 @@ const content = document.getElementById('content');
 const spacer = document.getElementById('spacer');
 
 const infoCards = [
-    new InfoCard('github-stats', 'coding-stuff')
+    new InfoCard('github-stats', 'coding-stuff'),
+    new InfoCard('frc-description', 'robotics')
 ];
 
 /**
