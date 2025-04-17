@@ -2,12 +2,12 @@
 
 @font-face {
     font-family: 'Garet-Heavy';
-    src: url('./fonts/garet/Garet-Heavy.ttf');
+    src: url('./../fonts/garet/Garet-Heavy.ttf');
 }
 
 @font-face {
     font-family: 'Garet-Book';
-    src: url('./fonts/garet/Garet-Book.ttf');
+    src: url('./../fonts/garet/Garet-Book.ttf');
 }
 
 html, body {
@@ -29,7 +29,7 @@ h1 {
 }
 
 a {
-    color: #020030;
+    color: #030046;
 }
 
 textarea {

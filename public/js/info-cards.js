@@ -24,6 +24,9 @@ class InfoCard {
         }
     }
 
+    /**
+     * Update the position of the card.
+     */
     update() {
         if (!this.card || !this.tracking) {
             return;

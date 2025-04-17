@@ -21,8 +21,6 @@ function updateScroll() {
     infoCards.forEach(card => card.update());
 }
 
-window.addEventListener('scroll', updateScroll);
-
 /**
  * Dynamically update the spacer to enable proper scrolling
  */
@@ -31,8 +29,14 @@ function updateSpacer() {
     spacer.style.height = `calc(${banner.scrollHeight + content.scrollHeight}px + 1cm)`;
 }
 
-window.addEventListener('load', () => {
+/**
+ * Update all aspects of the website.
+ */
+function updateAll() {
     updateSpacer();
     updateScroll();
-});
-window.addEventListener('resize', updateSpacer);
+}
+
+window.addEventListener('scroll', updateAll);
+window.addEventListener('load', updateAll);
+window.addEventListener('resize', updateAll);
