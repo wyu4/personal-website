@@ -28,7 +28,12 @@
         "status" 1fr
         "submit" 1fr
         / 1fr 1fr
-        ; 
+        ;
+        text-align: center;
+    }
+
+    .ticket-form-component{
+        justify-content: center;
     }
 }
 
