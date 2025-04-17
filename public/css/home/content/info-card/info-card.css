@@ -19,3 +19,7 @@
     justify-content: flex-start;
     align-items: stretch;
 }
+
+#info-cards #github-stats {
+    background-color: #00000000;
+}
