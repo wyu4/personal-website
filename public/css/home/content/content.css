@@ -9,6 +9,7 @@
     gap: var(--default-gap);
     padding: var(--default-gap);
     opacity: 0;
+    z-index: 1;
 }
 
 #content #bio {

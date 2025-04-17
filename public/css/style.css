@@ -45,6 +45,20 @@ body input, textarea, button {
     border-width: 3px;
 }
 
+button {
+    transition: ease-out 0.2s;
+}
+
 button:hover {
-    cursor: grab;
+    transform: scale(105%);
+}
+
+a {
+    transition: ease-out 0.1s;
+    z-index: 1;
+}
+
+a:hover {
+    transform: scale(120%);
+    z-index: 2;
 }
