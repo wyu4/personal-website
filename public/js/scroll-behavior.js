@@ -3,24 +3,9 @@ const scrollText = document.getElementById('scroll-text');
 const content = document.getElementById('content');
 const spacer = document.getElementById('spacer');
 
-const infoCards = content.getElementsByClassName('info-card');
-
-/**
- * Updates the position of an info card, and whether or not it should be displayed on screen.
- * @param {Number} scrollY The current scrollY of the window
- * @param {Element} card Element with the info card class
- */
-function updateInfoCard(scrollY, card) {
-    const parent = card.parentElement;
-    if (!parent) {
-        return; // No parent exists.
-    }
-
-    const parentBounds = parent.getBoundingClientRect();
-    const maxY = parentBounds.height;
-
-    const cardBounds = card.getBoundingClientRect();
-}
+const infoCards = [
+    new InfoCard('github-stats', 'coding-stuff')
+];
 
 /**
  * Dynamically update the position of the elements based on the page's scroll position
@@ -33,7 +18,7 @@ function updateScroll() {
     content.style.opacity = Math.min(scrollPercent*0.03, 1);
     banner.style.filter = `blur(${scrollPercent*0.00005*banner.scrollWidth}px)`;
 
-    Array.from(infoCards).forEach(card => updateInfoCard(scrollY, card));
+    infoCards.forEach(card => card.update());
 }
 
 window.addEventListener('scroll', updateScroll);
