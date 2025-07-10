@@ -101,3 +101,27 @@
 .grow-on-hover:hover {
     transform: scale(110%);
 }
+
+.repository {
+    border-radius: 25px;
+    border-width: 5px;
+    border-color: rgb(199, 199, 199);
+    border-style: solid;
+}
+
+.repository-gallery {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: left;
+    justify-content: left;
+    padding-left: 1cm;
+    padding-right: 1cm;
+    max-width: 100%;
+    gap: 0.5cm;
+    box-sizing: border-box;
+}
+
+.repository-gallery img {
+    width: 5vw;
+}
