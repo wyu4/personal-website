@@ -1,7 +1,11 @@
-const App = () => {
-  return (
-    <div>App</div>
-  )
-}
+import TitleBanner from "./components/TitleBanner";
 
-export default App
+const App = () => {
+    return (
+        <>
+            <TitleBanner></TitleBanner>
+        </>
+    );
+};
+
+export default App;
