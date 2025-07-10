@@ -1,4 +1,7 @@
 import Button from "./Button";
+import githubIcon from "../assets/github.png";
+import gmailIcon from "../assets/gmail.png";
+import mailIcon from "../assets/mail.png";
 
 function ContactSpan() {
     const openLink = (url: string) => {
@@ -24,7 +27,7 @@ function ContactSpan() {
                         )
                     }
                 >
-                    <img src="./src/assets/gmail.png"></img>
+                    <img src={gmailIcon}></img>
                 </Button>
             </span>
 
@@ -33,7 +36,7 @@ function ContactSpan() {
                     className="transparent"
                     onClick={() => openLink("mailto:wilsonyu657@gmail.com")}
                 >
-                    <img src="./src/assets/mail.png"></img>
+                    <img src={mailIcon}></img>
                 </Button>
             </span>
 
@@ -42,7 +45,7 @@ function ContactSpan() {
                     className="transparent"
                     onClick={() => openLink("https://github.com/wyu4")}
                 >
-                    <img src="./src/assets/github.png"></img>
+                    <img src={githubIcon}></img>
                 </Button>
             </span>
         </span>
