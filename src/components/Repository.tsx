@@ -12,9 +12,9 @@ export type RepositoryData = {
 export default function Repository(args: RepositoryData) {
     return (
         <Button className="repository" href={args.html_url}>
-            <h2>{args.full_name}</h2>
-            <p>{args.description}</p>
-            <img src={args.owner.avatar_url} draggable="false"></img>
+            <h2 id="title">{args.full_name}</h2>
+            <p id="desc">{args.description}</p>
+            <img id="icon" src={args.owner.avatar_url} draggable="false"></img>
         </Button>
     );
 }

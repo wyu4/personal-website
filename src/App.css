@@ -103,10 +103,41 @@
 }
 
 .repository {
+    display: grid;
+    grid-template-areas:
+        "title title icon"
+        "desc desc icon";
     border-radius: 25px;
-    border-width: 5px;
-    border-color: rgb(199, 199, 199);
+    border-width: 3px;
+    border-color: rgb(153, 153, 153);
     border-style: solid;
+    text-align: left;
+    min-width: 25vw;
+    padding: 25px;
+    background-image:
+        linear-gradient(to left bottom, #eaeaea 0%, #dcdcdc 33%, #ffffff 75%);
+}
+
+.repository:hover {
+    transform: scale(105%);
+}
+
+.repository #desc {
+    grid-area: desc;
+}
+
+.repository #title {
+    grid-area: title;
+}
+
+.repository #icon {
+    grid-area: icon;
+    max-width: 5vw;
+    border-radius: 25%;
+    border-color: rgb(196, 196, 196);
+    border-style: solid;
+    border-width: 2px;
+    aspect-ratio: 1/1;
 }
 
 .repository-gallery {
@@ -120,8 +151,4 @@
     max-width: 100%;
     gap: 0.5cm;
     box-sizing: border-box;
-}
-
-.repository-gallery img {
-    width: 5vw;
 }
