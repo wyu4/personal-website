@@ -5,17 +5,18 @@ type RepositoryGalleryProps = {
     username?: string;
 };
 
-
-
 export default function RepositoryGallery({
     username = "wyu4",
 }: RepositoryGalleryProps) {
     const [data, setData] = React.useState<RepositoryData[]>([]);
     React.useEffect(() => {
-        fetch(`https://api.github.com/users/${username}/repos?type=all&sort=updated`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        })
+        fetch(
+            `https://api.github.com/users/${username}/repos?type=all&sort=updated`,
+            {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            }
+        )
             .then((response) => response.json())
             .then((result: RepositoryData[]) => {
                 setData(result);
@@ -29,10 +30,7 @@ export default function RepositoryGallery({
     return (
         <div className="repository-gallery transparent">
             {data.map((repo) => (
-                <Repository
-                    {...repo}
-                    key={repo.html_url}
-                ></Repository>
+                <Repository {...repo} key={repo.html_url}></Repository>
             ))}
         </div>
     );

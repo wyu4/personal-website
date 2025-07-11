@@ -5,6 +5,7 @@ type ButtonProps = {
     children: React.ReactNode;
     className?: string;
     href?: string;
+    id?: string;
 };
 
 export default function Button({
@@ -12,9 +13,11 @@ export default function Button({
     children,
     className = "",
     href,
+    id = "",
 }: ButtonProps) {
     return (
         <button
+            id={id}
             className={"grow-on-hover " + className}
             onClick={() => {
                 if (href) {

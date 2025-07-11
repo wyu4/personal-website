@@ -105,14 +105,16 @@
 .repository {
     display: grid;
     grid-template-areas:
-        "title title icon"
-        "desc desc icon";
+        "title title"
+        "desc icon";
     border-radius: 25px;
     border-width: 3px;
     border-color: rgb(153, 153, 153);
     border-style: solid;
     text-align: left;
     min-width: 25vw;
+    max-width: none;
+    resize: both;
     padding: 25px;
     background-image:
         linear-gradient(to left bottom, #eaeaea 0%, #dcdcdc 33%, #ffffff 75%);
@@ -132,12 +134,24 @@
 
 .repository #icon {
     grid-area: icon;
+    display: flex;
     max-width: 5vw;
     border-radius: 25%;
     border-color: rgb(196, 196, 196);
     border-style: solid;
-    border-width: 2px;
+    border-width: 0px;
     aspect-ratio: 1/1;
+    text-align: center;
+    justify-items: center;
+    justify-content: center;
+}
+
+.repository #icon img {
+    max-width: 5vw;
+    border-radius: inherit;
+    border-color: inherit;
+    border-style: inherit;
+    border-width: 2px;
 }
 
 .repository-gallery {
