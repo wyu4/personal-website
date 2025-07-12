@@ -88,7 +88,6 @@
     flex-grow: 0;
 }
 
-
 .repository-cell {
     display: flex;
     align-items: center;
@@ -118,7 +117,7 @@
 .repository-gallery,
 .in-title {
     position: absolute;
-    top: 40vh;
+    top: 55vh;
     width: 100vw;
     height: 40vh;
 }
