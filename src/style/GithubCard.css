@@ -25,7 +25,7 @@
     border-color: rgb(153, 153, 153);
     border-style: solid;
     text-align: left;
-    min-width: 10cm;
+    min-width: 300px;
     max-width: none;
     resize: both;
     padding: 25px;
@@ -46,7 +46,7 @@
 
 .repository #card #icon {
     display: flex;
-    height: 3cm;
+    height: 100px;
     margin: auto;
     border-radius: 10px;
     border-color: rgb(196, 196, 196);
@@ -117,17 +117,17 @@
 .repository-gallery,
 .in-title {
     position: absolute;
-    top: 55vh;
+    top: 50vh;
     width: 100vw;
     height: 40vh;
 }
 
 @media (max-width: 1000px) {
     .repository #card {
-        min-width: 7.5cm;
+        min-width: 200px;
     }
 
     .repository #card #icon {
-        height: 2cm;
+        height: 75px;
     }
 }
