@@ -1,12 +1,14 @@
 import React from "react";
 import Repository, { type RepositoryData } from "./Repository";
 
-type RepositoryGalleryProps = {
+type RepositoryGalleryProps = React.HTMLAttributes<HTMLDivElement> & {
     username?: string;
 };
 
 export default function RepositoryGallery({
     username = "wyu4",
+    className = "",
+    ...args
 }: RepositoryGalleryProps) {
     const [data, setData] = React.useState<RepositoryData[]>([]);
     React.useEffect(() => {
@@ -28,7 +30,7 @@ export default function RepositoryGallery({
             );
     }, [username]);
     return (
-        <div className="repository-gallery transparent">
+        <div className={"repository-gallery " + className} {...args}>
             {data.map((repo) => (
                 <Repository {...repo} key={repo.html_url}></Repository>
             ))}

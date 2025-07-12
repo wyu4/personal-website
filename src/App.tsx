@@ -1,9 +1,13 @@
+import RepositoryGallery from "./components/RepositoryGallery";
 import TitleBanner from "./components/TitleBanner";
 
 const App = () => {
     return (
         <>
-            <TitleBanner></TitleBanner>
+            <div className="background">
+                <TitleBanner></TitleBanner>
+                <RepositoryGallery className="in-title"></RepositoryGallery>
+            </div>
         </>
     );
 };

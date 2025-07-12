@@ -5,16 +5,17 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    justify-items: center;
+    align-items: center;
     justify-content: center;
     background-color: #eff0f2;
+    x: 0;
+    y: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 0;
-    background-image:
-        linear-gradient(to bottom, #0000004b 25%, #00000000 75%);
+    z-index: 20;
+    pointer-events: none;
 }
 
 .title h1 {
-    font-size: 9vw
+    font-size: 9vw;
 }

@@ -2,8 +2,19 @@ import Button from "./Button";
 import githubIcon from "../assets/github.png";
 import gmailIcon from "../assets/gmail.png";
 import mailIcon from "../assets/mail.png";
+import type React from "react";
 
-export default function ContactSpan() {
+type ContactSpanProps = React.HTMLAttributes<HTMLSpanElement> & {
+    fadeIn?: boolean;
+    fadeInDelay?: number;
+};
+
+export default function ContactSpan({
+    fadeIn = false,
+    className,
+    fadeInDelay = 0,
+    ...args
+}: ContactSpanProps) {
     const createAnimationDelay = (seconds: number) => {
         return {
             animationDuration: "0.7s",
@@ -12,8 +23,11 @@ export default function ContactSpan() {
     };
 
     return (
-        <span className="contacts">
-            <span className="fade-in-on-load" style={createAnimationDelay(1.5)}>
+        <span className={"contacts " + className} {...args}>
+            <span
+                className={fadeIn ? "fade-in-on-load" : ""}
+                style={createAnimationDelay(fadeInDelay + 0.5)}
+            >
                 <Button
                     className="transparent"
                     href="https://mail.google.com/mail/?view=cm&fs=1&to=wilsonyu657@gmail.com&su=Subject"
@@ -22,7 +36,10 @@ export default function ContactSpan() {
                 </Button>
             </span>
 
-            <span className="fade-in-on-load" style={createAnimationDelay(1.7)}>
+            <span
+                className={fadeIn ? "fade-in-on-load" : ""}
+                style={createAnimationDelay(fadeInDelay + 0.7)}
+            >
                 <Button
                     className="transparent"
                     href="mailto:wilsonyu657@gmail.com"
@@ -31,11 +48,11 @@ export default function ContactSpan() {
                 </Button>
             </span>
 
-            <span className="fade-in-on-load" style={createAnimationDelay(1.9)}>
-                <Button
-                    className="transparent"
-                    href="https://github.com/wyu4"
-                >
+            <span
+                className={fadeIn ? "fade-in-on-load" : ""}
+                style={createAnimationDelay(fadeInDelay + 0.9)}
+            >
+                <Button className="transparent" href="https://github.com/wyu4">
                     <img src={githubIcon}></img>
                 </Button>
             </span>

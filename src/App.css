@@ -34,6 +34,16 @@
     overflow-y: scroll;
 }
 
+.background {
+    position: fixed;
+    text-align: center;
+    background-image:
+        linear-gradient(to bottom, #0000004b 25%, #00000000 75%);
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+}
+
 .fade-in-on-load {
     opacity: 0;
     transform: translateY(40px);
