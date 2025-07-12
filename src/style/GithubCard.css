@@ -1,11 +1,13 @@
 .repository {
-    display: inline-block;
+    display: flex;
+    border-radius: 25px;
     transition: 0.5s ease;
     justify-items: center;
     justify-content: center;
     padding: 0;
     transition: ease-out 0.2s;
     perspective: 1000px;
+    resize: both;
 }
 
 .repository:hover {
@@ -17,7 +19,7 @@
     grid-template-areas:
         "title title"
         "desc icon";
-    border-radius: 25px;
+    border-radius: inherit;
     border-width: 3px;
     border-color: rgb(153, 153, 153);
     border-style: solid;
@@ -30,13 +32,8 @@
     background-image:
         linear-gradient(to left bottom, #eaeaea 0%, #bababa 33%, #ffffff 75%);
     transform-style: 'preserve-3d';
-    transition: ease-in-out 0.2s;
-    transform-style: preserve-3d;
+    transition: transform 0.02s ease-in-out;
     will-change: transform;
-}
-
-.repository #card:hover {
-    background-size: 200% 100%;
 }
 
 .repository #card #desc {
@@ -51,14 +48,19 @@
     grid-area: icon;
     display: flex;
     max-width: 5vw;
-    border-radius: 25%;
+    border-radius: 10px;
     border-color: rgb(196, 196, 196);
     border-style: solid;
-    border-width: 0px;
+    border-width: 1px;
     aspect-ratio: 1/1;
     text-align: center;
     justify-items: center;
     justify-content: center;
+    transition: 0.25s ease-in-out;
+}
+
+.repository #card #icon:hover {
+    border-color: rgb(90, 90, 90);
 }
 
 .repository #card #icon img {
@@ -67,6 +69,14 @@
     border-color: inherit;
     border-style: inherit;
     border-width: 2px;
+}
+
+.repository-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
 }
 
 .repository-gallery {

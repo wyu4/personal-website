@@ -19,11 +19,13 @@ export default function Repository(args: RepositoryData) {
         if (animationHandle.current) {
             cancelAnimationFrame(animationHandle.current);
         }
-
-        animationHandle.current = requestAnimationFrame(() => element.style.transform = `rotateX(${x}deg) rotateY(${y}deg)`);
+        animationHandle.current = requestAnimationFrame(
+            () =>
+                (element.style.transform = `rotateX(${x}deg) rotateY(${y}deg)`)
+        );
     };
 
-    const onMouseOver: React.MouseEventHandler<HTMLButtonElement> = (
+    const onMouseMove: React.MouseEventHandler<HTMLButtonElement> = (
         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
         const card = cardRef.current;
@@ -36,12 +38,12 @@ export default function Repository(args: RepositoryData) {
         const height = bounds.height;
 
         const mouseX = event.clientX - bounds.left;
-        const mouseY = event.clientY- bounds.top;
+        const mouseY = event.clientY - bounds.top;
 
-        const percentX = width != 0 ? (mouseX/width)-0.5 : 0;
-        const percentY = height != 0 ? (mouseY/height)-0.5 : 0;
+        const percentX = width != 0 ? mouseX / width - 0.5 : 0;
+        const percentY = height != 0 ? mouseY / height - 0.5 : 0;
 
-        setTilt(card, percentY*-20, percentX*20);
+        setTilt(card, percentY * -40, percentX * 40);
     };
 
     const onMouseLeave: React.MouseEventHandler<HTMLButtonElement> = (
@@ -59,27 +61,32 @@ export default function Repository(args: RepositoryData) {
         if (handle) {
             cancelAnimationFrame(handle);
         }
-    })
+    });
 
     return (
-        <Button
-            className="repository transparent"
-            href={args.html_url}
-            onMouseOver={onMouseOver}
-            onMouseLeave={onMouseLeave}
-        >
-            <div id="card" ref={cardRef}>
-                <h2 id="title">{args.full_name}</h2>
-                <p id="desc">{args.description}</p>
-                <a
-                    className="transparent grow-on-hover"
-                    id="icon"
-                    href={args.owner.html_url}
-                    target="_blank"
-                >
-                    <img src={args.owner.avatar_url} draggable="false"></img>
-                </a>
-            </div>
-        </Button>
+        <span className="repository-cell transparent">
+            <Button
+                className="repository transparent"
+                href={args.html_url}
+                onMouseMove={onMouseMove}
+                onMouseLeave={onMouseLeave}
+            >
+                <div id="card" ref={cardRef}>
+                    <h2 id="title">{args.full_name}</h2>
+                    <p id="desc">{args.description}</p>
+                    <a
+                        className="transparent"
+                        id="icon"
+                        href={args.owner.html_url}
+                        target="_blank"
+                    >
+                        <img
+                            src={args.owner.avatar_url}
+                            draggable="false"
+                        ></img>
+                    </a>
+                </div>
+            </Button>
+        </span>
     );
 }
