@@ -86,7 +86,7 @@ export default function RepositoryGallery({
                         });
 
                         if (offscreenCardIndex >= 0) {
-                            scrollPosition.current -= offscreenCardWidth;
+                            scrollPosition.current -= offscreenCardWidth + gap;
 
                             setRepoData((previousData) => {
                                 const copy = [...previousData];
