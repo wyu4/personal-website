@@ -8,10 +8,13 @@ export type RepositoryCardProps = {
         login: string;
         avatar_url: string;
         html_url: string;
+        type: string;
     };
     description: string;
+    fork: boolean;
     onFocus?: () => void;
     onFocusLost?: () => void;
+    style?: React.CSSProperties;
 };
 
 const RepositoryCard = React.forwardRef<HTMLSpanElement, RepositoryCardProps>(
@@ -74,7 +77,7 @@ const RepositoryCard = React.forwardRef<HTMLSpanElement, RepositoryCardProps>(
         });
 
         return (
-            <span className="repository-cell transparent" ref={ref}>
+            <span className="repository-cell" ref={ref}>
                 <Button
                     className="repository transparent"
                     href={args.html_url}
@@ -84,7 +87,9 @@ const RepositoryCard = React.forwardRef<HTMLSpanElement, RepositoryCardProps>(
                     grow={false}
                 >
                     <div id="card" ref={cardRef}>
-                        <h2 id="title">{args.name}</h2>
+                        <h2 id="title">
+                            {args.name + (args.fork ? " (forked)" : "")}
+                        </h2>
                         <p id="desc">{args.description}</p>
                         <span id="right">
                             <a
@@ -98,7 +103,9 @@ const RepositoryCard = React.forwardRef<HTMLSpanElement, RepositoryCardProps>(
                                     draggable="false"
                                 ></img>
                             </a>
-                            <p>{args.owner.login}</p>
+                            <p>
+                                <b>{args.owner.login}</b>
+                            </p>
                         </span>
                     </div>
                 </Button>

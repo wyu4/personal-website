@@ -79,13 +79,14 @@ export default function RepositoryGallery({
 
                         cardRefs.current.forEach((card, index) => {
                             if (!card) return;
+
                             card.style.transform = `translateX(${
                                 -scrollPosition.current + index * gap
                             }px)`;
                         });
 
                         if (offscreenCardIndex >= 0) {
-                            scrollPosition.current -= offscreenCardWidth + gap;
+                            scrollPosition.current -= offscreenCardWidth;
 
                             setRepoData((previousData) => {
                                 const copy = [...previousData];

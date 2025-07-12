@@ -6,7 +6,7 @@ const App = () => {
         <>
             <div className="background">
                 <TitleBanner></TitleBanner>
-                <RepositoryGallery className="in-title" autoScroll={true}></RepositoryGallery>
+                <RepositoryGallery className="in-title fade-in-on-load" autoScroll={true} style={{animationDelay: `0.5s`}}></RepositoryGallery>
             </div>
         </>
     );
