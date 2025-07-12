@@ -1,19 +1,16 @@
 .repository {
     display: flex;
     border-radius: 25px;
-    transition: 0.5s ease;
     justify-items: center;
     justify-content: center;
     padding: 0;
     transition: transform ease-in-out 0.25s;
     perspective: 1000px;
     resize: both;
-    z-index: 15;
 }
 
 .repository:hover {
     transform: scale(120%);
-    z-index: 999;
 }
 
 .repository #card {
@@ -31,7 +28,6 @@
     resize: both;
     padding: 25px;
     gap: 10px;
-    background-size: 100% 100%;
     background-image:
         linear-gradient(to left bottom, #eaeaea 0%, #c8c8c8 33%, #ffffff 75%);
     transition: transform 0.02s ease-in-out;
@@ -59,7 +55,7 @@
     text-align: center;
     justify-items: center;
     justify-content: center;
-    transition: border-color 0.25s ease-in-out, height 0.1s ease-in-out;
+    transition: border-color 0.25s ease-in-out;
 }
 
 .repository #card #icon:hover {
@@ -87,7 +83,13 @@
     justify-content: center;
     gap: 0;
     padding: 0;
-    will-change: transform;
+    z-index: 15;
+    opacity: 0.5;
+}
+
+.repository-cell:hover {
+    z-index: 9999;
+    opacity: 1;
 }
 
 .repository-gallery {
@@ -99,10 +101,6 @@
     max-width: 100%;
     box-sizing: border-box;
     z-index: 10;
-    flex-shrink: 0;
-    isolation: isolate;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
 }
 
 .repository-gallery,
