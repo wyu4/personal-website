@@ -46,8 +46,7 @@
 
 .repository #card #icon {
     display: flex;
-    height: 3cm;
-    margin: auto;
+    margin: 0;
     border-radius: 10px;
     border-color: rgb(196, 196, 196);
     border-style: solid;
@@ -66,6 +65,8 @@
 .repository #card #icon img {
     border-radius: inherit;
     aspect-ratio: 1/1;
+    width: 3cm;
+    height: 3cm;
 }
 
 .repository #card #right {
@@ -127,7 +128,8 @@
         min-width: 7.5cm;
     }
 
-    .repository #card #icon {
+    .repository #card #icon img {
         height: 2cm;
+        width: 2cm;
     }
 }
