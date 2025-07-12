@@ -32,6 +32,9 @@
     scroll-behavior: smooth;
     overflow-x: hidden;
     overflow-y: scroll;
+}
+
+body {
     color: #000;
 }
 
