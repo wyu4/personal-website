@@ -5,7 +5,7 @@
     justify-items: center;
     justify-content: center;
     padding: 0;
-    transition: ease-out 0.2s;
+    transition: transform ease-out 0.2s;
     perspective: 1000px;
     resize: both;
 }
@@ -17,22 +17,23 @@
 .repository #card {
     display: grid;
     grid-template-areas:
-        "title title"
-        "desc icon";
+        "title right"
+        "desc right";
     border-radius: inherit;
     border-width: 3px;
     border-color: rgb(153, 153, 153);
     border-style: solid;
     text-align: left;
-    min-width: 25vw;
+    min-width: 10cm;
     max-width: none;
     resize: both;
     padding: 25px;
+    gap: 10px;
     background-size: 100% 100%;
     background-image:
         linear-gradient(to left bottom, #eaeaea 0%, #bababa 33%, #ffffff 75%);
     transform-style: 'preserve-3d';
-    transition: transform 0.02s ease-in-out;
+    transition: transform 0.02s ease-in-out, min-width 0.25s ease-in-out;
     will-change: transform;
 }
 
@@ -42,21 +43,22 @@
 
 .repository #card #title {
     grid-area: title;
+    white-space: nowrap;
 }
 
 .repository #card #icon {
-    grid-area: icon;
     display: flex;
-    max-width: 5vw;
+    height: 3cm;
+    margin: auto;
     border-radius: 10px;
     border-color: rgb(196, 196, 196);
     border-style: solid;
-    border-width: 1px;
+    border-width: 2px;
     aspect-ratio: 1/1;
     text-align: center;
     justify-items: center;
     justify-content: center;
-    transition: 0.25s ease-in-out;
+    transition: border-color 0.25s ease-in-out, height 0.1s ease-in-out;
 }
 
 .repository #card #icon:hover {
@@ -64,11 +66,18 @@
 }
 
 .repository #card #icon img {
-    max-width: 5vw;
     border-radius: inherit;
-    border-color: inherit;
-    border-style: inherit;
-    border-width: 2px;
+    aspect-ratio: 1/1;
+}
+
+.repository #card #right {
+    display: flex;
+    grid-area: right;
+    justify-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    position: relative;
 }
 
 .repository-cell {
@@ -90,4 +99,14 @@
     max-width: 100%;
     gap: 0.5cm;
     box-sizing: border-box;
+}
+
+@media (max-width: 1000px) {
+    .repository #card {
+        min-width: 7.5cm;
+    }
+
+    .repository #card #icon {
+        height: 2cm;
+    }
 }

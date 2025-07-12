@@ -2,9 +2,10 @@ import React from "react";
 import Button from "./Button";
 
 export type RepositoryData = {
-    full_name: string;
+    name: string;
     html_url: string;
     owner: {
+        login: string;
         avatar_url: string;
         html_url: string;
     };
@@ -72,19 +73,22 @@ export default function Repository(args: RepositoryData) {
                 onMouseLeave={onMouseLeave}
             >
                 <div id="card" ref={cardRef}>
-                    <h2 id="title">{args.full_name}</h2>
+                    <h2 id="title">{args.name}</h2>
                     <p id="desc">{args.description}</p>
-                    <a
-                        className="transparent"
-                        id="icon"
-                        href={args.owner.html_url}
-                        target="_blank"
-                    >
-                        <img
-                            src={args.owner.avatar_url}
-                            draggable="false"
-                        ></img>
-                    </a>
+                    <span id="right">
+                        <a
+                            className="transparent"
+                            id="icon"
+                            href={args.owner.html_url}
+                            target="_blank"
+                        >
+                            <img
+                                src={args.owner.avatar_url}
+                                draggable="false"
+                            ></img>
+                        </a>
+                        <p>{args.owner.login}</p>
+                    </span>
                 </div>
             </Button>
         </span>

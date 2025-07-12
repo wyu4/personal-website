@@ -55,7 +55,7 @@
 }
 
 .grow-on-hover {
-    transition: ease-out 0.2s;
+    transition: transform ease-out 0.2s;
     z-index: inherit;
 }
 
