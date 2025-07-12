@@ -46,7 +46,7 @@
 
 .repository #card #icon {
     display: flex;
-    width: 100px;
+    height: 100px;
     margin: auto;
     border-radius: 10px;
     border-color: rgb(196, 196, 196);
@@ -128,6 +128,6 @@
     }
 
     .repository #card #icon {
-        width: 75px;
+        height: 75px;
     }
 }
