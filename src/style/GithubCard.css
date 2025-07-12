@@ -90,6 +90,8 @@
     justify-content: center;
     gap: 0;
     padding: 0;
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
 .repository-gallery {
@@ -98,15 +100,14 @@
     flex-wrap: nowrap;
     align-items: flex-end;
     justify-content: left;
-    padding-left: 1cm;
-    padding-right: 1cm;
     max-width: 100%;
-    gap: 0.5cm;
     box-sizing: border-box;
     z-index: 10;
+    flex-shrink: 0;
 }
 
-.repository-gallery, .in-title {
+.repository-gallery,
+.in-title {
     position: fixed;
     width: 100vw;
     height: 90vh;

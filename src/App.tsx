@@ -6,7 +6,7 @@ const App = () => {
         <>
             <div className="background">
                 <TitleBanner></TitleBanner>
-                <RepositoryGallery className="in-title"></RepositoryGallery>
+                <RepositoryGallery className="in-title" autoScroll={true}></RepositoryGallery>
             </div>
         </>
     );
