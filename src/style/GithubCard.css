@@ -118,12 +118,12 @@
 .repository-gallery,
 .in-title {
     position: absolute;
-    top: 50vh;
+    top: 40vh;
     width: 100vw;
     height: 40vh;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 600px) {
     .repository #card {
         min-width: 7.5cm;
     }
@@ -135,6 +135,6 @@
 
     .repository-gallery,
     .in-title {
-    height: 30vh;
+        height: 35vh;
     }
 }

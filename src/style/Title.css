@@ -19,3 +19,9 @@
 .title h1 {
     font-size: 9vw;
 }
+
+@media (max-width: 600px) {
+    .title {
+        height: 60vh;
+    }
+}
