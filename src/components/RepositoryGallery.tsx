@@ -13,7 +13,7 @@ export default function RepositoryGallery({
     className = "",
     autoScroll = false,
     autoScrollSpeed = 100,
-    gap = 0,
+    gap = 10,
     ...args
 }: RepositoryGalleryProps) {
     const [repoData, setRepoData] = React.useState<RepositoryCardProps[]>([]);
@@ -22,6 +22,7 @@ export default function RepositoryGallery({
     const animationHandle = React.useRef<number>(null);
     const lastTimestamp = React.useRef<number>(null);
     const scrollPosition = React.useRef<number>(0);
+    const focused = React.useRef<boolean>(false);
 
     const reloadRepositories = React.useCallback(() => {
         fetch(
@@ -51,52 +52,52 @@ export default function RepositoryGallery({
                 const delta = currentTimestamp - lastTimestamp.current;
                 lastTimestamp.current = currentTimestamp;
 
-                const scrollAmount = autoScrollSpeed * (delta / 1000);
+                if (!focused.current) {
+                    const scrollAmount = autoScrollSpeed * (delta / 1000);
 
-                scrollPosition.current += scrollAmount;
+                    scrollPosition.current += scrollAmount;
 
-                const gallery = galleryRef.current;
-                if (gallery) {
-                    const galleryBounds = gallery.getBoundingClientRect();
+                    const gallery = galleryRef.current;
+                    if (gallery) {
+                        const galleryBounds = gallery.getBoundingClientRect();
 
-                    const offscreenCardIndex = cardRefs.current.findIndex(
-                        (card) => {
-                            if (!card) return;
+                        let offscreenCardWidth = 0;
+                        const offscreenCardIndex = cardRefs.current.findIndex(
+                            (card) => {
+                                if (!card) return;
 
-                            const bounds = card.getBoundingClientRect();
-                            const offsetX = bounds.left - galleryBounds.left;
-                            const newLeft = offsetX - scrollAmount;
+                                const bounds = card.getBoundingClientRect();
+                                const offsetX =
+                                    bounds.left - galleryBounds.left;
+                                const newLeft = offsetX - scrollAmount;
 
-                            return newLeft + bounds.width < 0;
-                        }
-                    );
+                                offscreenCardWidth = card.offsetWidth;
 
-                    
-
-                    if (offscreenCardIndex >= 0) {
-                        setRepoData((previousData) => {
-                            const copy = [...previousData];
-                            const [offscreenData] = copy.splice(
-                                offscreenCardIndex,
-                                1
-                            );
-
-                            return [...copy, offscreenData];
-                        });
-                        const [offscreenCard] = cardRefs.current.splice(
-                            offscreenCardIndex,
-                            1
+                                return newLeft + bounds.width < 0;
+                            }
                         );
-                        scrollPosition.current -=
-                            (offscreenCard?.offsetWidth || 0) + gap;
-                    }
 
-                    cardRefs.current.forEach((card, index) => {
-                        if (!card) return;
-                        card.style.transform = `translateX(${
-                            -scrollPosition.current + index * gap
-                        }px)`;
-                    });
+                        cardRefs.current.forEach((card, index) => {
+                            if (!card) return;
+                            card.style.transform = `translateX(${
+                                -scrollPosition.current + index * gap
+                            }px)`;
+                        });
+
+                        if (offscreenCardIndex >= 0) {
+                            scrollPosition.current -= offscreenCardWidth + gap;
+
+                            setRepoData((previousData) => {
+                                const copy = [...previousData];
+                                const [offscreenData] = copy.splice(
+                                    offscreenCardIndex,
+                                    1
+                                );
+
+                                return [...copy, offscreenData];
+                            });
+                        }
+                    }
                 }
             } else {
                 lastTimestamp.current = currentTimestamp;
@@ -125,12 +126,14 @@ export default function RepositoryGallery({
         >
             {repoData.map((data, index) => (
                 <RepositoryCard
-                    key={data.html_url}
+                    key={data.html_url + index}
                     ref={(card) => {
                         if (card) {
                             cardRefs.current[index] = card;
                         }
                     }}
+                    onFocus={() => (focused.current = true)}
+                    onFocusLost={() => (focused.current = false)}
                     {...data}
                 ></RepositoryCard>
             ))}

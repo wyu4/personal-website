@@ -66,10 +66,8 @@
 
 .grow-on-hover {
     transition: transform ease-out 0.2s;
-    z-index: inherit;
 }
 
 .grow-on-hover:hover {
     transform: scale(110%);
-    z-index: 999;
 }

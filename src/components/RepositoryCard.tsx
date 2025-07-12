@@ -10,10 +10,19 @@ export type RepositoryCardProps = {
         html_url: string;
     };
     description: string;
+    onFocus?: () => void;
+    onFocusLost?: () => void;
 };
 
 const RepositoryCard = React.forwardRef<HTMLSpanElement, RepositoryCardProps>(
-    ({ ...args }: RepositoryCardProps, ref) => {
+    (
+        {
+            onFocus = () => {},
+            onFocusLost = () => {},
+            ...args
+        }: RepositoryCardProps,
+        ref
+    ) => {
         const cardRef = React.useRef<HTMLDivElement>(null);
         const animationHandle = React.useRef<number>(null);
 
@@ -48,14 +57,13 @@ const RepositoryCard = React.forwardRef<HTMLSpanElement, RepositoryCardProps>(
             setTilt(card, percentY * -40, percentX * 40);
         };
 
-        const onMouseLeave: React.MouseEventHandler<HTMLButtonElement> = (
-            event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-        ) => {
-            const button = event.currentTarget;
-            const tiltElement = button.querySelector("#card") as HTMLElement;
-            if (tiltElement) {
-                setTilt(tiltElement, 0, 0);
+        const onMouseEnter = onFocus;
+
+        const onMouseLeave = () => {
+            if (cardRef.current) {
+                setTilt(cardRef.current, 0, 0);
             }
+            onFocusLost();
         };
 
         React.useEffect(() => {
@@ -70,6 +78,7 @@ const RepositoryCard = React.forwardRef<HTMLSpanElement, RepositoryCardProps>(
                 <Button
                     className="repository transparent"
                     href={args.html_url}
+                    onMouseEnter={onMouseEnter}
                     onMouseMove={onMouseMove}
                     onMouseLeave={onMouseLeave}
                     grow={false}

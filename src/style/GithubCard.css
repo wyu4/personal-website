@@ -8,14 +8,12 @@
     transition: transform ease-in-out 0.25s;
     perspective: 1000px;
     resize: both;
-    z-index: inherit;
-    opacity: 0.5;
+    z-index: 15;
 }
 
 .repository:hover {
     transform: scale(120%);
-    opacity: 1;
-    z-index: 11;
+    z-index: 999;
 }
 
 .repository #card {
@@ -36,8 +34,7 @@
     background-size: 100% 100%;
     background-image:
         linear-gradient(to left bottom, #eaeaea 0%, #c8c8c8 33%, #ffffff 75%);
-    transform-style: 'preserve-3d';
-    transition: transform 0.02s ease-in-out, min-width 0.25s ease-in-out, background-size 0.02s ease-in-out;
+    transition: transform 0.02s ease-in-out;
     will-change: transform;
 }
 
@@ -91,7 +88,6 @@
     gap: 0;
     padding: 0;
     will-change: transform;
-    backface-visibility: hidden;
 }
 
 .repository-gallery {
@@ -104,13 +100,17 @@
     box-sizing: border-box;
     z-index: 10;
     flex-shrink: 0;
+    isolation: isolate;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
 }
 
 .repository-gallery,
 .in-title {
-    position: fixed;
+    position: absolute;
+    top: 55vh;
     width: 100vw;
-    height: 90vh;
+    height: 40vh;
 }
 
 @media (max-width: 1000px) {
