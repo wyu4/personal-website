@@ -118,7 +118,7 @@
 .repository-gallery,
 .in-title {
     position: absolute;
-    top: 55vh;
+    top: 50vh;
     width: 100vw;
     height: 40vh;
 }
@@ -131,5 +131,10 @@
     .repository #card #icon img {
         height: 2cm;
         width: 2cm;
+    }
+
+    .repository-gallery,
+    .in-title {
+    height: 30vh;
     }
 }
