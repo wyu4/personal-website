@@ -1,11 +1,10 @@
 import React from "react";
 
-type ButtonProps = {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & React.RefAttributes<HTMLButtonElement> & {
     onClick?: () => void;
     children: React.ReactNode;
-    className?: string;
     href?: string;
-    id?: string;
+    grow?: boolean;
 };
 
 export default function Button({
@@ -13,12 +12,12 @@ export default function Button({
     children,
     className = "",
     href,
-    id = "",
+    grow=true,
+    ...args
 }: ButtonProps) {
     return (
         <button
-            id={id}
-            className={"grow-on-hover " + className}
+            className={grow ? "grow-on-hover " + className : className}
             onClick={() => {
                 if (href) {
                     const opened = window.open(href, "_blank");
@@ -26,6 +25,7 @@ export default function Button({
                 }
                 if (onClick) onClick();
             }}
+            {...args}
         >
             {children}
         </button>

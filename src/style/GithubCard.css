@@ -1,0 +1,83 @@
+.repository {
+    display: inline-block;
+    transition: 0.5s ease;
+    justify-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: ease-out 0.2s;
+    perspective: 1000px;
+}
+
+.repository:hover {
+    transform: scale(105%);
+}
+
+.repository #card {
+    display: grid;
+    grid-template-areas:
+        "title title"
+        "desc icon";
+    border-radius: 25px;
+    border-width: 3px;
+    border-color: rgb(153, 153, 153);
+    border-style: solid;
+    text-align: left;
+    min-width: 25vw;
+    max-width: none;
+    resize: both;
+    padding: 25px;
+    background-size: 100% 100%;
+    background-image:
+        linear-gradient(to left bottom, #eaeaea 0%, #bababa 33%, #ffffff 75%);
+    transform-style: 'preserve-3d';
+    transition: ease-in-out 0.2s;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.repository #card:hover {
+    background-size: 200% 100%;
+}
+
+.repository #card #desc {
+    grid-area: desc;
+}
+
+.repository #card #title {
+    grid-area: title;
+}
+
+.repository #card #icon {
+    grid-area: icon;
+    display: flex;
+    max-width: 5vw;
+    border-radius: 25%;
+    border-color: rgb(196, 196, 196);
+    border-style: solid;
+    border-width: 0px;
+    aspect-ratio: 1/1;
+    text-align: center;
+    justify-items: center;
+    justify-content: center;
+}
+
+.repository #card #icon img {
+    max-width: 5vw;
+    border-radius: inherit;
+    border-color: inherit;
+    border-style: inherit;
+    border-width: 2px;
+}
+
+.repository-gallery {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: left;
+    justify-content: left;
+    padding-left: 1cm;
+    padding-right: 1cm;
+    max-width: 100%;
+    gap: 0.5cm;
+    box-sizing: border-box;
+}

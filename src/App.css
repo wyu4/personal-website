@@ -1,3 +1,7 @@
+@import url('./style/Contacts.css');
+@import url('./style/GithubCard.css');
+@import url('./style/Title.css');
+
 @font-face {
     font-family: 'Garet-Heavy';
     src: url('./assets/fonts/Garet-Heavy.ttf');
@@ -30,29 +34,6 @@
     overflow-y: scroll;
 }
 
-.contacts {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: center;
-    padding-left: 1cm;
-    padding-right: 1cm;
-    max-width: 100%;
-    gap: 0.5cm;
-    box-sizing: border-box;
-}
-
-.contacts * {
-    flex-shrink: 1;
-    min-width: 0;
-}
-
-.contacts img {
-    width: 2cm;
-    aspect-ratio: 1/1;
-}
-
 .fade-in-on-load {
     opacity: 0;
     transform: translateY(40px);
@@ -68,27 +49,6 @@
     font-family: 'Garet-Heavy';
 }
 
-.title {
-    position: fixed;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-    justify-content: center;
-    background-color: #eff0f2;
-    width: 100vw;
-    height: 100vh;
-    z-index: 0;
-    background-image:
-        linear-gradient(to bottom, #0000004b 25%, #00000000 75%);
-}
-
-.title h1 {
-    font-size: 9vw
-}
-
 .transparent {
     border: none;
     background: none;
@@ -96,73 +56,10 @@
 
 .grow-on-hover {
     transition: ease-out 0.2s;
+    z-index: inherit;
 }
 
 .grow-on-hover:hover {
     transform: scale(110%);
-}
-
-.repository {
-    display: grid;
-    grid-template-areas:
-        "title title"
-        "desc icon";
-    border-radius: 25px;
-    border-width: 3px;
-    border-color: rgb(153, 153, 153);
-    border-style: solid;
-    text-align: left;
-    min-width: 25vw;
-    max-width: none;
-    resize: both;
-    padding: 25px;
-    background-image:
-        linear-gradient(to left bottom, #eaeaea 0%, #dcdcdc 33%, #ffffff 75%);
-}
-
-.repository:hover {
-    transform: scale(105%);
-}
-
-.repository #desc {
-    grid-area: desc;
-}
-
-.repository #title {
-    grid-area: title;
-}
-
-.repository #icon {
-    grid-area: icon;
-    display: flex;
-    max-width: 5vw;
-    border-radius: 25%;
-    border-color: rgb(196, 196, 196);
-    border-style: solid;
-    border-width: 0px;
-    aspect-ratio: 1/1;
-    text-align: center;
-    justify-items: center;
-    justify-content: center;
-}
-
-.repository #icon img {
-    max-width: 5vw;
-    border-radius: inherit;
-    border-color: inherit;
-    border-style: inherit;
-    border-width: 2px;
-}
-
-.repository-gallery {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: left;
-    justify-content: left;
-    padding-left: 1cm;
-    padding-right: 1cm;
-    max-width: 100%;
-    gap: 0.5cm;
-    box-sizing: border-box;
+    z-index: 999;
 }
