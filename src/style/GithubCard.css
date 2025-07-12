@@ -5,13 +5,17 @@
     justify-items: center;
     justify-content: center;
     padding: 0;
-    transition: transform ease-out 0.2s;
+    transition: transform ease-in-out 0.25s;
     perspective: 1000px;
     resize: both;
+    z-index: inherit;
+    opacity: 0.5;
 }
 
 .repository:hover {
-    transform: scale(105%);
+    transform: scale(120%);
+    opacity: 1;
+    z-index: 9999;
 }
 
 .repository #card {
@@ -31,9 +35,9 @@
     gap: 10px;
     background-size: 100% 100%;
     background-image:
-        linear-gradient(to left bottom, #eaeaea 0%, #bababa 33%, #ffffff 75%);
+        linear-gradient(to left bottom, #eaeaea 0%, #c8c8c8 33%, #ffffff 75%);
     transform-style: 'preserve-3d';
-    transition: transform 0.02s ease-in-out, min-width 0.25s ease-in-out;
+    transition: transform 0.02s ease-in-out, min-width 0.25s ease-in-out, background-size 0.02s ease-in-out;
     will-change: transform;
 }
 

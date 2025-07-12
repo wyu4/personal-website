@@ -71,6 +71,7 @@ export default function Repository(args: RepositoryData) {
                 href={args.html_url}
                 onMouseMove={onMouseMove}
                 onMouseLeave={onMouseLeave}
+                grow={false}
             >
                 <div id="card" ref={cardRef}>
                     <h2 id="title">{args.name}</h2>
