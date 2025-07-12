@@ -134,6 +134,7 @@
 
     .repository-gallery,
     .in-title {
+        top: 40vh;
         height: 35vh;
     }
 }
