@@ -46,8 +46,7 @@ button.repository:hover {
 
 .repository #card #icon {
     display: flex;
-    height: 3cm;
-    margin: auto;
+    margin: 0;
     border-radius: 10px;
     border-color: rgb(196, 196, 196);
     border-style: solid;
@@ -66,6 +65,8 @@ button.repository:hover {
 .repository #card #icon img {
     border-radius: inherit;
     aspect-ratio: 1/1;
+    width: 3cm;
+    height: 3cm;
 }
 
 .repository #card #right {
@@ -86,7 +87,6 @@ button.repository:hover {
     align-self: center;
     flex-grow: 0;
 }
-
 
 .repository-cell {
     display: flex;
@@ -125,12 +125,19 @@ button.repository:hover {
     height: 40vh;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 600px) {
     .repository #card {
         min-width: 7.5cm;
     }
 
-    .repository #card #icon {
+    .repository #card #icon img {
         height: 2cm;
+        width: 2cm;
+    }
+
+    .repository-gallery,
+    .in-title {
+        top: 40vh;
+        height: 35vh;
     }
 }

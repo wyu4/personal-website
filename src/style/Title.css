@@ -14,8 +14,15 @@
     height: 100vh;
     z-index: 20;
     pointer-events: none;
+    
 }
 
 .title h1 {
     font-size: 9vw;
+}
+
+@media (max-width: 600px) {
+    .title {
+        height: 60vh;
+    }
 }
