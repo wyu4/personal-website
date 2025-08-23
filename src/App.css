@@ -1,6 +1,7 @@
 @import url('./style/Contacts.css');
 @import url('./style/GithubCard.css');
 @import url('./style/Title.css');
+@import url('./style/Bio.css');
 
 @font-face {
     font-family: 'Garet-Heavy';
@@ -31,7 +32,7 @@
     font-size: 1.2em;
     scroll-behavior: smooth;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
 
 .background {
@@ -70,4 +71,8 @@
 
 .grow-on-hover:hover {
     transform: scale(110%);
+}
+
+button {
+    color: #000000;
 }

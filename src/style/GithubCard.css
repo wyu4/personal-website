@@ -11,7 +11,7 @@
     transform-style: preserve-3d;
 }
 
-.repository:hover {
+button.repository:hover {
     transform: scale(120%);
 }
 
@@ -95,10 +95,13 @@
     gap: 0;
     padding: 0;
     z-index: 15;
+}
+
+.repository-cell.interactable {
     opacity: 0.5;
 }
 
-.repository-cell:hover {
+.repository-cell.interactable:hover {
     z-index: 9999;
     opacity: 1;
 }

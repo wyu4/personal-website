@@ -12,6 +12,7 @@ export type RepositoryCardProps = {
     };
     description: string;
     fork: boolean;
+    interactable: boolean;
     onFocus?: () => void;
     onFocusLost?: () => void;
     style?: React.CSSProperties;
@@ -22,6 +23,7 @@ const RepositoryCard = React.forwardRef<HTMLSpanElement, RepositoryCardProps>(
         {
             onFocus = () => {},
             onFocusLost = () => {},
+            interactable = true,
             ...args
         }: RepositoryCardProps,
         ref
@@ -76,39 +78,51 @@ const RepositoryCard = React.forwardRef<HTMLSpanElement, RepositoryCardProps>(
             }
         });
 
+        const createCardContent = () => {
+            return (
+                <div id="card" ref={cardRef}>
+                    <h2 id="title">
+                        {args.name + (args.fork ? " (forked)" : "")}
+                    </h2>
+                    <p id="desc">{args.description}</p>
+                    <span id="right">
+                        <a
+                            className="transparent"
+                            id="icon"
+                            href={args.owner.html_url}
+                            target="_blank"
+                        >
+                            <img
+                                src={args.owner.avatar_url}
+                                draggable="false"
+                            ></img>
+                        </a>
+                        <p>
+                            <b>{args.owner.login}</b>
+                        </p>
+                    </span>
+                </div>
+            );
+        };
+
         return (
-            <span className="repository-cell" ref={ref}>
-                <Button
-                    className="repository transparent"
-                    href={args.html_url}
-                    onMouseEnter={onMouseEnter}
-                    onMouseMove={onMouseMove}
-                    onMouseLeave={onMouseLeave}
-                    grow={false}
-                >
-                    <div id="card" ref={cardRef}>
-                        <h2 id="title">
-                            {args.name + (args.fork ? " (forked)" : "")}
-                        </h2>
-                        <p id="desc">{args.description}</p>
-                        <span id="right">
-                            <a
-                                className="transparent"
-                                id="icon"
-                                href={args.owner.html_url}
-                                target="_blank"
-                            >
-                                <img
-                                    src={args.owner.avatar_url}
-                                    draggable="false"
-                                ></img>
-                            </a>
-                            <p>
-                                <b>{args.owner.login}</b>
-                            </p>
-                        </span>
+            <span className={"repository-cell " + (interactable ? "interactable" : "")} ref={ref}>
+                {interactable ? (
+                    <Button
+                        className="repository transparent"
+                        href={args.html_url}
+                        onMouseEnter={onMouseEnter}
+                        onMouseMove={onMouseMove}
+                        onMouseLeave={onMouseLeave}
+                        grow={false}
+                    >
+                        {createCardContent()}
+                    </Button>
+                ) : (
+                    <div className="repository transparent">
+                        {createCardContent()}
                     </div>
-                </Button>
+                )}
             </span>
         );
     }
