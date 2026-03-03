@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+h1,
+h2,
+p,
+a,
+button {
+    font-family: "Anonymous Pro", sans-serif;
+    @apply text-slate-100;
+}
+
+h1, h2 {
+    font-family: "Azeret Mono", monospace;
+}
+
+h1 {
+    @apply font-bold;
+}
+
+h2 {
+    @apply font-semibold;
+}
+
+a {
+    @apply underline;
+}
