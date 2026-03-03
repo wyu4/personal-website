@@ -83,7 +83,7 @@ function Background({ repositories }: IntroductionProps) {
     useGSAP(() => {
         if (!repositories || repositories.length <= 0) return;
         gsap.to(carouselContainerRef.current, {
-            opacity: 0.5,
+            opacity: 0.75,
             delay: 1,
             duration: 2,
             stagger: 1,
@@ -98,30 +98,36 @@ function Background({ repositories }: IntroductionProps) {
 
     return (
         <div className="absolute bg-stone-900 w-full h-full pointer-events-none z-1 overflow-hidden">
-            <div ref={carouselContainerRef} className="absolute opacity-50 left-[-10%] w-[120vw] h-auto bottom-10 overflow-hidden skew-10 rotate-z-340 rotate-x-30 bg-neutral-900 border-y-2 border-neutral-700 perspective-distant">
-                <div
-                    ref={carouselRef}
-                    className="top-0 left-0 min-w-full flex flex-row w-max gap-5 p-5 "
-                >
-                    {repositories && (
-                        <>
-                            {repositories.map((repository, i) => (
-                                <RepositoryCard
-                                    key={`repo#${i}`}
-                                    repository={repository}
-                                    characterLimit={50}
-                                />
-                            ))}
-                            {repositories.map((repository, i) => (
-                                <RepositoryCard
-                                    key={`repo2#${i}`}
-                                    repository={repository}
-                                    characterLimit={50}
-                                />
-                            ))}
-                        </>
-                    )}
+            <div
+                ref={carouselContainerRef}
+                className="absolute h-auto -bottom-10 left-[-10vw] w-[150vw] skew-10 rotate-z-340 rotate-x-30 perspective-distant bg-amber-200"
+            >
+                <div className="overflow-x-hidden bg-neutral-800 border-y-2 border-neutral-700 z-5">
+                    <div
+                        ref={carouselRef}
+                        className="top-0 left-0 min-w-full flex flex-row w-max gap-5 p-5 "
+                    >
+                        {repositories && (
+                            <>
+                                {repositories.map((repository, i) => (
+                                    <RepositoryCard
+                                        key={`repo#${i}`}
+                                        repository={repository}
+                                        characterLimit={50}
+                                    />
+                                ))}
+                                {repositories.map((repository, i) => (
+                                    <RepositoryCard
+                                        key={`repo2#${i}`}
+                                        repository={repository}
+                                        characterLimit={50}
+                                    />
+                                ))}
+                            </>
+                        )}
+                    </div>
                 </div>
+                <div className="w-full h-50 bg-linear-to-b from-neutral-800 to-stone-900" />
             </div>
         </div>
     );
