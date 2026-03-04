@@ -4,5 +4,5 @@ declare type IntroductionProps = {
 
 declare type RepositoryCarouselProps = DivAttributes &
     IntroductionProps & {
-        secondsPerPixel: number;
+        secondsPerCard: number;
     };

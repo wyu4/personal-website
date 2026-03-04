@@ -4,7 +4,7 @@ import { SplitText } from "gsap/all";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import RepositoryCard from "./reusable/RepositoryCard";
 
-const MAX_REPOS_DISPLAYED = 10;
+const MAX_REPOS_DISPLAYED = 7;
 
 export function Introduction({ ...props }: IntroductionProps) {
     const introRef = useRef<HTMLDivElement>(null);
@@ -83,25 +83,23 @@ function Background({ repositories }: IntroductionProps) {
             setChunkedRepositories(undefined);
             return;
         }
-        for (
-            let i = 0;
-            i < Math.min(repositories.length, 2 * MAX_REPOS_DISPLAYED);
-            i += MAX_REPOS_DISPLAYED
-        ) {
+        const chunks: Repository[][] = [];
+        for (let i = 0; i < repositories.length; i += MAX_REPOS_DISPLAYED) {
             let chunk: Repository[] = [];
             if (repositories.length - i < 2 * MAX_REPOS_DISPLAYED) {
                 chunk = repositories.slice(i, repositories.length);
+                chunks.push(chunk);
+                break;
             } else {
                 chunk = repositories.slice(i, i + MAX_REPOS_DISPLAYED);
+                chunks.push(chunk);
             }
-            setChunkedRepositories((prev) => {
-                if (!prev) return [chunk];
-                return [...prev, chunk];
-            });
         }
+        setChunkedRepositories(chunks);
     }, [repositories]);
 
     useGSAP(() => {
+        if (carouselRefs.current.length <= 0) return;
         gsap.set(carouselRefs.current, {
             opacity: 0,
         });
@@ -109,13 +107,16 @@ function Background({ repositories }: IntroductionProps) {
             opacity: 1,
             delay: 1,
             duration: 1,
-            stagger: 0.5,
+            stagger: {
+                each: 0.5,
+                from: "start",
+            },
         });
     }, [chunkedRepositories]);
 
     return (
-        <div className="absolute bg-stone-900 w-full h-full pointer-events-none z-1 overflow-hidden">
-            <div className="absolute flex flex-col-reverse justify-center items-center left-[-50vw] right-[-50vw] bottom-0 perspective-distant">
+        <div className="absolute bg-stone-900 w-full h-full pointer-events-none z-1 perspective-distant overflow-hidden">
+            <div className="absolute flex flex-col-reverse justify-start items-center left-[-50vw] right-[-50vw] gap-40 bottom-0 top-0 rotate-x-70 -rotate-z-20 scale-200 -translate-z-20">
                 {chunkedRepositories?.map((chunk, i) => {
                     if (i === 0) carouselRefs.current = [];
                     return (
@@ -125,8 +126,11 @@ function Background({ repositories }: IntroductionProps) {
                             }}
                             key={`carousel-${i}`}
                             repositories={chunk}
-                            secondsPerPixel={0.005 * (i + 1)}
-                            className="shrink-0 rotate-x-80 -rotate-z-20 scale-200 -translate-z-20 origin-bottom-right shadow-2xl/60"
+                            secondsPerCard={i + 3}
+                            className="shrink-0"
+                            style={{
+                                zIndex: chunkedRepositories.length - i,
+                            }}
                         />
                     );
                 })}
@@ -137,7 +141,7 @@ function Background({ repositories }: IntroductionProps) {
 
 const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
     (
-        { repositories, secondsPerPixel, className = "" },
+        { repositories, secondsPerCard, className = "", ...props },
         carouselContainerRef,
     ) => {
         const carouselRef = useRef<HTMLDivElement>(null);
@@ -155,7 +159,7 @@ const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
                 carouselTween = gsap.to(carouselRef.current, {
                     x: -loopWidth,
                     ease: "none",
-                    duration: loopWidth * secondsPerPixel,
+                    duration: repositories.length * secondsPerCard,
                     repeat: -1,
                 });
             });
@@ -169,34 +173,31 @@ const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
         return (
             <div
                 ref={carouselContainerRef}
-                className={`w-full overflow-visible h-auto will-change-transform ${className}`}
+                className={`relative w-full overflow-visible h-auto will-change-transform ${className}`}
+                {...props}
             >
-                <div className="overflow-x-hidden overflow-visible bg-neutral-800 border-y-2 border-neutral-700 z-5 p-0">
+                <div className="overflow-x-hidden overflow-visible bg-taupe-800 border-y-2 border-neutral-700 z-5 p-0">
                     <div
                         ref={carouselRef}
                         className="top-0 left-0 min-w-full flex flex-row w-max gap-5 p-5 opacity-50"
                     >
                         {repositories && (
                             <>
-                                {repositories.map((repository, i) => (
-                                    <RepositoryCard
-                                        key={`repo#${i}`}
-                                        repository={repository}
-                                        characterLimit={50}
-                                    />
-                                ))}
-                                {repositories.map((repository, i) => (
-                                    <RepositoryCard
-                                        key={`repo2#${i}`}
-                                        repository={repository}
-                                        characterLimit={50}
-                                    />
-                                ))}
+                                {[...repositories, ...repositories].map(
+                                    (repository, i) => (
+                                        <RepositoryCard
+                                            key={`repo#${i}`}
+                                            className="shrink-0"
+                                            repository={repository}
+                                            characterLimit={50}
+                                        />
+                                    ),
+                                )}
                             </>
                         )}
                     </div>
                 </div>
-                <div className="w-full h-50 bg-linear-to-b from-neutral-800 to-stone-900 border-b-2 border-neutral-700 -mb-50" />
+                <div className="w-full h-50 bg-linear-to-b from-taupe-800 to-transparent -mb-50" />
             </div>
         );
     },

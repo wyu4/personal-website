@@ -6,7 +6,7 @@ const Tag = forwardRef<HTMLDivElement, DivAttributes & RepositoryTagProps>(
         return (
             <div
                 ref={ref}
-                className={`flex justify-center items-center py-1 px-2 rounded-full border border-slate-100 ${className}`}
+                className={`flex justify-center items-center py-1 px-2 rounded-full border border-mist-100 ${className}`}
                 {...props}
             >
                 <p>{text}</p>
