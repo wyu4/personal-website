@@ -188,7 +188,7 @@ const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
                 <div className="overflow-x-hidden overflow-visible bg-taupe-800 border-y-2 border-neutral-700 z-5 p-0">
                     <div
                         ref={carouselRef}
-                        className="top-0 min-w-full flex w-max gap-5 p-5 opacity-50"
+                        className="top-0 min-w-full flex w-max gap-5 py-5 opacity-50"
                         style={
                             inverted
                                 ? {
