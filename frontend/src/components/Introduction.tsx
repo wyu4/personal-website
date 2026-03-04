@@ -102,13 +102,16 @@ function Background({ repositories }: IntroductionProps) {
         if (carouselRefs.current.length <= 0) return;
         gsap.set(carouselRefs.current, {
             opacity: 0,
+            translateY: "-25vh",
         });
         gsap.to(carouselRefs.current, {
             opacity: 1,
+            translateY: 0,
             delay: 1,
             duration: 1,
+            ease: "sine.out",
             stagger: {
-                each: 0.5,
+                each: 0.25,
                 from: "start",
             },
         });
@@ -116,7 +119,7 @@ function Background({ repositories }: IntroductionProps) {
 
     return (
         <div className="absolute bg-stone-900 w-full h-full pointer-events-none z-1 perspective-distant overflow-hidden">
-            <div className="absolute flex flex-col-reverse justify-start items-center left-[-50vw] right-[-50vw] gap-40 bottom-0 top-0 rotate-x-70 -rotate-z-20 scale-200 -translate-z-20">
+            <div className="absolute flex flex-col-reverse justify-start items-center left-[-50vw] right-[-50vw] bottom-0 top-0 rotate-x-70 -rotate-z-20 scale-200 -translate-z-20 gap-5">
                 {chunkedRepositories?.map((chunk, i) => {
                     if (i === 0) carouselRefs.current = [];
                     return (
@@ -127,6 +130,7 @@ function Background({ repositories }: IntroductionProps) {
                             key={`carousel-${i}`}
                             repositories={chunk}
                             secondsPerCard={i + 3}
+                            inverted={i % 2 == 1}
                             className="shrink-0"
                             style={{
                                 zIndex: chunkedRepositories.length - i,
@@ -141,7 +145,7 @@ function Background({ repositories }: IntroductionProps) {
 
 const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
     (
-        { repositories, secondsPerCard, className = "", ...props },
+        { repositories, secondsPerCard, inverted, className = "", ...props },
         carouselContainerRef,
     ) => {
         const carouselRef = useRef<HTMLDivElement>(null);
@@ -152,16 +156,21 @@ const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
             let carouselTween: GSAPTween | null = null;
 
             const carouselObserver = new ResizeObserver(() => {
-                const loopWidth = carouselRef.current!.scrollWidth / 2;
+                const fullWidth = carouselRef.current!.scrollWidth;
+                const loopWidth = fullWidth / 2;
 
                 carouselTween?.kill();
 
-                carouselTween = gsap.to(carouselRef.current, {
-                    x: -loopWidth,
-                    ease: "none",
-                    duration: repositories.length * secondsPerCard,
-                    repeat: -1,
-                });
+                carouselTween = gsap.fromTo(
+                    carouselRef.current,
+                    { x: inverted ? -loopWidth : 0 },
+                    {
+                        x: inverted ? 0 : -loopWidth,
+                        ease: "none",
+                        duration: repositories.length * secondsPerCard,
+                        repeat: -1,
+                    },
+                );
             });
             carouselObserver.observe(carouselRef.current);
 
@@ -169,7 +178,7 @@ const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
                 carouselTween?.kill();
                 carouselObserver.disconnect();
             };
-        }, [repositories]);
+        }, [repositories, inverted]);
         return (
             <div
                 ref={carouselContainerRef}
@@ -179,7 +188,16 @@ const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
                 <div className="overflow-x-hidden overflow-visible bg-taupe-800 border-y-2 border-neutral-700 z-5 p-0">
                     <div
                         ref={carouselRef}
-                        className="top-0 left-0 min-w-full flex flex-row w-max gap-5 p-5 opacity-50"
+                        className="top-0 min-w-full flex w-max gap-5 p-5 opacity-50"
+                        style={
+                            inverted
+                                ? {
+                                      flexDirection: "row-reverse",
+                                  }
+                                : {
+                                      flexDirection: "row",
+                                  }
+                        }
                     >
                         {repositories && (
                             <>
@@ -197,7 +215,7 @@ const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
                         )}
                     </div>
                 </div>
-                <div className="w-full h-50 bg-linear-to-b from-taupe-800 to-transparent -mb-50" />
+                {/* <div className="w-full h-50 bg-linear-to-b from-taupe-800 to-transparent -mb-50" /> */}
             </div>
         );
     },
