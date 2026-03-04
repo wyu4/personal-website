@@ -1,8 +1,10 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
-import { useRef } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import RepositoryCard from "./reusable/RepositoryCard";
+
+const MAX_REPOS_DISPLAYED = 7;
 
 export function Introduction({ ...props }: IntroductionProps) {
     const introRef = useRef<HTMLDivElement>(null);
@@ -71,64 +73,150 @@ export function Introduction({ ...props }: IntroductionProps) {
 }
 
 function Background({ repositories }: IntroductionProps) {
-    const carouselContainerRef = useRef<HTMLDivElement>(null);
-    const carouselRef = useRef<HTMLDivElement>(null);
+    const carouselRefs = useRef<HTMLDivElement[]>([]);
+    const [chunkedRepositories, setChunkedRepositories] = useState<
+        Repository[][] | undefined
+    >(undefined);
 
-    useGSAP(() => {
-        gsap.set(carouselContainerRef.current, {
-            opacity: 0,
-        });
-    }, []);
-
-    useGSAP(() => {
-        if (!repositories || repositories.length <= 0) return;
-        gsap.to(carouselContainerRef.current, {
-            opacity: 0.75,
-            delay: 1,
-            duration: 2,
-            stagger: 1,
-        });
-        gsap.to(carouselRef.current, {
-            xPercent: -50,
-            ease: "none",
-            duration: repositories.length * 5,
-            repeat: -1,
-        });
+    useEffect(() => {
+        if (!repositories) {
+            setChunkedRepositories(undefined);
+            return;
+        }
+        const chunks: Repository[][] = [];
+        for (let i = 0; i < repositories.length; i += MAX_REPOS_DISPLAYED) {
+            let chunk: Repository[] = [];
+            if (repositories.length - i < 2 * MAX_REPOS_DISPLAYED) {
+                chunk = repositories.slice(i, repositories.length);
+                chunks.push(chunk);
+                break;
+            } else {
+                chunk = repositories.slice(i, i + MAX_REPOS_DISPLAYED);
+                chunks.push(chunk);
+            }
+        }
+        setChunkedRepositories(chunks);
     }, [repositories]);
 
+    useGSAP(() => {
+        if (carouselRefs.current.length <= 0) return;
+        gsap.set(carouselRefs.current, {
+            opacity: 0,
+            translateY: "-25vh",
+        });
+        gsap.to(carouselRefs.current, {
+            opacity: 1,
+            translateY: 0,
+            delay: 1,
+            duration: 1,
+            ease: "sine.out",
+            stagger: {
+                each: 0.25,
+                from: "start",
+            },
+        });
+    }, [chunkedRepositories]);
+
     return (
-        <div className="absolute bg-stone-900 w-full h-full pointer-events-none z-1 overflow-hidden">
-            <div
-                ref={carouselContainerRef}
-                className="absolute h-auto -bottom-10 left-[-10vw] w-[150vw] skew-10 rotate-z-340 rotate-x-30 perspective-distant bg-amber-200"
-            >
-                <div className="overflow-x-hidden bg-neutral-800 border-y-2 border-neutral-700 z-5">
-                    <div
-                        ref={carouselRef}
-                        className="top-0 left-0 min-w-full flex flex-row w-max gap-5 p-5 "
-                    >
-                        {repositories && (
-                            <>
-                                {repositories.map((repository, i) => (
-                                    <RepositoryCard
-                                        key={`repo#${i}`}
-                                        repository={repository}
-                                        characterLimit={50}
-                                    />
-                                ))}
-                                {repositories.map((repository, i) => (
-                                    <RepositoryCard
-                                        key={`repo2#${i}`}
-                                        repository={repository}
-                                        characterLimit={50}
-                                    />
-                                ))}
-                            </>
-                        )}
-                    </div>
-                </div>
-                <div className="w-full h-50 bg-linear-to-b from-neutral-800 to-stone-900" />
+        <div className="absolute bg-stone-900 w-full h-full pointer-events-none z-1 perspective-distant overflow-hidden">
+            <div className="absolute flex flex-col-reverse justify-start items-center left-[-50vw] right-[-50vw] bottom-0 top-0 rotate-x-70 -rotate-z-20 scale-200 -translate-z-20 gap-5">
+                {chunkedRepositories?.map((chunk, i) => {
+                    if (i === 0) carouselRefs.current = [];
+                    return (
+                        <RepositoryCarousel
+                            ref={(node) => {
+                                if (node) carouselRefs.current.push(node);
+                            }}
+                            key={`carousel-${i}`}
+                            repositories={chunk}
+                            secondsPerCard={i + 3}
+                            inverted={i % 2 == 1}
+                            className="shrink-0"
+                            style={{
+                                zIndex: chunkedRepositories.length - i,
+                            }}
+                        />
+                    );
+                })}
             </div>
         </div>
     );
 }
+
+const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
+    (
+        { repositories, secondsPerCard, inverted, className = "", ...props },
+        carouselContainerRef,
+    ) => {
+        const carouselRef = useRef<HTMLDivElement>(null);
+        useGSAP(() => {
+            if (!repositories || repositories.length <= 0) return;
+            if (carouselRef.current === null) return;
+
+            let carouselTween: GSAPTween | null = null;
+
+            const carouselObserver = new ResizeObserver(() => {
+                const fullWidth = carouselRef.current!.scrollWidth;
+                const loopWidth = fullWidth / 2;
+
+                carouselTween?.kill();
+
+                carouselTween = gsap.fromTo(
+                    carouselRef.current,
+                    { x: inverted ? -loopWidth : 0 },
+                    {
+                        x: inverted ? 0 : -loopWidth,
+                        ease: "none",
+                        duration: repositories.length * secondsPerCard,
+                        repeat: -1,
+                    },
+                );
+            });
+            carouselObserver.observe(carouselRef.current);
+
+            return () => {
+                carouselTween?.kill();
+                carouselObserver.disconnect();
+            };
+        }, [repositories, inverted]);
+        return (
+            <div
+                ref={carouselContainerRef}
+                className={`relative w-full overflow-visible h-auto will-change-transform ${className}`}
+                {...props}
+            >
+                <div className="overflow-x-hidden overflow-visible bg-taupe-800 border-y-2 border-neutral-700 z-5 p-0">
+                    <div
+                        ref={carouselRef}
+                        className="top-0 min-w-full flex w-max gap-5 py-5 opacity-50"
+                        style={
+                            inverted
+                                ? {
+                                      flexDirection: "row-reverse",
+                                  }
+                                : {
+                                      flexDirection: "row",
+                                  }
+                        }
+                    >
+                        {repositories && (
+                            <>
+                                {[...repositories, ...repositories].map(
+                                    (repository, i) => (
+                                        <RepositoryCard
+                                            key={`repo#${i}`}
+                                            className="shrink-0"
+                                            repository={repository}
+                                            characterLimit={50}
+                                        />
+                                    ),
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+                {/* <div className="w-full h-50 bg-linear-to-b from-taupe-800 to-transparent -mb-50" /> */}
+            </div>
+        );
+    },
+);
