@@ -1,6 +1,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { forwardRef, useRef, useState } from "react";
+import { bindRefAndForwardRef } from "../../utils/RefUtils";
 
 const PushButton = forwardRef<HTMLButtonElement, PushButtonAttributes>(
     (
@@ -90,14 +91,9 @@ const PushButton = forwardRef<HTMLButtonElement, PushButtonAttributes>(
         return (
             <button
                 className={`pushbutton ${className}`}
-                ref={(node) => {
-                    buttonRef.current = node!;
-                    if (forwardedRef) {
-                        if (typeof forwardedRef === "function")
-                            forwardedRef(node);
-                        else forwardedRef.current = node;
-                    }
-                }}
+                ref={(node) =>
+                    bindRefAndForwardRef(node, forwardedRef, buttonRef)
+                }
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onMouseDown={handleMouseDown}

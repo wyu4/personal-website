@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { Introduction } from "../components/Introduction";
+import Bio from "../components/Bio";
 
 export default function Home() {
-    const [repositories, setRepositories] = useState<Repository[] | undefined>(undefined);
+    const [repositories, setRepositories] = useState<Repository[] | undefined>(
+        undefined,
+    );
 
     const reloadRepositories = useCallback(() => {
         fetch(`https://api.github.com/users/wyu4/repos?type=all&sort=updated`, {
@@ -23,8 +26,9 @@ export default function Home() {
     }, []);
 
     return (
-        <>
+        <div className="flex flex-col gap-0 p-0">
             <Introduction repositories={repositories} />
-        </>
+            <Bio />
+        </div>
     );
 }

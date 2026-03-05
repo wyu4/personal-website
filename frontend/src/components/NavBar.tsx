@@ -1,12 +1,44 @@
 import { MdOutlineEmail } from "react-icons/md";
 import { BiLogoGithub } from "react-icons/bi";
 import PushButton from "./reusable/PushButton";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
 export default function NavBar() {
+    const navBarRef = useRef<HTMLDivElement>(null);
+
+    useGSAP(
+        () => {
+            gsap.set([".name", ".buttons button"], {
+                opacity: 0,
+                translateY: "-2rem",
+            });
+            gsap.to([".name", ".buttons button"], {
+                opacity: 1,
+                translateY: 0,
+                ease: "sine.out",
+                duration: 0.5,
+                delay: 1,
+                stagger: {
+                    each: 0.5,
+                    from: "end",
+                },
+            });
+        },
+        {
+            dependencies: [],
+            scope: navBarRef,
+        },
+    );
+
     return (
-        <div className="fixed top-0 left-0 right-0 flex justify-between items-center z-40 p-5">
-            <h2 className="pointer-events-none select-none">Wilson Yu</h2>
-            <div className="flex flex-row justify-center items-center gap-5 text-4xl sm:text-5xl">
+        <div
+            ref={navBarRef}
+            className="fixed top-0 left-0 right-0 flex justify-between items-center z-40 p-5"
+        >
+            <h2 className="name pointer-events-none select-none">Wilson Yu</h2>
+            <div className="buttons flex flex-row justify-center items-center gap-5 text-4xl sm:text-5xl">
                 <PushButton
                     className="text-inherit"
                     onClick={() => {

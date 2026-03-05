@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { SplitText } from "gsap/all";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import RepositoryCard from "./reusable/RepositoryCard";
+import ParallaxDiv from "./reusable/ParallaxDiv";
 
 const MAX_REPOS_DISPLAYED = 7;
 
@@ -57,17 +58,22 @@ export function Introduction({ ...props }: IntroductionProps) {
     return (
         <div
             ref={introRef}
-            className="bg-[#00000000] h-screen flex flex-row justify-center items-center"
+            className="bg-[#00000000] h-screen w-full shrink-0 flex flex-row justify-center items-center"
         >
-            <Background {...props} />
-            <span className="flex flex-col gap-2 justify-center items-start z-10 text-center">
+            <div className="absolute bg-linear-to-tr from-mist-950 to-taupe-950 top-0 w-full h-screen pointer-events-none overflow-x-clip z-1 perspective-distant">
+                <Background {...props} />
+            </div>
+            <ParallaxDiv
+                speed={0.25}
+                className="flex flex-col gap-2 justify-center items-start z-10 text-center"
+            >
                 <h1 className="title text-inherit text-7xl font-bold text-shadow-lg text-shadow-slate-600">
                     Wilson Yu
                 </h1>
                 <h2 className="subtitle text-inherit text-3xl mb-10 text-shadow-lg text-shadow-slate-600">
                     Building things online
                 </h2>
-            </span>
+            </ParallaxDiv>
         </div>
     );
 }
@@ -118,27 +124,25 @@ function Background({ repositories }: IntroductionProps) {
     }, [chunkedRepositories]);
 
     return (
-        <div className="absolute bg-stone-900 w-full h-full pointer-events-none z-1 perspective-distant overflow-hidden">
-            <div className="absolute flex flex-col-reverse justify-start items-center left-[-50vw] right-[-50vw] bottom-0 top-0 rotate-x-70 -rotate-z-20 scale-200 -translate-z-20 gap-5">
-                {chunkedRepositories?.map((chunk, i) => {
-                    if (i === 0) carouselRefs.current = [];
-                    return (
-                        <RepositoryCarousel
-                            ref={(node) => {
-                                if (node) carouselRefs.current.push(node);
-                            }}
-                            key={`carousel-${i}`}
-                            repositories={chunk}
-                            secondsPerCard={i + 3}
-                            inverted={i % 2 == 1}
-                            className="shrink-0"
-                            style={{
-                                zIndex: chunkedRepositories.length - i,
-                            }}
-                        />
-                    );
-                })}
-            </div>
+        <div className="absolute flex flex-col-reverse justify-start items-center left-[-50vw] right-[-50vw] top-0 h-full rotate-x-70 -rotate-z-20 scale-200 -translate-z-20 gap-5">
+            {chunkedRepositories?.map((chunk, i) => {
+                if (i === 0) carouselRefs.current = [];
+                return (
+                    <RepositoryCarousel
+                        ref={(node) => {
+                            if (node) carouselRefs.current.push(node);
+                        }}
+                        key={`carousel-${i}`}
+                        repositories={chunk}
+                        secondsPerCard={i + 3}
+                        inverted={i % 2 == 1}
+                        className="shrink-0"
+                        style={{
+                            zIndex: chunkedRepositories.length - i,
+                        }}
+                    />
+                );
+            })}
         </div>
     );
 }
@@ -185,7 +189,7 @@ const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
                 className={`relative w-full overflow-visible h-auto will-change-transform ${className}`}
                 {...props}
             >
-                <div className="overflow-x-hidden overflow-visible bg-taupe-800 border-y-2 border-neutral-700 z-5 p-0">
+                <div className="overflow-x-hidden overflow-visible border-y-2 border-gray-700 z-5 p-0">
                     <div
                         ref={carouselRef}
                         className="top-0 min-w-full flex w-max gap-5 py-5 opacity-50"

@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+:root,
+body {
+    inset: 0;
+    padding: 0;
+    gap: 0;
+}
+
 h1,
 h2,
 p,
@@ -24,4 +31,23 @@ h2 {
 
 a {
     @apply underline;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-slate-900);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-slate-500);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-slate-600);
+    cursor: pointer;
 }
