@@ -10,21 +10,24 @@ export default function NavBar() {
 
     useGSAP(
         () => {
-            gsap.set([".name", ".buttons button"], {
-                opacity: 0,
-                translateY: "-2rem",
-            });
-            gsap.to([".name", ".buttons button"], {
-                opacity: 1,
-                translateY: 0,
-                ease: "sine.out",
-                duration: 0.5,
-                delay: 1,
-                stagger: {
-                    each: 0.5,
-                    from: "end",
+            gsap.fromTo(
+                [".name", ".buttons button"],
+                {
+                    opacity: 0,
+                    translateY: "-2rem",
                 },
-            });
+                {
+                    opacity: 1,
+                    translateY: 0,
+                    ease: "sine.out",
+                    duration: 0.5,
+                    delay: 1,
+                    stagger: {
+                        each: 0.5,
+                        from: "end",
+                    },
+                },
+            );
         },
         {
             dependencies: [],

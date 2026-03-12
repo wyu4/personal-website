@@ -28,7 +28,7 @@ export default function Home() {
     return (
         <div className="flex flex-col gap-0 p-0">
             <Introduction repositories={repositories} />
-            <Bio />
+            <Bio repositories={repositories} />
         </div>
     );
 }

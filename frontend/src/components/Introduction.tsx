@@ -27,6 +27,17 @@ export function Introduction({ ...props }: IntroductionProps) {
                 opacity: 0,
             });
 
+            gsap.fromTo(
+                ".background",
+                {
+                    opacity: 0
+                },
+                {
+                    opacity: 1,
+                    duration: 1,
+                },
+            );
+
             gsap.timeline()
                 .to(title.chars, {
                     opacity: 1,
@@ -60,7 +71,7 @@ export function Introduction({ ...props }: IntroductionProps) {
             ref={introRef}
             className="bg-[#00000000] h-screen w-full shrink-0 flex flex-row justify-center items-center"
         >
-            <div className="absolute bg-linear-to-tr from-mist-950 to-taupe-950 top-0 w-full h-screen pointer-events-none overflow-x-clip z-1 perspective-distant">
+            <div className="background absolute bg-radial from-neutral-950 to-slate-950 top-0 w-full h-screen pointer-events-none overflow-x-clip z-1 perspective-distant">
                 <Background {...props} />
             </div>
             <ParallaxDiv
@@ -106,25 +117,28 @@ function Background({ repositories }: IntroductionProps) {
 
     useGSAP(() => {
         if (carouselRefs.current.length <= 0) return;
-        gsap.set(carouselRefs.current, {
-            opacity: 0,
-            translateY: "-25vh",
-        });
-        gsap.to(carouselRefs.current, {
-            opacity: 1,
-            translateY: 0,
-            delay: 1,
-            duration: 1,
-            ease: "sine.out",
-            stagger: {
-                each: 0.25,
-                from: "start",
+        gsap.fromTo(
+            carouselRefs.current,
+            {
+                opacity: 0,
+                translateY: "-25vh",
             },
-        });
+            {
+                opacity: 1,
+                translateY: 0,
+                delay: 1,
+                duration: 1,
+                ease: "sine.out",
+                stagger: {
+                    each: 0.25,
+                    from: "start",
+                },
+            },
+        );
     }, [chunkedRepositories]);
 
     return (
-        <div className="absolute flex flex-col-reverse justify-start items-center left-[-50vw] right-[-50vw] top-0 h-full rotate-x-70 -rotate-z-20 scale-200 -translate-z-20 gap-5">
+        <div className="absolute flex flex-col-reverse  justify-start items-center left-[-50vw] right-[-50vw] top-0 h-full rotate-x-70 -rotate-z-20 scale-200 -translate-z-20 gap-5">
             {chunkedRepositories?.map((chunk, i) => {
                 if (i === 0) carouselRefs.current = [];
                 return (
@@ -189,7 +203,7 @@ const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
                 className={`relative w-full overflow-visible h-auto will-change-transform ${className}`}
                 {...props}
             >
-                <div className="overflow-x-hidden overflow-visible border-y-2 border-gray-700 z-5 p-0">
+                <div className="overflow-x-hidden overflow-visible bg-gray-900 border-y-2 border-gray-700 z-5 p-0">
                     <div
                         ref={carouselRef}
                         className="top-0 min-w-full flex w-max gap-5 py-5 opacity-50"

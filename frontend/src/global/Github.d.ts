@@ -12,6 +12,7 @@ declare type Repository = {
     description: string;
     fork: boolean;
     archived: boolean;
+    languages_url: string;
 };
 
 declare type RepositoryCardProps = DivAttributes & {
