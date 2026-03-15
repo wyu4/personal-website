@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { Introduction } from "../components/Introduction";
-import Bio from "../components/Bio";
 import { getFromServer } from "../utils/HTTPUtils";
 
 export default function Home() {
@@ -25,11 +24,10 @@ export default function Home() {
 
     return (
         <>
-            <div className="fixed flex flex-col gap-0 p-0">
+            <div className="fixed flex flex-col gap-0 p-0 w-full">
                 <Introduction repositories={repositories} />
-                <Bio repositories={repositories} />
             </div>
-            <div className="h-[200vh]"></div>
+            <div className="h-[300vh]"></div>
         </>
     );
 }
