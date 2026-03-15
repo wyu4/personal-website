@@ -3,13 +3,13 @@ import gsap from "gsap";
 import { SplitText } from "gsap/all";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import RepositoryCard from "./reusable/RepositoryCard";
-import ParallaxDiv from "./reusable/ParallaxDiv";
-import { useGSAPScrollEffect } from "../hooks/ScrollHook";
+import useScrollEffect, { useGSAPScrollEffect } from "../hooks/ScrollHook";
 
 const MAX_REPOS_DISPLAYED = 7;
 
 export function Introduction({ ...props }: IntroductionProps) {
     const introRef = useRef<HTMLDivElement>(null);
+    const [showBio, setShowBio] = useState(false);
 
     useGSAP(
         () => {
@@ -67,11 +67,30 @@ export function Introduction({ ...props }: IntroductionProps) {
         },
     );
 
-    useGSAPScrollEffect((y) => {
-        gsap.set(introRef.current, {
-            marginTop: y,
-        });
+    useScrollEffect((y, h) => {
+        setShowBio(y >= h / 4);
     }, []);
+
+    useGSAP(
+        () => {
+            if (showBio) {
+                gsap.to(".title-card", {
+                    opacity: 0,
+                    translateY: -40,
+                    duration: 0.5,
+                    ease: "power2.inOut",
+                });
+                return;
+            }
+            gsap.to(".title-card", {
+                opacity: 1,
+                translateY: 0,
+                duration: 0.5,
+                ease: "power2.inOut",
+            });
+        },
+        { scope: introRef, dependencies: [showBio] },
+    );
 
     return (
         <div
@@ -81,17 +100,14 @@ export function Introduction({ ...props }: IntroductionProps) {
             <div className="background absolute bg-radial from-neutral-950 to-slate-950 w-full h-screen pointer-events-none overflow-x-clip z-1 perspective-distant">
                 <Background {...props} />
             </div>
-            <ParallaxDiv
-                speed={-0.5}
-                className="flex flex-col gap-2 justify-center items-start z-10 text-center"
-            >
+            <div className="title-card flex flex-col gap-2 justify-center items-start z-10 text-center">
                 <h1 className="title text-inherit text-7xl font-bold text-shadow-lg text-shadow-slate-600">
                     Wilson Yu
                 </h1>
                 <h2 className="subtitle text-inherit text-3xl mb-10 text-shadow-lg text-shadow-slate-600">
                     Building things online
                 </h2>
-            </ParallaxDiv>
+            </div>
         </div>
     );
 }
@@ -147,17 +163,12 @@ function Background({ repositories }: IntroductionProps) {
 
     useGSAPScrollEffect(
         (y, h) => {
-            // gsap.set(backgroundRef.current, {
-            //     rotateX: 70 + 15 * (y / h),
-            //     rotateZ: -20 + 20 * (y / h),
-            //     translateZ: -20 + 20 * (y / h),
-            // });
             gsap.set(backgroundRef.current, {
-                rotateX: 60,
-                rotateZ: -10,
-                translateZ: -50,
+                rotateX: 60 + 15 * (y / h),
+                rotateY: 10 - 10 * (y / h),
+                rotateZ: -10 + 10 * (y / h),
+                top: "-10vh",
             });
-            console.log(`${y} , ${h}`);
         },
         {
             scope: backgroundRef,
@@ -167,7 +178,7 @@ function Background({ repositories }: IntroductionProps) {
     return (
         <div
             ref={backgroundRef}
-            className="absolute flex flex-col-reverse justify-start items-center left-[-50vw] right-[-50vw] top-0 h-full scale-200 gap-5"
+            className="absolute flex flex-col-reverse justify-start items-center -left-[50vw] -right-[50vw] h-full scale-200 gap-5"
         >
             {chunkedRepositories?.map((chunk, i) => {
                 if (i === 0) carouselRefs.current = [];

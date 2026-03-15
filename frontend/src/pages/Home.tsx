@@ -24,9 +24,12 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="flex flex-col gap-0 p-0">
-            <Introduction repositories={repositories} />
-            <Bio repositories={repositories} />
-        </div>
+        <>
+            <div className="fixed flex flex-col gap-0 p-0">
+                <Introduction repositories={repositories} />
+                <Bio repositories={repositories} />
+            </div>
+            <div className="h-[200vh]"></div>
+        </>
     );
 }
