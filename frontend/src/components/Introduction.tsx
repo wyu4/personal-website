@@ -4,6 +4,7 @@ import { SplitText } from "gsap/all";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import RepositoryCard from "./reusable/RepositoryCard";
 import ParallaxDiv from "./reusable/ParallaxDiv";
+import { useGSAPScrollEffect } from "../hooks/ScrollHook";
 
 const MAX_REPOS_DISPLAYED = 7;
 
@@ -30,7 +31,7 @@ export function Introduction({ ...props }: IntroductionProps) {
             gsap.fromTo(
                 ".background",
                 {
-                    opacity: 0
+                    opacity: 0,
                 },
                 {
                     opacity: 1,
@@ -66,16 +67,22 @@ export function Introduction({ ...props }: IntroductionProps) {
         },
     );
 
+    useGSAPScrollEffect((y) => {
+        gsap.set(introRef.current, {
+            marginTop: y,
+        });
+    }, []);
+
     return (
         <div
             ref={introRef}
             className="bg-[#00000000] h-screen w-full shrink-0 flex flex-row justify-center items-center"
         >
-            <div className="background absolute bg-radial from-neutral-950 to-slate-950 top-0 w-full h-screen pointer-events-none overflow-x-clip z-1 perspective-distant">
+            <div className="background absolute bg-radial from-neutral-950 to-slate-950 w-full h-screen pointer-events-none overflow-x-clip z-1 perspective-distant">
                 <Background {...props} />
             </div>
             <ParallaxDiv
-                speed={0.25}
+                speed={-0.5}
                 className="flex flex-col gap-2 justify-center items-start z-10 text-center"
             >
                 <h1 className="title text-inherit text-7xl font-bold text-shadow-lg text-shadow-slate-600">
@@ -90,6 +97,7 @@ export function Introduction({ ...props }: IntroductionProps) {
 }
 
 function Background({ repositories }: IntroductionProps) {
+    const backgroundRef = useRef<HTMLDivElement>(null);
     const carouselRefs = useRef<HTMLDivElement[]>([]);
     const [chunkedRepositories, setChunkedRepositories] = useState<
         Repository[][] | undefined
@@ -137,8 +145,30 @@ function Background({ repositories }: IntroductionProps) {
         );
     }, [chunkedRepositories]);
 
+    useGSAPScrollEffect(
+        (y, h) => {
+            // gsap.set(backgroundRef.current, {
+            //     rotateX: 70 + 15 * (y / h),
+            //     rotateZ: -20 + 20 * (y / h),
+            //     translateZ: -20 + 20 * (y / h),
+            // });
+            gsap.set(backgroundRef.current, {
+                rotateX: 60,
+                rotateZ: -10,
+                translateZ: -50,
+            });
+            console.log(`${y} , ${h}`);
+        },
+        {
+            scope: backgroundRef,
+        },
+    );
+
     return (
-        <div className="absolute flex flex-col-reverse  justify-start items-center left-[-50vw] right-[-50vw] top-0 h-full rotate-x-70 -rotate-z-20 scale-200 -translate-z-20 gap-5">
+        <div
+            ref={backgroundRef}
+            className="absolute flex flex-col-reverse justify-start items-center left-[-50vw] right-[-50vw] top-0 h-full scale-200 gap-5"
+        >
             {chunkedRepositories?.map((chunk, i) => {
                 if (i === 0) carouselRefs.current = [];
                 return (

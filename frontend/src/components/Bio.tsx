@@ -1,9 +1,6 @@
-import { forwardRef, useRef } from "react";
-import { bindRefAndForwardRef } from "../utils/RefUtils";
-
 export default function Bio({ repositories }: BioProps) {
     return (
-        <div className="grid grid-cols-1 grid-rows-2 sm:grid-cols-2 sm:grid-rows-1 p-1 pt-[25vh] bg-linear-to-r from-slate-950 to-blue-950">
+        <div className="grid grid-cols-1 grid-rows-2 sm:grid-cols-2 sm:grid-rows-1 p-1 pt-[25vh] bg-linear-to-r">
             <div></div>
             <div className="flex flex-col p-5 gap-3">
                 <h1 className="text-4xl text-left">About Me</h1>
@@ -17,18 +14,18 @@ export default function Bio({ repositories }: BioProps) {
     );
 }
 
-const LanguageChart = forwardRef<HTMLDivElement, DivAttributes & BioProps>(
-    ({ repositories, className, ...props }, forwardedRef) => {
-        const containerRef = useRef<HTMLDivElement>(null);
+// const LanguageChart = forwardRef<HTMLDivElement, DivAttributes & BioProps>(
+//     ({ repositories, className, ...props }, forwardedRef) => {
+//         const containerRef = useRef<HTMLDivElement>(null);
 
-        return (
-            <div
-                ref={(node) =>
-                    bindRefAndForwardRef(node, forwardRef, containerRef)
-                }
-                className={className}
-                {...props}
-            ></div>
-        );
-    },
-);
+//         return (
+//             <div
+//                 ref={(node) =>
+//                     bindRefAndForwardRef(node, forwardRef, containerRef)
+//                 }
+//                 className={className}
+//                 {...props}
+//             ></div>
+//         );
+//     },
+// );
