@@ -11,6 +11,7 @@ const MAX_REPOS_DISPLAYED = 7;
 export function Introduction({ ...props }: IntroductionProps) {
     const introRef = useRef<HTMLDivElement>(null);
     const [showTitle, setShowTitle] = useState(true);
+    const [showBio, setShowBio] = useState(false);
 
     useGSAP(
         () => {
@@ -57,6 +58,15 @@ export function Introduction({ ...props }: IntroductionProps) {
                     stagger: 0.05,
                 });
 
+            if (showTitle) {
+                gsap.set(".title-card", { opacity: 0 });
+            }
+            if (!showBio) {
+                gsap.set(".bio", {
+                    opacity: 0,
+                });
+            }
+
             return () => {
                 title.revert();
                 subtitle.revert();
@@ -69,7 +79,8 @@ export function Introduction({ ...props }: IntroductionProps) {
     );
 
     useScrollEffect((y, h) => {
-        setShowTitle(y <= h / 4);
+        setShowTitle(y <= h / 2);
+        setShowBio(y >= 1.8 * h);
     }, []);
 
     useGSAP(
@@ -93,6 +104,27 @@ export function Introduction({ ...props }: IntroductionProps) {
         { scope: introRef, dependencies: [showTitle] },
     );
 
+    useGSAP(
+        () => {
+            if (showBio) {
+                gsap.to(".bio", {
+                    opacity: 1,
+                    translateY: -100,
+                    duration: 1,
+                    ease: "sine.inOut",
+                });
+                return;
+            }
+            gsap.to(".bio", {
+                opacity: 0,
+                translateY: 0,
+                duration: 1,
+                ease: "sine.inOut",
+            });
+        },
+        { scope: introRef, dependencies: [showBio] },
+    );
+
     return (
         <div
             ref={introRef}
@@ -109,23 +141,20 @@ export function Introduction({ ...props }: IntroductionProps) {
                     Building things online
                 </h2>
             </div>
+            <Bio
+                className="bio absolute top-1/2 -translate-y-1/2 z-10"
+                repositories={props.repositories}
+            />
         </div>
     );
 }
 
 function Background({ repositories }: IntroductionProps) {
     const backgroundRef = useRef<HTMLDivElement>(null);
-    const bioRef = useRef<HTMLDivElement>(null);
     const carouselRefs = useRef<HTMLDivElement[]>([]);
     const [chunkedRepositories, setChunkedRepositories] = useState<
         Repository[][] | undefined
     >(undefined);
-    const [bioIndex, setBioIndex] = useState(0);
-    const [showBio, setShowBio] = useState(false);
-
-    useGSAP(() => {
-        gsap.set(bioRef.current, { opacity: 0 });
-    }, []);
 
     useEffect(() => {
         if (!repositories) {
@@ -144,7 +173,6 @@ function Background({ repositories }: IntroductionProps) {
                 chunks.push(chunk);
             }
         }
-        setBioIndex(chunks.length);
         setChunkedRepositories(chunks);
     }, [repositories]);
 
@@ -178,64 +206,37 @@ function Background({ repositories }: IntroductionProps) {
                 rotateY: 10 - 10 * scrollRatio,
                 rotateZ: -10 + 10 * scrollRatio,
                 transformOrigin: "bottom center",
-                // bottom: `${(100 - 100 * scrollRatio) * 0.25}rem`,
             });
-
-            setShowBio(y >= 2 * h);
         },
         {
             scope: backgroundRef,
         },
     );
 
-    useGSAP(() => {
-        if (showBio) {
-            gsap.to(bioRef.current, {
-                opacity: 1,
-                duration: 1,
-                ease: "sine.inOut",
-            });
-            return;
-        }
-        gsap.to(bioRef.current, {
-            opacity: 0,
-            duration: 1,
-            ease: "sine.inOut",
-        });
-    }, [showBio]);
-
     return (
-        <>
-            <Bio
-                ref={bioRef}
-                className="absolute"
-                style={{ zIndex: bioIndex }}
-                repositories={repositories}
-            />
-            <div
-                ref={backgroundRef}
-                className="absolute flex flex-col-reverse justify-start items-center -left-[50vw] -right-[50vw] bottom-0 h-full scale-400 gap-5"
-            >
-                {chunkedRepositories?.map((chunk, i) => {
-                    if (i === 0) carouselRefs.current = [];
-                    return (
-                        <RepositoryCarousel
-                            ref={(node) => {
-                                if (node) carouselRefs.current.push(node);
-                            }}
-                            key={`carousel-${i}`}
-                            repositories={chunk}
-                            secondsPerCard={i + 3}
-                            inverted={i % 2 == 1}
-                            className="shrink-0"
-                            style={{
-                                zIndex: chunkedRepositories.length - i,
-                            }}
-                        />
-                    );
-                })}
-            </div>
-        </>
+        <div
+            ref={backgroundRef}
+            className="absolute flex flex-col-reverse justify-start items-center -left-[50%] -right-[50%] bottom-0 scale-400 gap-5"
+        >
+            {chunkedRepositories?.map((chunk, i) => {
+                if (i === 0) carouselRefs.current = [];
+                return (
+                    <RepositoryCarousel
+                        ref={(node) => {
+                            if (node) carouselRefs.current.push(node);
+                        }}
+                        key={`carousel-${i}`}
+                        repositories={chunk}
+                        secondsPerCard={i + 3}
+                        inverted={i % 2 == 1}
+                        className="shrink-0"
+                        style={{
+                            zIndex: chunkedRepositories.length - i,
+                        }}
+                    />
+                );
+            })}
+        </div>
     );
 }
 
