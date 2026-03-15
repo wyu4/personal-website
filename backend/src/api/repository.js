@@ -4,6 +4,15 @@ const createRepositoriesAPI = (app) => {
 
     const ApiKey = process.env.GITHUB_API_KEY;
 
+    if (ApiKey) {
+        const stringKey = String(ApiKey);
+        console.log(
+            `🗝️  Using GitHub Personal Access Token: [${stringKey.slice(0, Math.min(10, stringKey.length))}...]`,
+        );
+    } else {
+        console.log(`🗝️  Not using GitHub Personal Access Token...`);
+    }
+
     const updateRepositories = async () => {
         if (updatingRepositories) return;
         updatingRepositories = true;
@@ -13,7 +22,7 @@ const createRepositoriesAPI = (app) => {
             headers: ApiKey
                 ? {
                       "Content-Type": "application/json",
-                      "Authentication": `Bearer ${ApiKey}`,
+                      Authentication: `Bearer ${ApiKey}`,
                   }
                 : {
                       "Content-Type": "application/json",
