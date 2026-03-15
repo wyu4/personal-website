@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Introduction } from "../components/Introduction";
 import Bio from "../components/Bio";
+import { getFromServer } from "../utils/HTTPUtils";
 
 export default function Home() {
     const [repositories, setRepositories] = useState<Repository[] | undefined>(
@@ -8,10 +9,7 @@ export default function Home() {
     );
 
     const reloadRepositories = useCallback(() => {
-        fetch(`https://api.github.com/users/wyu4/repos?type=all&sort=updated`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        })
+        getFromServer("/api/repositories")
             .then((response) => response.json())
             .then((result: Repository[]) => {
                 setRepositories(result);
