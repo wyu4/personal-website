@@ -3,11 +3,15 @@ import gsap from "gsap";
 import { SplitText } from "gsap/all";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import RepositoryCard from "./reusable/RepositoryCard";
+import useScrollEffect, { useGSAPScrollEffect } from "../hooks/ScrollHook";
+import Bio from "./Bio";
 
 const MAX_REPOS_DISPLAYED = 7;
 
 export function Introduction({ ...props }: IntroductionProps) {
     const introRef = useRef<HTMLDivElement>(null);
+    const [showTitle, setShowTitle] = useState(true);
+    const [showBio, setShowBio] = useState(false);
 
     useGSAP(
         () => {
@@ -26,6 +30,17 @@ export function Introduction({ ...props }: IntroductionProps) {
                 opacity: 0,
             });
 
+            gsap.fromTo(
+                ".background",
+                {
+                    opacity: 0,
+                },
+                {
+                    opacity: 1,
+                    duration: 1,
+                },
+            );
+
             gsap.timeline()
                 .to(title.chars, {
                     opacity: 1,
@@ -43,6 +58,15 @@ export function Introduction({ ...props }: IntroductionProps) {
                     stagger: 0.05,
                 });
 
+            if (showTitle) {
+                gsap.set(".title-card", { opacity: 0 });
+            }
+            if (!showBio) {
+                gsap.set(".bio", {
+                    opacity: 0,
+                });
+            }
+
             return () => {
                 title.revert();
                 subtitle.revert();
@@ -54,25 +78,79 @@ export function Introduction({ ...props }: IntroductionProps) {
         },
     );
 
+    useScrollEffect((y, h) => {
+        setShowTitle(y <= h / 2);
+        setShowBio(y >= 1.8 * h);
+    }, []);
+
+    useGSAP(
+        () => {
+            if (showTitle) {
+                gsap.to(".title-card", {
+                    opacity: 1,
+                    translateY: 0,
+                    duration: 0.5,
+                    ease: "power2.inOut",
+                });
+                return;
+            }
+            gsap.to(".title-card", {
+                opacity: 0,
+                translateY: -40,
+                duration: 0.5,
+                ease: "power2.inOut",
+            });
+        },
+        { scope: introRef, dependencies: [showTitle] },
+    );
+
+    useGSAP(
+        () => {
+            if (showBio) {
+                gsap.to(".bio", {
+                    opacity: 1,
+                    translateY: -100,
+                    duration: 1,
+                    ease: "sine.inOut",
+                });
+                return;
+            }
+            gsap.to(".bio", {
+                opacity: 0,
+                translateY: 0,
+                duration: 1,
+                ease: "sine.inOut",
+            });
+        },
+        { scope: introRef, dependencies: [showBio] },
+    );
+
     return (
         <div
             ref={introRef}
-            className="bg-[#00000000] h-screen flex flex-row justify-center items-center"
+            className="bg-[#00000000] h-screen w-full shrink-0 flex flex-row justify-center items-center"
         >
-            <Background {...props} />
-            <span className="flex flex-col gap-2 justify-center items-start z-10 text-center">
+            <div className="background absolute bg-radial from-neutral-950 to-slate-950 w-full h-screen pointer-events-none overflow-x-clip z-1 perspective-distant">
+                <Background {...props} />
+            </div>
+            <div className="title-card flex flex-col gap-2 justify-center items-start z-10 text-center">
                 <h1 className="title text-inherit text-7xl font-bold text-shadow-lg text-shadow-slate-600">
                     Wilson Yu
                 </h1>
                 <h2 className="subtitle text-inherit text-3xl mb-10 text-shadow-lg text-shadow-slate-600">
                     Building things online
                 </h2>
-            </span>
+            </div>
+            <Bio
+                className="bio absolute top-1/2 -translate-y-1/2 z-10"
+                repositories={props.repositories}
+            />
         </div>
     );
 }
 
 function Background({ repositories }: IntroductionProps) {
+    const backgroundRef = useRef<HTMLDivElement>(null);
     const carouselRefs = useRef<HTMLDivElement[]>([]);
     const [chunkedRepositories, setChunkedRepositories] = useState<
         Repository[][] | undefined
@@ -100,45 +178,64 @@ function Background({ repositories }: IntroductionProps) {
 
     useGSAP(() => {
         if (carouselRefs.current.length <= 0) return;
-        gsap.set(carouselRefs.current, {
-            opacity: 0,
-            translateY: "-25vh",
-        });
-        gsap.to(carouselRefs.current, {
-            opacity: 1,
-            translateY: 0,
-            delay: 1,
-            duration: 1,
-            ease: "sine.out",
-            stagger: {
-                each: 0.25,
-                from: "start",
+        gsap.fromTo(
+            carouselRefs.current,
+            {
+                opacity: 0,
+                translateY: "-25vh",
             },
-        });
+            {
+                opacity: 1,
+                translateY: 0,
+                delay: 1,
+                duration: 1,
+                ease: "sine.out",
+                stagger: {
+                    each: 0.25,
+                    from: "start",
+                },
+            },
+        );
     }, [chunkedRepositories]);
 
+    useGSAPScrollEffect(
+        (y, h) => {
+            const scrollRatio = y / (2 * h);
+            gsap.set(backgroundRef.current, {
+                rotateX: 60 + 27 * scrollRatio,
+                rotateY: 10 - 10 * scrollRatio,
+                rotateZ: -10 + 10 * scrollRatio,
+                transformOrigin: "bottom center",
+            });
+        },
+        {
+            scope: backgroundRef,
+        },
+    );
+
     return (
-        <div className="absolute bg-stone-900 w-full h-full pointer-events-none z-1 perspective-distant overflow-hidden">
-            <div className="absolute flex flex-col-reverse justify-start items-center left-[-50vw] right-[-50vw] bottom-0 top-0 rotate-x-70 -rotate-z-20 scale-200 -translate-z-20 gap-5">
-                {chunkedRepositories?.map((chunk, i) => {
-                    if (i === 0) carouselRefs.current = [];
-                    return (
-                        <RepositoryCarousel
-                            ref={(node) => {
-                                if (node) carouselRefs.current.push(node);
-                            }}
-                            key={`carousel-${i}`}
-                            repositories={chunk}
-                            secondsPerCard={i + 3}
-                            inverted={i % 2 == 1}
-                            className="shrink-0"
-                            style={{
-                                zIndex: chunkedRepositories.length - i,
-                            }}
-                        />
-                    );
-                })}
-            </div>
+        <div
+            ref={backgroundRef}
+            className="absolute flex flex-col-reverse justify-start items-center -left-[50%] -right-[50%] bottom-0 scale-400 gap-5"
+        >
+            {chunkedRepositories?.map((chunk, i) => {
+                if (i === 0) carouselRefs.current = [];
+                return (
+                    <RepositoryCarousel
+                        ref={(node) => {
+                            if (node) carouselRefs.current.push(node);
+                        }}
+                        key={`carousel-${i}`}
+                        repositories={chunk}
+                        secondsPerCard={i + 3}
+                        inverted={i % 2 == 1}
+                        className="shrink-0"
+                        style={{
+                            zIndex: chunkedRepositories.length - i,
+                        }}
+                    />
+                );
+            })}
         </div>
     );
 }
@@ -185,7 +282,7 @@ const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
                 className={`relative w-full overflow-visible h-auto will-change-transform ${className}`}
                 {...props}
             >
-                <div className="overflow-x-hidden overflow-visible bg-taupe-800 border-y-2 border-neutral-700 z-5 p-0">
+                <div className="overflow-x-hidden overflow-visible bg-gray-900 border-y-2 border-gray-700 z-5 p-0">
                     <div
                         ref={carouselRef}
                         className="top-0 min-w-full flex w-max gap-5 py-5 opacity-50"

@@ -28,7 +28,7 @@ const RepositoryCard = forwardRef<
         <>
             {repository && (
                 <div
-                    className={`bg-stone-800 rounded-2xl flex flex-col p-7 gap-5 border-2 border-stone-500 shadow-[0_0_10px_0px_rgba(0,0,0,0.3)] shadow-stone-400/50 shrink-0 ${className}`}
+                    className={` rounded-2xl flex flex-col p-7 gap-5 border-2 border-mist-300 shadow-[0_0_10px_0px_rgba(0,0,0,0.3)] shadow-mist-400/50 shrink-0 ${className}`}
                     ref={ref}
                     {...props}
                 >

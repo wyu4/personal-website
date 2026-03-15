@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { Introduction } from "../components/Introduction";
+import { getFromServer } from "../utils/HTTPUtils";
 
 export default function Home() {
-    const [repositories, setRepositories] = useState<Repository[] | undefined>(undefined);
+    const [repositories, setRepositories] = useState<Repository[] | undefined>(
+        undefined,
+    );
 
     const reloadRepositories = useCallback(() => {
-        fetch(`https://api.github.com/users/wyu4/repos?type=all&sort=updated`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        })
+        getFromServer("/api/repositories")
             .then((response) => response.json())
             .then((result: Repository[]) => {
                 setRepositories(result);
@@ -24,7 +24,10 @@ export default function Home() {
 
     return (
         <>
-            <Introduction repositories={repositories} />
+            <div className="fixed flex flex-col gap-0 p-0 w-full">
+                <Introduction repositories={repositories} />
+            </div>
+            <div className="h-[300vh]"></div>
         </>
     );
 }
