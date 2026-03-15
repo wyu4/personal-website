@@ -2,13 +2,22 @@ const createRepositoriesAPI = (app) => {
     var updatingRepositories = false;
     var repositories = undefined;
 
+    const ApiKey = process.env.GITHUB_API_KEY;
+
     const updateRepositories = async () => {
         if (updatingRepositories) return;
         updatingRepositories = true;
         console.log("💻 Updating repositories...");
         fetch("https://api.github.com/users/wyu4/repos?type=all&sort=updated", {
             method: "GET",
-            headers: { "Content-Type": "application/json" },
+            headers: ApiKey
+                ? {
+                      "Content-Type": "application/json",
+                      "Authentication": `Bearer ${ApiKey}`,
+                  }
+                : {
+                      "Content-Type": "application/json",
+                  },
         })
             .then((res) => {
                 if (res.status === 200) {
@@ -21,7 +30,7 @@ const createRepositoriesAPI = (app) => {
             .then((parsed) => {
                 repositories = parsed.map((repo) => ({
                     name: repo.name,
-                    html_url: repo.html_URL,
+                    html_url: repo.html_url,
                     owner: {
                         login: repo.owner.login,
                         avatar_url: repo.owner.avatar_url,
@@ -47,7 +56,7 @@ const createRepositoriesAPI = (app) => {
     app.get("/api/repositories", (req, res) => {
         console.log(`<<< Received repository ping from ${req.ip}.`);
         if (repositories === undefined) {
-            return res.sendStatus(403);
+            return res.sendStatus(404);
         }
         res.send(JSON.stringify(repositories));
     });
