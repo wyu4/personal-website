@@ -49,7 +49,7 @@ const createRepositoriesAPI = (app) => {
         if (repositories === undefined) {
             return res.sendStatus(403);
         }
-        res.send(repositories);
+        res.send(JSON.stringify(repositories));
     });
 
     setInterval(updateRepositories, 10 * 60 * 1000);
