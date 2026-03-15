@@ -22,7 +22,7 @@ const createRepositoriesAPI = (app) => {
             headers: ApiKey
                 ? {
                       "Content-Type": "application/json",
-                      "Authentication": `Bearer ${ApiKey}`,
+                      "Authorization": `Bearer ${ApiKey}`,
                   }
                 : {
                       "Content-Type": "application/json",
