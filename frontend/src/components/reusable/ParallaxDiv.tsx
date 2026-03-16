@@ -1,6 +1,6 @@
 import { forwardRef, useRef } from "react";
 import { bindRefAndForwardRef } from "../../utils/RefUtils";
-import useScrollEffect from "../../hooks/ScrollHook";
+import useScrollEffect from "../../hooks/WindowHooks";
 
 const ParallaxDiv = forwardRef<HTMLDivElement, ParallaxDivProps>(
     ({ speed = 0, children, className = "", ...props }, forwardedRef) => {

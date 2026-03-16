@@ -1,9 +1,9 @@
 const createRepositoriesAPI = (app) => {
-    var updatingRepositories = false;
-    var updatingLanguages = false;
-    var repositories = undefined;
-    var allLanguagesIndexed = true;
-    var languageIndex = {};
+    let updatingRepositories = false;
+    let updatingLanguages = false;
+    let repositories = undefined;
+    let allLanguagesIndexed = true;
+    let languageIndex = {};
 
     const ApiKey = process.env.GITHUB_API_KEY;
 
@@ -36,8 +36,8 @@ const createRepositoriesAPI = (app) => {
         ) {
             return;
         }
-        var tempLanguageIndex = {};
-        var reposChecked = 0;
+        let tempLanguageIndex = {};
+        let reposChecked = 0;
         allLanguagesIndexed = true;
         console.log(`💻 Updating languages...`);
         for (const repo of repositories) {
@@ -145,7 +145,7 @@ const createRepositoriesAPI = (app) => {
         res.json(languageIndex);
     });
 
-    var timeSinceLastHardUpdate = Date.now();
+    let timeSinceLastHardUpdate = Date.now();
     updateRepositories(true);
     setInterval(() => {
         const now = Date.now();

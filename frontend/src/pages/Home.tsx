@@ -70,7 +70,7 @@ export default function Home() {
                     scrollTo={onScrollTo}
                 />
             </div>
-            <div className="h-[300vh]"></div>
+            <div className="h-[200vh]"></div>
         </>
     );
 }
