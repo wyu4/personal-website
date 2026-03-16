@@ -9,9 +9,10 @@ const app = express();
 app.use(
     cors({
         origin: [
-            "http://localhost:5173",
-            "https://wyu.app",
-            "https://personal-website-zeta-lilac-47.vercel.app/",
+            "http://localhost:5173", // Localhost
+            "https://wyu.app", // Production domain
+            "https://personal-website-zeta-lilac-47.vercel.app", // Vercel production domain
+            "https://personal-website-git-changes-wyu4-team.vercel.app", // Vercel changes domain
         ],
     }),
 );
