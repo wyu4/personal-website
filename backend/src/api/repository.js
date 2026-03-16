@@ -2,6 +2,7 @@ const createRepositoriesAPI = (app) => {
     var updatingRepositories = false;
     var updatingLanguages = false;
     var repositories = undefined;
+    var allLanguagesIndexed = true;
     var languageIndex = {};
 
     const ApiKey = process.env.GITHUB_API_KEY;
@@ -9,10 +10,10 @@ const createRepositoriesAPI = (app) => {
     if (ApiKey) {
         const stringKey = String(ApiKey);
         console.log(
-            `🗝️  Using GitHub Personal Access Token: [${stringKey.slice(0, Math.min(20, stringKey.length))}...]`,
+            `🗝️  Using GitHub Personal Access Token: [${stringKey.slice(0, Math.min(20, stringKey.length))}].`,
         );
     } else {
-        console.log(`🗝️ Not using GitHub Personal Access Token...`);
+        console.log(`🗝️ Not using GitHub Personal Access Token.`);
     }
 
     const githubHeader = {
@@ -35,6 +36,7 @@ const createRepositoriesAPI = (app) => {
         ) {
             return;
         }
+        allLanguagesIndexed = true;
         console.log(`💻 Updating languages...`);
         for (const repo of repositories) {
             const name = repo.name;
@@ -58,6 +60,7 @@ const createRepositoriesAPI = (app) => {
                     console.error(
                         `💻 Could not fetch languages for [${name}]: ${err}`,
                     );
+                    allLanguagesIndexed = false;
                 });
         }
     };
@@ -101,7 +104,7 @@ const createRepositoriesAPI = (app) => {
             })
             .finally(() => {
                 updatingRepositories = false;
-                if (repositories !== prevRepositories) {
+                if (repositories !== prevRepositories || !allLanguagesIndexed) {
                     updateLanguages();
                 }
             });
@@ -134,7 +137,7 @@ const createRepositoriesAPI = (app) => {
         res.json(count);
     });
 
-    setInterval(updateRepositories, 10 * 60 * 1000);
+    setInterval(updateRepositories, 30 * 60 * 1000);
 };
 
 module.exports = createRepositoriesAPI;
