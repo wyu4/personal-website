@@ -1,9 +1,10 @@
-declare type IntroductionProps = {
+declare type IntroductionProps = ScrollControllerProps & {
     repositories: Repository[] | undefined;
+    languages: GithubLanguages | undefined;
 };
 
-declare type RepositoryCarouselProps = DivAttributes &
-    IntroductionProps & {
-        secondsPerCard: number;
-        inverted: boolean;
-    };
+declare type RepositoryCarouselProps = DivAttributes & {
+    repositories: Repository[] | undefined;
+    secondsPerCard: number;
+    inverted: boolean;
+};

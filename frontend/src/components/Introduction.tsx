@@ -3,8 +3,10 @@ import gsap from "gsap";
 import { SplitText } from "gsap/all";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import RepositoryCard from "./reusable/RepositoryCard";
-import useScrollEffect, { useGSAPScrollEffect } from "../hooks/ScrollHook";
 import Bio from "./Bio";
+import PushButton from "./reusable/PushButton";
+import { CiCircleChevDown } from "react-icons/ci";
+import { useGSAPScrollEffect, useScrollEffect } from "../hooks/WindowHooks";
 
 const MAX_REPOS_DISPLAYED = 7;
 
@@ -12,6 +14,7 @@ export function Introduction({ ...props }: IntroductionProps) {
     const introRef = useRef<HTMLDivElement>(null);
     const [showTitle, setShowTitle] = useState(true);
     const [showBio, setShowBio] = useState(false);
+    const [bioMounted, setBioMounted] = useState(false);
 
     useGSAP(
         () => {
@@ -61,11 +64,6 @@ export function Introduction({ ...props }: IntroductionProps) {
             if (showTitle) {
                 gsap.set(".title-card", { opacity: 0 });
             }
-            if (!showBio) {
-                gsap.set(".bio", {
-                    opacity: 0,
-                });
-            }
 
             return () => {
                 title.revert();
@@ -80,13 +78,13 @@ export function Introduction({ ...props }: IntroductionProps) {
 
     useScrollEffect((y, h) => {
         setShowTitle(y <= h / 2);
-        setShowBio(y >= 1.8 * h);
+        setShowBio(y >= 0.8 * h);
     }, []);
 
     useGSAP(
         () => {
             if (showTitle) {
-                gsap.to(".title-card", {
+                gsap.to(".title-card, .down-button", {
                     opacity: 1,
                     translateY: 0,
                     duration: 0.5,
@@ -94,7 +92,7 @@ export function Introduction({ ...props }: IntroductionProps) {
                 });
                 return;
             }
-            gsap.to(".title-card", {
+            gsap.to(".title-card, .down-button", {
                 opacity: 0,
                 translateY: -40,
                 duration: 0.5,
@@ -107,19 +105,23 @@ export function Introduction({ ...props }: IntroductionProps) {
     useGSAP(
         () => {
             if (showBio) {
+                setBioMounted(true);
                 gsap.to(".bio", {
                     opacity: 1,
-                    translateY: -100,
                     duration: 1,
+                    pointerEvents: "all",
+                    overwrite: "auto",
                     ease: "sine.inOut",
                 });
                 return;
             }
             gsap.to(".bio", {
                 opacity: 0,
-                translateY: 0,
                 duration: 1,
                 ease: "sine.inOut",
+                pointerEvents: "none",
+                overwrite: "auto",
+                onComplete: () => setBioMounted(false),
             });
         },
         { scope: introRef, dependencies: [showBio] },
@@ -142,9 +144,22 @@ export function Introduction({ ...props }: IntroductionProps) {
                 </h2>
             </div>
             <Bio
-                className="bio absolute top-1/2 -translate-y-1/2 z-10"
-                repositories={props.repositories}
+                className="bio absolute top-1/2 -translate-y-1/2 opacity-0 z-10
+                m-10"
+                bioMounted={bioMounted}
+                languages={props.languages}
             />
+            <div className="absolute bottom-10 left-0 w-full z-10 flex flex-row justify-around items-center">
+                <PushButton
+                    className="down-button text-5xl"
+                    onClick={() => {
+                        props.scrollTo(window.innerHeight);
+                    }}
+                    disabled={showBio}
+                >
+                    <CiCircleChevDown />
+                </PushButton>
+            </div>
         </div>
     );
 }
@@ -200,7 +215,7 @@ function Background({ repositories }: IntroductionProps) {
 
     useGSAPScrollEffect(
         (y, h) => {
-            const scrollRatio = y / (2 * h);
+            const scrollRatio = y / h;
             gsap.set(backgroundRef.current, {
                 rotateX: 60 + 27 * scrollRatio,
                 rotateY: 10 - 10 * scrollRatio,
@@ -312,7 +327,6 @@ const RepositoryCarousel = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
                         )}
                     </div>
                 </div>
-                {/* <div className="w-full h-50 bg-linear-to-b from-taupe-800 to-transparent -mb-50" /> */}
             </div>
         );
     },
