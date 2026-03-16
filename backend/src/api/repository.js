@@ -1,6 +1,8 @@
 const createRepositoriesAPI = (app) => {
     var updatingRepositories = false;
+    var updatingLanguages = false;
     var repositories = undefined;
+    var languageIndex = {};
 
     const ApiKey = process.env.GITHUB_API_KEY;
 
@@ -10,24 +12,65 @@ const createRepositoriesAPI = (app) => {
             `🗝️  Using GitHub Personal Access Token: [${stringKey.slice(0, Math.min(20, stringKey.length))}...]`,
         );
     } else {
-        console.log(`🗝️  Not using GitHub Personal Access Token...`);
+        console.log(`🗝️ Not using GitHub Personal Access Token...`);
     }
 
-    const updateRepositories = async () => {
+    const githubHeader = {
+        method: "GET",
+        headers: ApiKey
+            ? {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${ApiKey}`,
+              }
+            : {
+                  "Content-Type": "application/json",
+              },
+    };
+
+    const updateLanguages = () => {
+        if (
+            updatingRepositories ||
+            updatingLanguages ||
+            repositories === undefined
+        ) {
+            return;
+        }
+        console.log(`💻 Updating languages...`);
+        for (const repo of repositories) {
+            const name = repo.name;
+            const languageUrl = repo.languages_url;
+            if (languageUrl === undefined || name === undefined) continue;
+
+            fetch(languageUrl, githubHeader)
+                .then((res) => {
+                    if (res.status === 200) {
+                        return res.json();
+                    }
+                    throw new Error(
+                        `Status ${res.status} with text "${res.statusText}"`,
+                    );
+                })
+                .then((parsed) => {
+                    languageIndex[name] = parsed;
+                    console.log(`💻 Updated language index for [${name}]!`);
+                })
+                .catch((err) => {
+                    console.error(
+                        `💻 Could not fetch languages for [${name}]: ${err}`,
+                    );
+                });
+        }
+    };
+
+    const updateRepositories = () => {
         if (updatingRepositories) return;
         updatingRepositories = true;
         console.log("💻 Updating repositories...");
-        fetch("https://api.github.com/users/wyu4/repos?type=all&sort=updated", {
-            method: "GET",
-            headers: ApiKey
-                ? {
-                      "Content-Type": "application/json",
-                      "Authorization": `Bearer ${ApiKey}`,
-                  }
-                : {
-                      "Content-Type": "application/json",
-                  },
-        })
+        const prevRepositories = repositories;
+        fetch(
+            "https://api.github.com/users/wyu4/repos?type=all&sort=updated",
+            githubHeader,
+        )
             .then((res) => {
                 if (res.status === 200) {
                     return res.json();
@@ -58,8 +101,12 @@ const createRepositoriesAPI = (app) => {
             })
             .finally(() => {
                 updatingRepositories = false;
+                if (repositories !== prevRepositories) {
+                    updateLanguages();
+                }
             });
     };
+
     updateRepositories();
 
     app.get("/api/repositories", (req, res) => {
@@ -67,7 +114,24 @@ const createRepositoriesAPI = (app) => {
         if (repositories === undefined) {
             return res.sendStatus(404);
         }
-        res.send(JSON.stringify(repositories));
+        res.json(repositories);
+    });
+
+    app.get("/api/repositories/languages", (req, res) => {
+        console.log(`<<< Received languages ping from ${req.ip}.`);
+
+        const count = {};
+        for (const langs of Object.values(languageIndex)) {
+            for (const [lang, langCount] of Object.entries(langs)) {
+                if (count[lang]) {
+                    count[lang] += langCount;
+                } else {
+                    count[lang] = langCount;
+                }
+            }
+        }
+
+        res.json(count);
     });
 
     setInterval(updateRepositories, 10 * 60 * 1000);
