@@ -32,6 +32,7 @@ function handleHook(callback: (y: number, h: number) => void) {
     window.addEventListener("load", update);
     window.addEventListener("resize", update);
     window.addEventListener("scroll", update);
+    update();
 
     return () => {
         window.removeEventListener("load", update);

@@ -1,3 +1,9 @@
 declare type BioProps = DivAttributes & {
-    repositories: Repository[] | undefined;
+    languages: Record<string, number> | undefined;
+};
+
+declare type LanguageDataProp = {
+    id: number;
+    value: number;
+    label: string;
 };

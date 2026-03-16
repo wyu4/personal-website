@@ -5,6 +5,8 @@ import { forwardRef, useEffect, useRef, useState } from "react";
 import RepositoryCard from "./reusable/RepositoryCard";
 import useScrollEffect, { useGSAPScrollEffect } from "../hooks/ScrollHook";
 import Bio from "./Bio";
+import PushButton from "./reusable/PushButton";
+import { CiCircleChevDown } from "react-icons/ci";
 
 const MAX_REPOS_DISPLAYED = 7;
 
@@ -143,8 +145,17 @@ export function Introduction({ ...props }: IntroductionProps) {
             </div>
             <Bio
                 className="bio absolute top-1/2 -translate-y-1/2 z-10"
-                repositories={props.repositories}
+                languages={props.languages}
             />
+            <div className="absolute bottom-10 left-0 right-0 z-10">
+                <PushButton
+                    onClick={() => {
+                        props.scrollTo(2 * window.innerHeight);
+                    }}
+                >
+                    <CiCircleChevDown />
+                </PushButton>
+            </div>
         </div>
     );
 }

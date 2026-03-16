@@ -1,1 +1,1 @@
-declare type Endpoint = "/api" | "/api/repositories";
+declare type Endpoint = "/api" | "/api/repositories" | "/api/repositories/languages";
