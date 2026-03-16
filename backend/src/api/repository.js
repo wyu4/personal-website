@@ -170,7 +170,7 @@ const createRepositoriesAPI = (app) => {
                 if (
                     !IsTestRepositories &&
                     (hardUpdateLanguages ||
-                        JSON.stringify(repositories) !==
+                        JSON.stringify(allRepositories) !==
                             JSON.stringify(prevRepositories) ||
                         !allLanguagesIndexed)
                 ) {
