@@ -64,6 +64,7 @@ const createRepositoriesAPI = (app) => {
             if (
                 languageUrl === undefined ||
                 name === undefined ||
+                name.endsWith("-excluded") ||
                 owner === undefined
             ) {
                 reposChecked++;
