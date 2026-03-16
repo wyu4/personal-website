@@ -36,6 +36,8 @@ const createRepositoriesAPI = (app) => {
         ) {
             return;
         }
+        var tempLanguageIndex = {};
+        var reposChecked = 0;
         allLanguagesIndexed = true;
         console.log(`💻 Updating languages...`);
         for (const repo of repositories) {
@@ -53,22 +55,36 @@ const createRepositoriesAPI = (app) => {
                     );
                 })
                 .then((parsed) => {
-                    languageIndex[name] = parsed;
-                    console.log(`💻 Updated language index for [${name}]!`);
+                    for (const [lang, langCount] of Object.entries(parsed)) {
+                        if (tempLanguageIndex[lang]) {
+                            tempLanguageIndex[lang] += langCount;
+                        } else {
+                            tempLanguageIndex[lang] = langCount;
+                        }
+                    }
+                    reposChecked += 1;
                 })
                 .catch((err) => {
                     console.error(
                         `💻 Could not fetch languages for [${name}]: ${err}`,
                     );
                     allLanguagesIndexed = false;
+                })
+                .finally(() => {
+                    if (reposChecked >= repositories.length) {
+                        languageIndex = tempLanguageIndex;
+                        console.log(`💻 All repository languages indexed!`);
+                    }
                 });
         }
     };
 
-    const updateRepositories = () => {
+    const updateRepositories = (hardUpdateLanguages = false) => {
         if (updatingRepositories) return;
         updatingRepositories = true;
-        console.log("💻 Updating repositories...");
+        console.log(
+            `💻 Updating repositories [HARD UPDATE = ${hardUpdateLanguages}]...`,
+        );
         const prevRepositories = repositories;
         fetch(
             "https://api.github.com/users/wyu4/repos?type=all&sort=updated",
@@ -104,13 +120,16 @@ const createRepositoriesAPI = (app) => {
             })
             .finally(() => {
                 updatingRepositories = false;
-                if (repositories !== prevRepositories || !allLanguagesIndexed) {
+                if (
+                    hardUpdateLanguages ||
+                    JSON.stringify(repositories) !==
+                        JSON.stringify(prevRepositories) ||
+                    !allLanguagesIndexed
+                ) {
                     updateLanguages();
                 }
             });
     };
-
-    updateRepositories();
 
     app.get("/api/repositories", (req, res) => {
         console.log(`<<< Received repository ping from ${req.ip}.`);
@@ -123,21 +142,20 @@ const createRepositoriesAPI = (app) => {
     app.get("/api/repositories/languages", (req, res) => {
         console.log(`<<< Received languages ping from ${req.ip}.`);
 
-        const count = {};
-        for (const langs of Object.values(languageIndex)) {
-            for (const [lang, langCount] of Object.entries(langs)) {
-                if (count[lang]) {
-                    count[lang] += langCount;
-                } else {
-                    count[lang] = langCount;
-                }
-            }
-        }
-
-        res.json(count);
+        res.json(languageIndex);
     });
 
-    setInterval(updateRepositories, 30 * 60 * 1000);
+    var timeSinceLastHardUpdate = Date.now();
+    updateRepositories(true);
+    setInterval(() => {
+        const now = Date.now();
+        if (now - timeSinceLastHardUpdate >= 30 * 60 * 1000) {
+            updateRepositories(true);
+            timeSinceLastHardUpdate = now;
+        } else {
+            updateRepositories(false);
+        }
+    }, 10 * 60 * 1000);
 };
 
 module.exports = createRepositoriesAPI;
