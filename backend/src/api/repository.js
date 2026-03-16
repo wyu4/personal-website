@@ -10,10 +10,10 @@ const createRepositoriesAPI = (app) => {
     if (ApiKey) {
         const stringKey = String(ApiKey);
         console.log(
-            `🗝️  Using GitHub Personal Access Token: [${stringKey.slice(0, Math.min(20, stringKey.length))}].`,
+            `🗝️ Using GitHub Personal Access Token: [${stringKey.slice(0, Math.min(20, stringKey.length))}].`,
         );
     } else {
-        console.log(`🗝️ Not using GitHub Personal Access Token.`);
+        console.log(`🗝️ Not using GitHub Personal Access Token. Subject to rate limits.`);
     }
 
     const githubHeader = {
@@ -66,14 +66,14 @@ const createRepositoriesAPI = (app) => {
                 })
                 .catch((err) => {
                     console.error(
-                        `💻 Could not fetch languages for [${name}]: ${err}`,
+                        `💻❌ Could not fetch languages for [${name}]: ${err}`,
                     );
                     allLanguagesIndexed = false;
                 })
                 .finally(() => {
                     if (reposChecked >= repositories.length) {
                         languageIndex = tempLanguageIndex;
-                        console.log(`💻 All repository languages indexed!`);
+                        console.log(`💻✅ All repository languages indexed!`);
                     }
                 });
         }
@@ -113,10 +113,10 @@ const createRepositoriesAPI = (app) => {
                     archived: repo.archived,
                     languages_url: repo.languages_url,
                 }));
-                console.log(`💻 Repositories updated!`);
+                console.log(`💻✅ Repositories updated!`);
             })
             .catch((err) => {
-                console.error(`💻 Could not fetch GitHub repositories: ${err}`);
+                console.error(`💻❌ Could not fetch GitHub repositories: ${err}`);
             })
             .finally(() => {
                 updatingRepositories = false;
