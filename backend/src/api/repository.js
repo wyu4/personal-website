@@ -1,11 +1,20 @@
 const createRepositoriesAPI = (app) => {
     let updatingRepositories = false;
     let updatingLanguages = false;
-    let repositories = undefined;
+    let publicRepositories = undefined;
+    let allRepositories = undefined;
     let allLanguagesIndexed = true;
     let languageIndex = {};
 
     const ApiKey = process.env.GITHUB_API_KEY;
+    const IsTestRepositories = process.env.TEST_REPOS === "1";
+    const ApiVersion = "2026-03-10";
+
+    if (IsTestRepositories) {
+        console.log(
+            `>>>>>>>>>>>>>>>>>> 🔧 Creating repository API under testing context. <<<<<<<<<<<<<<<<<<<`,
+        );
+    }
 
     if (ApiKey) {
         const stringKey = String(ApiKey);
@@ -13,7 +22,9 @@ const createRepositoriesAPI = (app) => {
             `🗝️ Using GitHub Personal Access Token: [${stringKey.slice(0, Math.min(20, stringKey.length))}].`,
         );
     } else {
-        console.log(`🗝️ Not using GitHub Personal Access Token. Subject to rate limits.`);
+        console.log(
+            `🗝️ Not using GitHub Personal Access Token. Subject to rate limits.`,
+        );
     }
 
     const githubHeader = {
@@ -21,18 +32,24 @@ const createRepositoriesAPI = (app) => {
         headers: ApiKey
             ? {
                   "Content-Type": "application/json",
+                  "X-GitHub-Api-Version": ApiVersion,
                   Authorization: `Bearer ${ApiKey}`,
               }
             : {
                   "Content-Type": "application/json",
+                  "X-GitHub-Api-Version": ApiVersion,
               },
     };
+
+    const repositoryLink = ApiKey
+        ? "https://api.github.com/user/repos?sort=updated&per_page=100&affiliation=owner,collaborator"
+        : "https://api.github.com/users/wyu4/repos?type=all&sort=updated&per_page=100";
 
     const updateLanguages = () => {
         if (
             updatingRepositories ||
             updatingLanguages ||
-            repositories === undefined
+            allRepositories === undefined
         ) {
             return;
         }
@@ -40,10 +57,24 @@ const createRepositoriesAPI = (app) => {
         let reposChecked = 0;
         allLanguagesIndexed = true;
         console.log(`💻 Updating languages...`);
-        for (const repo of repositories) {
+        for (const repo of allRepositories) {
             const name = repo.name;
             const languageUrl = repo.languages_url;
-            if (languageUrl === undefined || name === undefined) continue;
+            const owner = repo.owner;
+            if (
+                languageUrl === undefined ||
+                name === undefined ||
+                owner === undefined
+            ) {
+                reposChecked++;
+                continue;
+            }
+
+            const userLogin = owner.login;
+            if (userLogin === undefined || userLogin !== "wyu4") {
+                reposChecked++;
+                continue;
+            }
 
             fetch(languageUrl, githubHeader)
                 .then((res) => {
@@ -71,7 +102,7 @@ const createRepositoriesAPI = (app) => {
                     allLanguagesIndexed = false;
                 })
                 .finally(() => {
-                    if (reposChecked >= repositories.length) {
+                    if (reposChecked >= allRepositories.length) {
                         languageIndex = tempLanguageIndex;
                         console.log(`💻✅ All repository languages indexed!`);
                     }
@@ -85,11 +116,8 @@ const createRepositoriesAPI = (app) => {
         console.log(
             `💻 Updating repositories [HARD UPDATE = ${hardUpdateLanguages}]...`,
         );
-        const prevRepositories = repositories;
-        fetch(
-            "https://api.github.com/users/wyu4/repos?type=all&sort=updated",
-            githubHeader,
-        )
+        const prevRepositories = allRepositories;
+        fetch(repositoryLink, githubHeader)
             .then((res) => {
                 if (res.status === 200) {
                     return res.json();
@@ -99,7 +127,7 @@ const createRepositoriesAPI = (app) => {
                 );
             })
             .then((parsed) => {
-                repositories = parsed.map((repo) => ({
+                allRepositories = parsed.map((repo) => ({
                     name: repo.name,
                     html_url: repo.html_url,
                     owner: {
@@ -108,23 +136,42 @@ const createRepositoriesAPI = (app) => {
                         html_url: repo.owner.html_url,
                         type: repo.owner.type,
                     },
+                    visibility: repo.visibility,
                     description: repo.description,
                     fork: repo.fork,
                     archived: repo.archived,
                     languages_url: repo.languages_url,
                 }));
-                console.log(`💻✅ Repositories updated!`);
+                if (IsTestRepositories) {
+                    console.log(allRepositories);
+                }
+                if (ApiKey === undefined) {
+                    publicRepositories = allRepositories;
+                } else {
+                    let tempPublicRepositories = [];
+                    allRepositories.forEach((item) => {
+                        if (item.visibility !== "public") return;
+                        tempPublicRepositories.push(item);
+                    });
+                    publicRepositories = tempPublicRepositories;
+                }
+                console.log(
+                    `💻✅ Repositories (of ${allRepositories.length}, ${publicRepositories.length} were public) updated!`,
+                );
             })
             .catch((err) => {
-                console.error(`💻❌ Could not fetch GitHub repositories: ${err}`);
+                console.error(
+                    `💻❌ Could not fetch GitHub repositories: ${err}`,
+                );
             })
             .finally(() => {
                 updatingRepositories = false;
                 if (
-                    hardUpdateLanguages ||
-                    JSON.stringify(repositories) !==
-                        JSON.stringify(prevRepositories) ||
-                    !allLanguagesIndexed
+                    !IsTestRepositories &&
+                    (hardUpdateLanguages ||
+                        JSON.stringify(repositories) !==
+                            JSON.stringify(prevRepositories) ||
+                        !allLanguagesIndexed)
                 ) {
                     updateLanguages();
                 }
@@ -133,11 +180,19 @@ const createRepositoriesAPI = (app) => {
 
     app.get("/api/repositories", (req, res) => {
         console.log(`<<< Received repository ping from ${req.ip}.`);
-        if (repositories === undefined) {
+        if (publicRepositories === undefined) {
             return res.sendStatus(404);
         }
-        res.json(repositories);
+        res.json(publicRepositories);
     });
+
+    // app.get("/api/private_repositories", (req, res) => {
+    //     console.log(`<<< Received repository ping from ${req.ip}.`);
+    //     if (allRepositories === undefined) {
+    //         return res.sendStatus(404);
+    //     }
+    //     res.json(allRepositories);
+    // });
 
     app.get("/api/repositories/languages", (req, res) => {
         console.log(`<<< Received languages ping from ${req.ip}.`);
@@ -147,15 +202,18 @@ const createRepositoriesAPI = (app) => {
 
     let timeSinceLastHardUpdate = Date.now();
     updateRepositories(true);
-    setInterval(() => {
-        const now = Date.now();
-        if (now - timeSinceLastHardUpdate >= 30 * 60 * 1000) {
-            updateRepositories(true);
-            timeSinceLastHardUpdate = now;
-        } else {
-            updateRepositories(false);
-        }
-    }, 10 * 60 * 1000);
+    setInterval(
+        () => {
+            const now = Date.now();
+            if (now - timeSinceLastHardUpdate >= 30 * 60 * 1000) {
+                updateRepositories(true);
+                timeSinceLastHardUpdate = now;
+            } else {
+                updateRepositories(false);
+            }
+        },
+        10 * 60 * 1000,
+    );
 };
 
 module.exports = createRepositoriesAPI;
