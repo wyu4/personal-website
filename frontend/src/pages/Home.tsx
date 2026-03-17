@@ -52,7 +52,7 @@ export default function Home() {
         gsap.to(window, {
             scrollTo: scrollLandmark,
             duration: duration,
-            ease: "sine.inOut",
+            ease: "power2.inOut",
             onComplete: () => setScrollLandmark(undefined),
         });
     }, [scrollLandmark]);
