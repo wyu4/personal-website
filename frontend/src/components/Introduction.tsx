@@ -7,22 +7,28 @@ import Bio from "./Bio";
 import PushButton from "./reusable/PushButton";
 import { CiCircleChevDown } from "react-icons/ci";
 import { useGSAPScrollEffect, useScrollEffect } from "../hooks/WindowHooks";
+import { getREMInPixels } from "../utils/TextUtils";
 
 const MAX_REPOS_DISPLAYED = 7;
+const SCROLL_BUTTON_ANIM_LEN = 0.5;
 
 export function Introduction({ ...props }: IntroductionProps) {
     const introRef = useRef<HTMLDivElement>(null);
     const [showTitle, setShowTitle] = useState(true);
+    const [buttonScrollDirection, setButtonScrollDirection] = useState<
+        "down" | "up"
+    >("down");
+    const [scrollingDebounce, setScrollingDebounce] = useState(false);
     const [showBio, setShowBio] = useState(false);
     const [bioMounted, setBioMounted] = useState(false);
 
     useGSAP(
         () => {
             const title = SplitText.create(".title", {
-                type: "chars",
+                type: "words, chars",
             });
             const subtitle = SplitText.create(".subtitle", {
-                type: "chars",
+                type: "words, chars",
             });
 
             gsap.set(title.chars, {
@@ -32,6 +38,17 @@ export function Introduction({ ...props }: IntroductionProps) {
             gsap.set(subtitle.chars, {
                 opacity: 0,
             });
+
+            gsap.fromTo(
+                ".scroll-button",
+                {
+                    opacity: 0,
+                },
+                {
+                    opacity: 1,
+                    duration: 1,
+                },
+            );
 
             gsap.fromTo(
                 ".background",
@@ -78,13 +95,14 @@ export function Introduction({ ...props }: IntroductionProps) {
 
     useScrollEffect((y, h) => {
         setShowTitle(y <= h / 2);
+        setButtonScrollDirection(y <= h / 2 ? "down" : "up");
         setShowBio(y >= 0.8 * h);
     }, []);
 
     useGSAP(
         () => {
             if (showTitle) {
-                gsap.to(".title-card, .down-button", {
+                gsap.to(".title-card", {
                     opacity: 1,
                     translateY: 0,
                     duration: 0.5,
@@ -92,7 +110,7 @@ export function Introduction({ ...props }: IntroductionProps) {
                 });
                 return;
             }
-            gsap.to(".title-card, .down-button", {
+            gsap.to(".title-card", {
                 opacity: 0,
                 translateY: -40,
                 duration: 0.5,
@@ -101,6 +119,46 @@ export function Introduction({ ...props }: IntroductionProps) {
         },
         { scope: introRef, dependencies: [showTitle] },
     );
+
+    useGSAP(
+        () => {
+            setScrollingDebounce(true);
+            if (buttonScrollDirection === "down") {
+                gsap.to(".scroll-div", {
+                    translateY: "30vh",
+                    duration: SCROLL_BUTTON_ANIM_LEN,
+                    ease: "power2.inOut",
+                });
+                gsap.to(".scroll-button", {
+                    rotate: 0,
+                    duration: SCROLL_BUTTON_ANIM_LEN,
+                    ease: "power2.inOut",
+                });
+                return;
+            }
+            gsap.to(".scroll-div", {
+                translateY: "-40vh",
+                duration: SCROLL_BUTTON_ANIM_LEN,
+                ease: "power2.inOut",
+            });
+            gsap.to(".scroll-button", {
+                rotate: 180,
+                duration: SCROLL_BUTTON_ANIM_LEN,
+                ease: "power2.inOut",
+            });
+        },
+        { scope: introRef, dependencies: [buttonScrollDirection] },
+    );
+
+    useEffect(() => {
+        if (!scrollingDebounce) return;
+        const debounceTimer = setTimeout(
+            () => setScrollingDebounce(false),
+            SCROLL_BUTTON_ANIM_LEN * 1000,
+        );
+
+        return () => clearTimeout(debounceTimer);
+    }, [scrollingDebounce]);
 
     useGSAP(
         () => {
@@ -149,13 +207,19 @@ export function Introduction({ ...props }: IntroductionProps) {
                 bioMounted={bioMounted}
                 languages={props.languages}
             />
-            <div className="absolute bottom-10 left-0 w-full z-10 flex flex-row justify-around items-center">
+            <div className="scroll-div absolute left-0 top-1/2 -translate-y-1/2 w-full z-10 flex flex-row justify-around items-center">
                 <PushButton
-                    className="down-button text-5xl"
-                    onClick={() => {
-                        props.scrollTo(window.innerHeight);
-                    }}
-                    disabled={showBio}
+                    className="scroll-button text-5xl"
+                    onClick={
+                        buttonScrollDirection === "down"
+                            ? () => {
+                                  props.scrollTo(window.innerHeight);
+                              }
+                            : () => {
+                                  props.scrollTo(0);
+                              }
+                    }
+                    disabled={scrollingDebounce}
                 >
                     <CiCircleChevDown />
                 </PushButton>

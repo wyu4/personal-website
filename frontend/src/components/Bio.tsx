@@ -5,7 +5,7 @@ import { getREMInPixels } from "../utils/TextUtils";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
-import { useResizeEffect, useScrollEffect } from "../hooks/WindowHooks";
+import { useResizeEffect } from "../hooks/WindowHooks";
 
 const REM = getREMInPixels();
 
@@ -36,34 +36,34 @@ const Bio = forwardRef<HTMLDivElement, BioProps>(
                     });
                 }
 
-                if (!bioMounted) {
-                    gsap.to(splitTitle.current.chars, {
-                        opacity: 0,
-                        duration: 0,
-                        overwrite: "auto",
-                    });
-                    gsap.to(splitBio.current.chars, {
-                        opacity: 0,
-                        duration: 0,
-                        overwrite: "auto",
-                    });
-                    return;
+                if (bioMounted) {
+                    const tween = gsap.fromTo(
+                        splitTitle.current.chars,
+                        {
+                            opacity: 0,
+                        },
+                        {
+                            opacity: 1,
+                            stagger: 0.1,
+                            duration: 0.5,
+                            delay: 0,
+                            overwrite: "auto",
+                        },
+                    );
+                    gsap.fromTo(
+                        splitBio.current.chars,
+                        {
+                            opacity: 0,
+                        },
+                        {
+                            opacity: 1,
+                            stagger: 0.01,
+                            duration: 0.01,
+                            delay: tween.duration(),
+                            overwrite: "auto",
+                        },
+                    );
                 }
-
-                const tween = gsap.to(splitTitle.current.chars, {
-                    opacity: 1,
-                    stagger: 0.1,
-                    duration: 0.5,
-                    delay: 0,
-                    overwrite: "auto",
-                });
-                gsap.to(splitBio.current.chars, {
-                    opacity: 1,
-                    stagger: 0.01,
-                    duration: 0,
-                    delay: tween.duration(),
-                    overwrite: "auto",
-                });
             },
             { scope: bioRef, dependencies: [bioMounted] },
         );
@@ -98,9 +98,9 @@ const Bio = forwardRef<HTMLDivElement, BioProps>(
             <div
                 {...props}
                 ref={(node) => bindRefAndForwardRef(node, forwardedRef, bioRef)}
-                className={`${className} flex flex-col justify-around items-center md:flex-row p-5 gap-5 bg-[#000000aa] border rounded-2xl`}
+                className={`${className} flex flex-col justify-around items-center md:flex-row p-2 gap-1 sm:p-5 sm:gap-5 bg-[#000000aa] border rounded-2xl`}
             >
-                <div className="chart" style={{ minWidth: chartWidth }}>
+                <div className="chart">
                     {languages && bioMounted && (
                         <LanguageChart
                             pieValues={pieValues}
@@ -161,7 +161,7 @@ const LanguageChart = forwardRef<HTMLDivElement, BioChartProps>(
                 ref={(node) =>
                     bindRefAndForwardRef(node, forwardedRef, containerRef)
                 }
-                className={`${className} border rounded-2xl border-slate-400 bg-black flex flex-col justify-center items-center`}
+                className={`${className} border rounded-2xl border-slate-400 bg-black flex flex-col justify-center items-center p-3`}
                 {...props}
             >
                 {renderedPieValues && (
