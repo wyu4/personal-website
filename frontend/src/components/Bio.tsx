@@ -100,7 +100,7 @@ const Bio = forwardRef<HTMLDivElement, BioProps>(
                 ref={(node) => bindRefAndForwardRef(node, forwardedRef, bioRef)}
                 className={`${className} flex flex-col justify-around items-center md:flex-row p-5 gap-5 bg-[#000000aa] border rounded-2xl`}
             >
-                <div className="chart" style={{ minWidth: chartWidth }}>
+                <div className="chart">
                     {languages && bioMounted && (
                         <LanguageChart
                             pieValues={pieValues}
@@ -161,7 +161,7 @@ const LanguageChart = forwardRef<HTMLDivElement, BioChartProps>(
                 ref={(node) =>
                     bindRefAndForwardRef(node, forwardedRef, containerRef)
                 }
-                className={`${className} border rounded-2xl border-slate-400 bg-black flex flex-col justify-center items-center`}
+                className={`${className} border rounded-2xl border-slate-400 bg-black flex flex-col justify-center items-center p-3`}
                 {...props}
             >
                 {renderedPieValues && (
