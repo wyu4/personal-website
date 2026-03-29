@@ -15,12 +15,12 @@
   "type": "commonjs",
   "main": "src/index.js",
   "scripts": {
-    "dev": "set TEST_REPOS=0&&node src/index.js",
+    "dev": "set TEST_REPOS=0&&node --env-file .env src/index.js",
     "testRepos": "set TEST_REPOS=1&&node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@vercel/edge-config": "^1.4.3",
+    "@supabase/supabase-js": "^2.100.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "path": "^0.12.7"

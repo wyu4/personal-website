@@ -1,3 +1,5 @@
+const supabase = require("@supabase/supabase-js");
+
 const createRepositoriesAPI = (app) => {
   let updatingRepositories = false;
   let updatingLanguages = false;
@@ -9,6 +11,13 @@ const createRepositoriesAPI = (app) => {
   const ApiKey = process.env.GITHUB_API_KEY;
   const IsTestRepositories = process.env.TEST_REPOS === "1";
   const ApiVersion = "2026-03-10";
+  const RepositoryUpdateInterval = 10 * 60 * 1000;
+  const LanguageIndexInterval = 30 * 60 * 1000;
+
+  const slicePreviewKey = (key, chars = 20) => {
+    const stringKey = String(key);
+    return `${stringKey.slice(0, Math.min(chars, stringKey.length))}...`;
+  };
 
   if (IsTestRepositories) {
     console.log(
@@ -17,9 +26,8 @@ const createRepositoriesAPI = (app) => {
   }
 
   if (ApiKey) {
-    const stringKey = String(ApiKey);
     console.log(
-      `🗝️ Using GitHub Personal Access Token: [${stringKey.slice(0, Math.min(20, stringKey.length))}].`,
+      `🗝️ Using GitHub Personal Access Token[${slicePreviewKey(ApiKey)}].`,
     );
   } else {
     console.log(
@@ -27,7 +35,31 @@ const createRepositoriesAPI = (app) => {
     );
   }
 
-  const githubHeader = {
+  const RepositoryDatabaseCredentials = {
+    url: process.env.DATABASE_URL,
+    key: process.env.DATABASE_KEY,
+  };
+
+  let supabaseClient = undefined;
+
+  if (
+    !RepositoryDatabaseCredentials.url ||
+    !RepositoryDatabaseCredentials.key
+  ) {
+    console.log(
+      `🗝️ Not storing repository data in repository database. Subject to rate limits.`,
+    );
+  } else {
+    supabaseClient = supabase.createClient(
+      RepositoryDatabaseCredentials.url,
+      RepositoryDatabaseCredentials.key,
+    );
+    console.log(
+      `🗝️ Storing repository data in repository database '${RepositoryDatabaseCredentials.url}' using credentials: token[${slicePreviewKey(RepositoryDatabaseCredentials.key, 10)}]`,
+    );
+  }
+
+  const GithubHeader = {
     method: "GET",
     headers: ApiKey
       ? {
@@ -44,6 +76,54 @@ const createRepositoriesAPI = (app) => {
   const repositoryLink = ApiKey
     ? "https://api.github.com/user/repos?sort=updated&per_page=100&affiliation=owner,collaborator"
     : "https://api.github.com/users/wyu4/repos?type=all&sort=updated&per_page=100";
+
+  const deduplicate = (rows) => {
+    return Array.from(new Map(rows.map((row) => [row.html_url, row])).values());
+  };
+
+  const pushToDatabase = () => {
+    if (!supabaseClient) {
+      return;
+    }
+    console.log(`🫸 Pushing repository data...`);
+    try {
+      const ownerRows = deduplicate(allRepositories.map((repo) => repo.owner));
+      const repoRows = allRepositories.map((repo, i) => ({
+        order: i,
+        name: repo.name,
+        html_url: repo.html_url,
+        owner: repo.owner.login,
+        visibility: repo.visibility,
+        description: repo.description,
+        fork: repo.fork,
+        archived: repo.archived,
+        languages_url: repo.languages_url,
+      }));
+
+      supabaseClient
+        .from("github_repository_owners")
+        .upsert(ownerRows, { onConflict: "login" })
+        .then(({ error }) => {
+          if (error) {
+            throw new Error(`Owner Rows[${error.message}]`);
+          }
+          return supabaseClient
+            .from("github_repository")
+            .upsert(repoRows, { onConflict: "order" });
+        })
+        .then(({ error }) => {
+          if (error) {
+            throw new Error(`Repository Rows[${error.message}]`);
+          }
+          console.log(`🫸✅ Pushed data!`);
+        })
+        .catch((e) => {
+          console.error(`🫸❌ Could not push data: ${e.message}`);
+        });
+    } catch (e) {
+      console.error(`🫸❌ Could not setup data for pushing: ${e.message}`);
+    }
+  };
 
   const updateLanguages = () => {
     if (
@@ -77,7 +157,7 @@ const createRepositoriesAPI = (app) => {
         continue;
       }
 
-      fetch(languageUrl, githubHeader)
+      fetch(languageUrl, GithubHeader)
         .then((res) => {
           if (res.status === 200) {
             return res.json();
@@ -114,7 +194,7 @@ const createRepositoriesAPI = (app) => {
       `💻 Updating repositories [HARD UPDATE = ${hardUpdateLanguages}]...`,
     );
     const prevRepositories = allRepositories;
-    fetch(repositoryLink, githubHeader)
+    fetch(repositoryLink, GithubHeader)
       .then((res) => {
         if (res.status === 200) {
           return res.json();
@@ -137,7 +217,6 @@ const createRepositoriesAPI = (app) => {
           archived: repo.archived,
           languages_url: repo.languages_url,
         }));
-        allRepositories.last_update = Date.now();
         if (IsTestRepositories) {
           console.log(allRepositories);
         }
@@ -169,6 +248,7 @@ const createRepositoriesAPI = (app) => {
         ) {
           updateLanguages();
         }
+        pushToDatabase();
       });
   };
 
@@ -196,18 +276,15 @@ const createRepositoriesAPI = (app) => {
 
   let timeSinceLastHardUpdate = Date.now();
   updateRepositories(true);
-  setInterval(
-    () => {
-      const now = Date.now();
-      if (now - timeSinceLastHardUpdate >= 30 * 60 * 1000) {
-        updateRepositories(true);
-        timeSinceLastHardUpdate = now;
-      } else {
-        updateRepositories(false);
-      }
-    },
-    10 * 60 * 1000,
-  );
+  setInterval(() => {
+    const now = Date.now();
+    if (now - timeSinceLastHardUpdate >= LanguageIndexInterval) {
+      updateRepositories(true);
+      timeSinceLastHardUpdate = now;
+    } else {
+      updateRepositories(false);
+    }
+  }, RepositoryUpdateInterval);
 };
 
 module.exports = createRepositoriesAPI;
