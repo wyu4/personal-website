@@ -71,6 +71,10 @@ export const createSupabase = () => {
         } catch (error) {
             console.error(`⛃❌ Could not create Supabase instance:`, error);
         }
+    } else {
+        console.warn(
+            `⛃⚠️ Could not create Supabase instance due to connection flag.`,
+        );
     }
 
     return client;

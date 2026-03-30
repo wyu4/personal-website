@@ -4,7 +4,6 @@ import {
     getTable,
     Owner,
     SimplifiedRepository,
-    Table,
 } from "../helpers/external";
 
 const { GITHUB_API_KEY } = require("./../helpers/environment");

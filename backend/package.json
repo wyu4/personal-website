@@ -16,7 +16,8 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc&&copyfiles -u 1 src/**/*.html dist",
-    "dev": "set TEST_REPOS=0&&node --env-file .env dist/index.js",
+    "dev": "npm run build&&set TEST_REPOS=0&&node --env-file .env dist/index.js",
+    "start": "set TEST_REPOS=0&&node dist/index.js",
     "testRepos": "set TEST_REPOS=1&&node --env-file .env dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
