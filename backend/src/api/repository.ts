@@ -3,17 +3,15 @@ import {
     createSupabase,
     getTable,
     Owner,
+    Repository,
     SimplifiedRepository,
 } from "../helpers/external";
 
 const { GITHUB_API_KEY } = require("./../helpers/environment");
 
-type Repository = SimplifiedRepository & {
-    owner: Owner;
-};
-
 let allRepositories: SimplifiedRepository[] | undefined = undefined;
 let publicRepositories: SimplifiedRepository[] | undefined = undefined;
+let lastUpdate;
 let owners: Owner[] = [];
 
 export const createRepositoriesAPI = (app: Express) => {
