@@ -1,3 +1,5 @@
+export const REPOSITORY_REFRESH: number = +(process.env.REPOSITORY_REFRESH || 1800);
+export const LANGUAGE_REFRESH: number = +(process.env.LANGUAGE_REFRESH || 3600);
 export const GITHUB_LOGIN: string = process.env.GITHUB_LOGIN || "wyu4";
 export const GITHUB_API_KEY: string | undefined = process.env.GITHUB_API_KEY;
 export const DATABASE_URL: string | undefined = process.env.DATABASE_URL;
@@ -18,11 +20,13 @@ export const canConnectToDatabase = () => {
 export const createGithubHeader = (): HeadersInit => {
     if (GITHUB_API_KEY) {
         return {
-            authentication: `Bearer ${GITHUB_API_KEY}`,
+            Authorization: `Bearer ${GITHUB_API_KEY}`,
+            "X-GitHub-Api-Version": "2026-03-10",
             "content-type": "application/json",
         };
     }
     return {
+        "X-GitHub-Api-Version": "2026-03-10",
         "content-type": "application/json",
     };
 };
