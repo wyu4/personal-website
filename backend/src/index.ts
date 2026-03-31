@@ -17,7 +17,7 @@ app.use(
     }),
 );
 
-app.use(express.static(path.join(__dirname, "src")));
+app.use(express.static(__dirname));
 app.use(express.json());
 
 console.log("☁️ Creating endpoints...");
