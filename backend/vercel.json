@@ -1,0 +1,20 @@
+{
+    "routes": [
+        {
+            "src": "^/api/repositories/languages$",
+            "dest": "/api/repositories/languages"
+        },
+        {
+            "src": "^/api/repositories$",
+            "dest": "/api/repositories"
+        },
+        {
+            "src": "^/api$",
+            "dest": "/api"
+        },
+        {
+            "src": "^/(.*)",
+            "dest": "/"
+        }
+    ]
+}
