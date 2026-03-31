@@ -7,7 +7,7 @@ let client: ReturnType<typeof createClient> | undefined = undefined;
 /**
  * Names of different tables
  */
-export type Table = "github_last_update" | "github_repository" | "github_repository_owners";
+export type Table = "github_last_update" | "github_repository" | "github_repository_owners" | "github_languages";
 
 /**
  * Properties of the owners table
@@ -90,6 +90,14 @@ export const simplifyRepositories = (completed: Repository[]) => {
 export type LastUpdate = {
     scope: "repositories" | "languages";
     epoch: number;
+};
+
+/**
+ * Properties of a language row
+ */
+export type Language = {
+    language: string;
+    bytes: number;
 };
 
 /**
@@ -225,7 +233,12 @@ export const lookupRepositories = (callback?: (repos: Repository[] | null) => vo
                 headers: createGithubHeader(),
             },
         )
-            .then((raw) => raw.json())
+            .then((raw) => {
+                if (!raw.ok) {
+                    throw new Error(`Request code ${raw.status} '${raw.statusText}'`);
+                }
+                return raw.json();
+            })
             .then((data: Repository[]) => {
                 callback?.(
                     data.map((repo: Repository, i) => {
@@ -257,4 +270,52 @@ export const lookupRepositories = (callback?: (repos: Repository[] | null) => vo
         console.error(`⌨️❌ Could not create query to GitHub ['${GITHUB_LOGIN}' => repositories]:`, error);
         return new Promise(() => callback?.(null));
     }
+};
+
+/**
+ * Method that sums up bytes of languages used in a list of repositories using provided credentials. This function automatically awaits,
+ * @param callback Callback to pass the data once received. Passes `null` if an error occurs
+ */
+export const lookupLanguages = async (repositories: Repository[] | SimplifiedRepository[], callback?: (languages: Record<string, number> | null) => void) => {
+    console.log(`🌐 Querying languages from ${repositories.length} repositories...`);
+    const headers = createGithubHeader();
+    let languages: Record<string, number> = {};
+    let count = 0;
+    let errored = false;
+    await Promise.all(
+        repositories.map(async (repository) => {
+            if (errored || repository.name.endsWith("-excluded")) return;
+            await fetch(repository.languages_url, {
+                method: "GET",
+                headers: headers,
+            })
+                .then((raw) => {
+                    if (!raw.ok) {
+                        throw new Error(`Request code ${raw.status} '${raw.statusText}'`);
+                    }
+                    return raw.json();
+                })
+                .then((data: Record<string, number>) => {
+                    for (const name in data) {
+                        const value = data[name] || 0;
+                        if (!languages[name]) {
+                            count++;
+                            languages[name] = value;
+                        } else {
+                            languages[name] += value;
+                        }
+                    }
+                })
+                .catch((error) => {
+                    errored = true;
+                    console.error(`🌐❌ Could not create query for languages of repository '${repository.name}':`, error);
+                });
+        }),
+    );
+    if (!errored) {
+        callback?.(languages);
+        console.log(`🌐✅ Queried & indexed ${count} languages from ${repositories.length} repositories.`);
+        return;
+    }
+    callback?.(null);
 };
