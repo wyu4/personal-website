@@ -117,10 +117,13 @@ const syncData = async (databaseExists: boolean, presync?: () => void, loadLangu
                 bytes: allLanguages[name] || 0,
             });
         }
-        await pushTable<Language>("github_languages", converted, async (pushed) => {
-            if (!pushed) return;
-            lastLanguagesUpdate.epoch = now;
-            await pushTable("github_last_update", [lastLanguagesUpdate]);
+        await clearTable("github_languages", async (cleared) => {
+            if (!cleared) return;
+            await pushTable<Language>("github_languages", converted, async (pushed) => {
+                if (!pushed) return;
+                lastLanguagesUpdate.epoch = now;
+                await pushTable("github_last_update", [lastLanguagesUpdate]);
+            });
         });
     }
 };
