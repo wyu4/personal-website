@@ -26,7 +26,7 @@ let publicRepositories: Repository[] | undefined = undefined;
 let allLanguages: Record<string, number> | undefined = undefined;
 let lastUpdate: LastUpdate[] = [];
 
-const syncData = async (databaseExists: boolean, presync?: () => void) => {
+const syncData = async (databaseExists: boolean, presync?: () => void, loadLanguages: boolean = false) => {
     const now = sec(); // Store current time in seconds
 
     // Get the last time anything was updated
@@ -66,24 +66,26 @@ const syncData = async (databaseExists: boolean, presync?: () => void) => {
 
     // Anything to run if the repositories were downloaded
     if (allRepositories) {
-        // Download language data from GitHub if database doesn't exist OR stored data is stale
-        if (!databaseExists || now - lastLanguagesUpdate.epoch >= LANGUAGE_REFRESH) {
-            await lookupLanguages(allRepositories, (data) => {
-                if (!data) return;
-                allLanguages = data;
-                languagesUpdated = true;
-            });
-        }
-
-        // Download language data from database if still not downloaded AND database exists
-        if (!allLanguages && databaseExists) {
-            await getTable<Language>("github_languages", (data) => {
-                if (!data) return;
-                allLanguages = {};
-                data.forEach((row) => {
-                    allLanguages![row.language] = row.bytes;
+        if (loadLanguages) {
+            // Download language data from GitHub if database doesn't exist OR stored data is stale
+            if (!databaseExists || now - lastLanguagesUpdate.epoch >= LANGUAGE_REFRESH) {
+                await lookupLanguages(allRepositories, (data) => {
+                    if (!data) return;
+                    allLanguages = data;
+                    languagesUpdated = true;
                 });
-            });
+            }
+
+            // Download language data from database if still not downloaded AND database exists
+            if (!allLanguages && databaseExists) {
+                await getTable<Language>("github_languages", (data) => {
+                    if (!data) return;
+                    allLanguages = {};
+                    data.forEach((row) => {
+                        allLanguages![row.language] = row.bytes;
+                    });
+                });
+            }
         }
 
         publicRepositories = allRepositories.filter((repo) => repo.visibility === "public");
@@ -146,13 +148,17 @@ export const createRepositoriesAPI = (app: Express) => {
 
         res.setHeader("Content-Type", "application/json");
 
-        await syncData(supabase !== undefined, () => {
-            if (!allLanguages) {
-                return res.sendStatus(403);
-            }
+        await syncData(
+            supabase !== undefined,
+            () => {
+                if (!allLanguages) {
+                    return res.sendStatus(403);
+                }
 
-            res.setHeader("Cache-Control", "s-maxage=120, stale-while-revalidate");
-            res.send(JSON.stringify(allLanguages));
-        });
+                res.setHeader("Cache-Control", "s-maxage=120, stale-while-revalidate");
+                res.send(JSON.stringify(allLanguages));
+            },
+            true,
+        );
     });
 };
