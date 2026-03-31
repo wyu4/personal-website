@@ -20,11 +20,11 @@ app.use(
 app.use(express.static(path.join(__dirname, "src")));
 app.use(express.json());
 
-app.listen(3000, () => {
-    console.log("✅ Express running on http://localhost:3000");
-});
-
 console.log("☁️ Creating endpoints...");
 createRootAPI(app);
 createRepositoriesAPI(app);
 console.log("☁️✅ Endpoints created!");
+
+app.listen(3000, () => {
+    console.log("✅ Express running on http://localhost:3000");
+});
