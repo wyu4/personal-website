@@ -1,8 +1,8 @@
-const express = require("express");
-const path = require("path");
-const cors = require("cors");
-const createRootAPI = require("./api/root");
-const createRepositoriesAPI = require("./api/repository");
+import express from "express";
+import path from "path";
+import cors from "cors";
+import { createRootAPI } from "./api/root";
+import { createRepositoriesAPI } from "./api/repository";
 
 const app = express();
 
@@ -24,9 +24,7 @@ app.listen(3000, () => {
     console.log("✅ Express running on http://localhost:3000");
 });
 
-setTimeout(() => {
-    console.log("☁️ Creating endpoints...");
-    createRootAPI(app, path);
-    createRepositoriesAPI(app);
-    console.log("☁️✅ Endpoints created!");
-}, 5000);
+console.log("☁️ Creating endpoints...");
+createRootAPI(app);
+createRepositoriesAPI(app);
+console.log("☁️✅ Endpoints created!");
