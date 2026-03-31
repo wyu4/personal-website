@@ -180,6 +180,13 @@ export const clearTable = (name: Table, callback?: (cleared: boolean) => void) =
     }
 };
 
+/**
+ * Push data to a table. Will fail if there is repeating data trying to be pushed.
+ * @param name Name of the table
+ * @param data Non-repeating data
+ * @param callback Callback to pass the data once pushed.
+ * @returns Promise for database pushing
+ */
 export const pushTable = <T>(name: Table, data: T[], callback?: (pushed: boolean) => void) => {
     console.log(`⛃ Setting table [${name}]...`);
     try {
@@ -251,5 +258,3 @@ export const lookupRepositories = (callback?: (repos: Repository[] | null) => vo
         return new Promise(() => callback?.(null));
     }
 };
-
-export const indexRepositories = (callback?: (languages: Record<string, number>) => void) => {};
