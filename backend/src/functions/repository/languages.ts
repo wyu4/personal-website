@@ -1,5 +1,5 @@
 import { Config, Context } from "@netlify/functions";
-import { languageFunction } from "../api/repository";
+import { languageFunction } from "../../api/repository";
 
 export const config: Config = {
     path: "/api/repositories/languages",

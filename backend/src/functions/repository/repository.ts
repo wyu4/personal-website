@@ -1,5 +1,5 @@
 import { Config, Context } from "@netlify/functions";
-import { repositoriesFunction } from "../api/repository";
+import { repositoriesFunction } from "../../api/repository";
 
 export const config: Config = {
     path: "/api/repositories",
