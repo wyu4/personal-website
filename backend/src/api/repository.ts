@@ -26,7 +26,7 @@ let publicRepositories: Repository[] | undefined = undefined;
 let allLanguages: Record<string, number> | undefined = undefined;
 let lastUpdate: LastUpdate[] = [];
 
-const syncData = async (databaseExists: boolean, presync?: () => void) => {
+const syncData = async (databaseExists: boolean, presync?: () => void, loadLanguages: boolean = false) => {
     const now = sec(); // Store current time in seconds
 
     // Get the last time anything was updated
@@ -66,24 +66,26 @@ const syncData = async (databaseExists: boolean, presync?: () => void) => {
 
     // Anything to run if the repositories were downloaded
     if (allRepositories) {
-        // Download language data from GitHub if database doesn't exist OR stored data is stale
-        if (!databaseExists || now - lastLanguagesUpdate.epoch >= LANGUAGE_REFRESH) {
-            await lookupLanguages(allRepositories, (data) => {
-                if (!data) return;
-                allLanguages = data;
-                languagesUpdated = true;
-            });
-        }
-
-        // Download language data from database if still not downloaded AND database exists
-        if (!allLanguages && databaseExists) {
-            await getTable<Language>("github_languages", (data) => {
-                if (!data) return;
-                allLanguages = {};
-                data.forEach((row) => {
-                    allLanguages![row.language] = row.bytes;
+        if (loadLanguages) {
+            // Download language data from GitHub if database doesn't exist OR stored data is stale
+            if (!databaseExists || now - lastLanguagesUpdate.epoch >= LANGUAGE_REFRESH) {
+                await lookupLanguages(allRepositories, (data) => {
+                    if (!data) return;
+                    allLanguages = data;
+                    languagesUpdated = true;
                 });
-            });
+            }
+
+            // Download language data from database if still not downloaded AND database exists
+            if (!allLanguages && databaseExists) {
+                await getTable<Language>("github_languages", (data) => {
+                    if (!data) return;
+                    allLanguages = {};
+                    data.forEach((row) => {
+                        allLanguages![row.language] = row.bytes;
+                    });
+                });
+            }
         }
 
         publicRepositories = allRepositories.filter((repo) => repo.visibility === "public");
@@ -115,43 +117,70 @@ const syncData = async (databaseExists: boolean, presync?: () => void) => {
                 bytes: allLanguages[name] || 0,
             });
         }
-        await pushTable<Language>("github_languages", converted, async (pushed) => {
-            if (!pushed) return;
-            lastLanguagesUpdate.epoch = now;
-            await pushTable("github_last_update", [lastLanguagesUpdate]);
+        await clearTable("github_languages", async (cleared) => {
+            if (!cleared) return;
+            await pushTable<Language>("github_languages", converted, async (pushed) => {
+                if (!pushed) return;
+                lastLanguagesUpdate.epoch = now;
+                await pushTable("github_last_update", [lastLanguagesUpdate]);
+            });
         });
     }
 };
 
-export const createRepositoriesAPI = (app: Express) => {
+export const repositoriesFunction = async (callback?: (data: Repository[] | null) => void, prerun?: () => void) => {
     const supabase = createSupabase();
+    prerun?.();
 
+    await syncData(supabase !== undefined, () => {
+        if (!publicRepositories) {
+            return callback?.(null);
+        }
+
+        callback?.(publicRepositories);
+    });
+
+    return publicRepositories;
+};
+
+export const languageFunction = async (callback?: (data: Record<string, number> | null) => void, prerun?: () => void) => {
+    const supabase = createSupabase();
+    prerun?.();
+
+    await syncData(
+        supabase !== undefined,
+        () => {
+            if (!allLanguages) {
+                return callback?.(null);
+            }
+            callback?.(allLanguages);
+        },
+        true,
+    );
+
+    return allLanguages;
+};
+
+export const createRepositoriesAPI = (app: Express) => {
     app.get("/api/repositories", async (req, res) => {
         console.log(`<<< Received [/api/repositories] ping from ${req.ip}.`);
-
         res.setHeader("Content-Type", "application/json");
-
-        await syncData(supabase !== undefined, () => {
-            if (!publicRepositories) {
+        await repositoriesFunction((data) => {
+            if (!data) {
                 return res.sendStatus(403);
             }
 
-            res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
-            res.send(JSON.stringify(publicRepositories));
+            res.send(JSON.stringify(data));
         });
     });
 
     app.get("/api/repositories/languages", async (req, res) => {
         console.log(`<<< Received [/api/repositories/languages] ping from ${req.ip}.`);
-
         res.setHeader("Content-Type", "application/json");
-
-        await syncData(supabase !== undefined, () => {
-            if (!allLanguages) {
-                return res.sendStatus(403);
+        await languageFunction((data) => {
+            if (!data) {
+                return res.send(403);
             }
-
-            res.setHeader("Cache-Control", "s-maxage=120, stale-while-revalidate");
             res.send(JSON.stringify(allLanguages));
         });
     });
