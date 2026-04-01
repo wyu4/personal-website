@@ -174,8 +174,8 @@ export const createRepositoriesAPI = (app: Express) => {
         });
     });
 
-    app.get("/api/repositories/languages", async (req, res) => {
-        console.log(`<<< Received [/api/repositories/languages] ping from ${req.ip}.`);
+    app.get("/api/languages", async (req, res) => {
+        console.log(`<<< Received [/api/languages] ping from ${req.ip}.`);
         res.setHeader("Content-Type", "application/json");
         await languageFunction((data) => {
             if (!data) {

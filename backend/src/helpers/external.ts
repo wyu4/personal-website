@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 export const ALLOWED_ORIGINS = [
     "http://localhost:5173", // Localhost
     "https://wyu.app", // Production domain
-    "https://personal-website-zeta-lilac-47.vercel.app", // Vercel production domain
+    "https://personal-website-6uad3n4do-wyu4-team.vercel.app", // Vercel production domain
     "https://personal-website-git-changes-wyu4-team.vercel.app", // Vercel changes domain
 ];
 
