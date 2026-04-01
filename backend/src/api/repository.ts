@@ -96,7 +96,7 @@ const syncData = async (databaseExists: boolean, presync?: () => void, loadLangu
     presync?.();
 
     // Updating the database
-    if (repositoriesUpdated && allRepositories) {
+    if (repositoriesUpdated && allRepositories && !loadLanguages) {
         const { simplified, owners } = simplifyRepositories(allRepositories);
         await pushTable("github_repository_owners", owners, async (pushed) => {
             if (!pushed) return;
