@@ -3,7 +3,7 @@ import { languageFunction } from "../../api/repository";
 import { getCORSHeaders } from "../../helpers/external";
 
 export const config: Config = {
-    path: "/api/languages",
+    path: "/api/repositories/languages",
 };
 
 export default async (req: Request, context: Context) => {
