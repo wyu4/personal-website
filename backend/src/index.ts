@@ -1,19 +1,14 @@
 import express from "express";
-import path from "path";
 import cors from "cors";
 import { createRootAPI } from "./api/root";
 import { createRepositoriesAPI } from "./api/repository";
+import { ALLOWED_ORIGINS } from "./helpers/external";
 
 const app = express();
 
 app.use(
     cors({
-        origin: [
-            "http://localhost:5173", // Localhost
-            "https://wyu.app", // Production domain
-            "https://personal-website-zeta-lilac-47.vercel.app", // Vercel production domain
-            "https://personal-website-git-changes-wyu4-team.vercel.app", // Vercel changes domain
-        ],
+        origin: ALLOWED_ORIGINS,
     }),
 );
 
