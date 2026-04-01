@@ -2,13 +2,12 @@ import express from "express";
 import cors from "cors";
 import { createRootAPI } from "./api/root";
 import { createRepositoriesAPI } from "./api/repository";
-import { ALLOWED_ORIGINS } from "./helpers/external";
 
 const app = express();
 
 app.use(
     cors({
-        origin: ALLOWED_ORIGINS,
+        origin: "*",
     }),
 );
 

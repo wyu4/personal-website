@@ -2,13 +2,6 @@ import { GITHUB_LOGIN, GITHUB_API_KEY, DATABASE_URL, DATABASE_KEY, canConnectToD
 
 import { createClient } from "@supabase/supabase-js";
 
-export const ALLOWED_ORIGINS = [
-    "http://localhost:5173", // Localhost
-    "https://wyu.app", // Production domain
-    "https://personal-website-zeta-lilac-47.vercel.app", // Vercel production domain
-    "https://personal-website-git-changes-wyu4-team.vercel.app", // Vercel changes domain
-];
-
 let client: ReturnType<typeof createClient> | undefined = undefined;
 
 /**
@@ -328,13 +321,9 @@ export const lookupLanguages = async (repositories: Repository[] | SimplifiedRep
 };
 
 export const getCORSHeaders = (origin: string = ""): HeadersInit => {
-    if (ALLOWED_ORIGINS.includes(origin)) {
-        return {
-            "Access-Control-Allow-Origin": origin,
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Methods": "GET",
-        };
-    }
-    console.warn(`<<< Origin '${origin}' is not included in the allowed origins list.`);
-    return {};
+    return {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET",
+    };
 };
