@@ -128,40 +128,60 @@ const syncData = async (databaseExists: boolean, presync?: () => void, loadLangu
     }
 };
 
-export const createRepositoriesAPI = (app: Express) => {
+export const repositoriesFunction = async (callback?: (data: Repository[] | null) => void, prerun?: () => void) => {
     const supabase = createSupabase();
+    prerun?.();
 
+    await syncData(supabase !== undefined, () => {
+        if (!publicRepositories) {
+            return callback?.(null);
+        }
+
+        callback?.(publicRepositories);
+    });
+
+    return publicRepositories;
+};
+
+export const languageFunction = async (callback?: (data: Record<string, number> | null) => void, prerun?: () => void) => {
+    const supabase = createSupabase();
+    prerun?.();
+
+    await syncData(
+        supabase !== undefined,
+        () => {
+            if (!allLanguages) {
+                return callback?.(null);
+            }
+            callback?.(allLanguages);
+        },
+        true,
+    );
+
+    return allLanguages;
+};
+
+export const createRepositoriesAPI = (app: Express) => {
     app.get("/api/repositories", async (req, res) => {
         console.log(`<<< Received [/api/repositories] ping from ${req.ip}.`);
-
         res.setHeader("Content-Type", "application/json");
-
-        await syncData(supabase !== undefined, () => {
-            if (!publicRepositories) {
+        await repositoriesFunction((data) => {
+            if (!data) {
                 return res.sendStatus(403);
             }
 
-            res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
-            res.send(JSON.stringify(publicRepositories));
+            res.send(JSON.stringify(data));
         });
     });
 
     app.get("/api/repositories/languages", async (req, res) => {
         console.log(`<<< Received [/api/repositories/languages] ping from ${req.ip}.`);
-
         res.setHeader("Content-Type", "application/json");
-
-        await syncData(
-            supabase !== undefined,
-            () => {
-                if (!allLanguages) {
-                    return res.sendStatus(403);
-                }
-
-                res.setHeader("Cache-Control", "s-maxage=120, stale-while-revalidate");
-                res.send(JSON.stringify(allLanguages));
-            },
-            true,
-        );
+        await languageFunction((data) => {
+            if (!data) {
+                return res.send(403);
+            }
+            res.send(JSON.stringify(allLanguages));
+        });
     });
 };
