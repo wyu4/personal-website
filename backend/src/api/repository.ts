@@ -162,8 +162,9 @@ export const languageFunction = async (callback?: (data: Record<string, number> 
 };
 
 export const syncFunction = async () => {
+    console.log("Syncing data...");
     const supabase = createSupabase();
-    await syncData(supabase !== undefined);
+    await syncData(supabase !== undefined, undefined, "All");
     return supabase !== undefined && allLanguages !== undefined && allRepositories !== undefined;
 };
 
@@ -194,4 +195,5 @@ export const createRepositoriesAPI = (app: Express) => {
 
     clearInterval(syncInterval);
     syncInterval = setInterval(syncFunction, 60 * 60 * 1000);
+    syncFunction();
 };
