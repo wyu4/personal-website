@@ -166,25 +166,29 @@ export const getTable = <T>(name: Table, callback?: (data: T[] | null) => void):
  * @param name Name of table
  * @returns Promise for database clearing
  */
-export const clearTable = (name: Table, callback?: (cleared: boolean) => void) => {
+export const clearTable = async (name: Table, callback?: (cleared: boolean) => void) => {
     console.log(`⛃ Clearing table [${name}]...`);
     try {
+        let success = false;
         checkClient();
-        return client!
+        await client!
             .from(name)
             .delete()
             .neq("ctid", "(0,0)")
             .then(({ error }) => {
                 if (error) {
                     console.error(`⛃❌ Could not clear table [${name}]:`, error);
-                    return callback?.(false);
+                    success = false;
+                    return;
                 }
-                callback?.(true);
                 console.log(`⛃✅ Cleared table [${name}] and ran callback.`);
+                success = true;
             });
+        callback?.(success);
+        return success;
     } catch (error) {
         console.error(`⛃❌ Could not start clearing table [${name}]:`, error);
-        return Promise.resolve();
+        return false;
     }
 };
 
@@ -195,25 +199,37 @@ export const clearTable = (name: Table, callback?: (cleared: boolean) => void) =
  * @param callback Callback to pass the data once pushed.
  * @returns Promise for database pushing
  */
-export const pushTable = <T>(name: Table, data: T[], callback?: (pushed: boolean) => void) => {
+export const pushTable = async <T>(name: Table, data: T[], callback?: (pushed: boolean) => void) => {
     console.log(`⛃ Setting table [${name}]...`);
     try {
+        let success = false;
         checkClient();
-        client!
+        await client!
             .from(name)
             .upsert(data as never)
             .then(({ error }) => {
                 if (error) {
                     console.error(`⛃❌ Could not push to table [${name}]:`, error);
-                    return callback?.(false);
+                    success = false;
+                    return;
                 }
-                callback?.(true);
                 console.log(`⛃✅ Pushed to table [${name}] and ran callback.`);
+                success = true;
             });
+        callback?.(success);
+        return success;
     } catch (error) {
         console.error(`⛃❌ Could not push to table [${name}]:`, error);
-        return Promise.resolve();
+        return false;
     }
+};
+
+export const overwriteTable = async <T>(name: Table, data: T[]) => {
+    const cleared = await clearTable(name);
+    if (!cleared) return false;
+
+    const pushed = await pushTable(name, data);
+    return pushed;
 };
 
 /**

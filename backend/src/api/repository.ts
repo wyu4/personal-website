@@ -8,6 +8,7 @@ import {
     LastUpdate,
     lookupLanguages,
     lookupRepositories,
+    overwriteTable,
     Owner,
     pushTable,
     Repository,
@@ -39,8 +40,8 @@ const syncData = async (databaseExists: boolean, presync?: () => void, syncType:
         });
     }
 
-    let lastRepositoriesUpdate = lastUpdate.find((row) => row.scope === "repositories") || { scope: "repositories", epoch: 0 };
-    let lastLanguagesUpdate = lastUpdate.find((row) => row.scope === "languages") || { scope: "languages", epoch: 0 };
+    let lastRepositoriesUpdate = lastUpdate.find((row) => row.scope === "repositories") ?? { scope: "repositories", epoch: 0 };
+    let lastLanguagesUpdate = lastUpdate.find((row) => row.scope === "languages") ?? { scope: "languages", epoch: 0 };
     let repositoriesUpdated = false;
     let languagesUpdated = false;
 
@@ -100,15 +101,14 @@ const syncData = async (databaseExists: boolean, presync?: () => void, syncType:
     // Updating the database
     if (repositoriesUpdated && allRepositories && syncType === "All") {
         const { simplified, owners } = simplifyRepositories(allRepositories);
-        await pushTable("github_repository_owners", owners, async (pushed) => {
-            if (!pushed) return;
-            await clearTable("github_repository", async (cleared) => {
-                if (!cleared) return;
+        const updatedGithubOwners = await pushTable("github_repository_owners", owners);
+        if (updatedGithubOwners) {
+            const updated = await overwriteTable("github_repository", simplified);
+            if (updated) {
                 lastRepositoriesUpdate.epoch = now;
-                await pushTable("github_repository", simplified);
                 await pushTable("github_last_update", [lastRepositoriesUpdate]);
-            });
-        });
+            }
+        }
     }
 
     if (languagesUpdated && allLanguages && syncType === "All") {
@@ -119,14 +119,11 @@ const syncData = async (databaseExists: boolean, presync?: () => void, syncType:
                 bytes: allLanguages[name] || 0,
             });
         }
-        await clearTable("github_languages", async (cleared) => {
-            if (!cleared) return;
-            await pushTable<Language>("github_languages", converted, async (pushed) => {
-                if (!pushed) return;
-                lastLanguagesUpdate.epoch = now;
-                await pushTable("github_last_update", [lastLanguagesUpdate]);
-            });
-        });
+        const updated = await overwriteTable("github_languages", converted);
+        if (updated) {
+            lastLanguagesUpdate.epoch = now;
+            await pushTable("github_last_update", [lastLanguagesUpdate]);
+        }
     }
 
     return [publicRepositories, allLanguages];
