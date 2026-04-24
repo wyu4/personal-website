@@ -1,0 +1,87 @@
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght,MONO@0,300..800,1;1,300..800,1&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Stack+Sans+Headline:wght@200..700&display=swap");
+@import "tailwindcss";
+
+:root {
+  --red-100: hsl(0, 100%, 69%);
+  --red-200: hsl(0, 87%, 61%);
+  --red-300: hsl(0, 76%, 55%);
+  --red-400: hsl(0, 67%, 51%);
+  --red-500: hsl(0, 72%, 46%);
+  --red-600: hsl(0, 77%, 40%);
+  --red-700: hsl(0, 83%, 33%);
+  --red-800: hsl(0, 89%, 25%);
+  --red-900: hsl(0, 96%, 20%);
+
+  --gray-100: hsl(215, 24, 90);
+  --gray-200: hsl(206, 26%, 72%);
+  --gray-300: hsl(207, 14%, 55%);
+  --gray-400: hsl(207, 12%, 43%);
+  --gray-500: hsl(209, 14, 28);
+  --gray-600: hsl(207, 20%, 21%);
+  --gray-700: hsl(206, 26%, 17%);
+  --gray-800: hsl(206, 33%, 16%);
+  --gray-900: hsl(206, 47%, 12%);
+
+  --green-100: hsl(141, 100%, 69%);
+  --green-200: hsl(141, 87%, 61%);
+  --green-300: hsl(141, 76%, 55%);
+  --green-400: hsl(141, 67%, 51%);
+  --green-500: hsl(141, 72%, 46%);
+  --green-600: hsl(141, 77%, 40%);
+  --green-700: hsl(141, 83%, 33%);
+  --green-800: hsl(141, 89%, 25%);
+  --green-900: hsl(141, 96%, 20%);
+}
+
+@theme inline {
+  --color-red-100: var(--red-100);
+  --color-red-200: var(--red-200);
+  --color-red-300: var(--red-300);
+  --color-red-400: var(--red-400);
+  --color-red-500: var(--red-500);
+  --color-red-600: var(--red-600);
+  --color-red-700: var(--red-700);
+  --color-red-800: var(--red-800);
+  --color-red-900: var(--red-900);
+
+  --color-gray-100: var(--gray-100);
+  --color-gray-200: var(--gray-200);
+  --color-gray-300: var(--gray-300);
+  --color-gray-400: var(--gray-400);
+  --color-gray-500: var(--gray-500);
+  --color-gray-600: var(--gray-600);
+  --color-gray-700: var(--gray-700);
+  --color-gray-800: var(--gray-800);
+  --color-gray-900: var(--gray-900);
+
+  --color-green-100: var(--green-100);
+  --color-green-200: var(--green-200);
+  --color-green-300: var(--green-300);
+  --color-green-400: var(--green-400);
+  --color-green-500: var(--green-500);
+  --color-green-600: var(--green-600);
+  --color-green-700: var(--green-700);
+  --color-green-800: var(--green-800);
+  --color-green-900: var(--green-900);
+}
+
+body {
+  background: var(--gray-100);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1,
+h2 {
+  font-family: "Stack Sans Headline", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 15rem;
+}
+
+h2 {
+  font-size: 2.5rem;
+}
