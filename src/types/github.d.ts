@@ -37,6 +37,11 @@ declare type SimplifiedRepository = {
   order: number;
 };
 
+declare type RepositorySimplificationResult = {
+  simplified: SimplifiedRepository[];
+  owners: Owner[];
+};
+
 /**
  * Properties of GitHub repositories, also known as completed repositories
  */

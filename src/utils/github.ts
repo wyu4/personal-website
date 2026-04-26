@@ -5,6 +5,8 @@ import {
   DATABASE_URL,
   GITHUB_API_KEY,
   GITHUB_LOGIN,
+  LANGUAGE_REFRESH,
+  REPOSITORY_REFRESH,
   THREAD_CAP,
 } from "./environment";
 
@@ -38,7 +40,9 @@ export const completeRepositories = (
  * @param completed Completed repositories
  * @returns Simplified repositories and owners
  */
-export const simplifyRepositories = (completed: Repository[]) => {
+export const simplifyRepositories = (
+  completed: Repository[],
+): RepositorySimplificationResult => {
   let owners: Owner[] = [];
 
   const simplified = completed.map((repo, i) => {
@@ -48,8 +52,7 @@ export const simplifyRepositories = (completed: Repository[]) => {
   });
 
   owners = owners.filter(
-    (item, index, self) =>
-      index === self.findIndex((t) => t.login === item.login),
+    (item, index, self) => index === self.findIndex((t) => t.login === item.login),
   );
 
   return { simplified, owners };
@@ -118,11 +121,7 @@ export const clearTable = async (client: SupabaseType, name: Table) => {
  * @param data Non-repeating data
  * @returns `true` if table updated, `false` if an error occurred.
  */
-export const pushTable = async <T>(
-  client: SupabaseType,
-  name: Table,
-  data: T[],
-) => {
+export const pushTable = async <T>(client: SupabaseType, name: Table, data: T[]) => {
   console.log(`⛃ Pushing to table [${name}]...`);
   try {
     const { error } = await client.from(name).upsert(data as never);
@@ -144,11 +143,7 @@ export const pushTable = async <T>(
  * @param data Non-repeating data
  * @returns `true` if table updated, `false` if an error occurred.
  */
-export const overwriteTable = async <T>(
-  client: SupabaseType,
-  name: Table,
-  data: T[],
-) => {
+export const overwriteTable = async <T>(client: SupabaseType, name: Table, data: T[]) => {
   const cleared = await clearTable(client, name);
   if (!cleared) return false;
 
@@ -173,9 +168,7 @@ export const lookupRepositories = async () => {
       },
     );
     if (!response.ok) {
-      throw new Error(
-        `Request code ${response.status} '${response.statusText}'`,
-      );
+      throw new Error(`Request code ${response.status} '${response.statusText}'`);
     }
     const parsedResponse = (await response.json()) as Repository[];
     const stripped = parsedResponse.map(
@@ -216,9 +209,7 @@ export const lookupRepositories = async () => {
 export const lookupLanguages = async (
   repositories: Repository[] | SimplifiedRepository[],
 ) => {
-  console.log(
-    `🌐 Querying languages from ${repositories.length} repositories...`,
-  );
+  console.log(`🌐 Querying languages from ${repositories.length} repositories...`);
   const headers = createGithubHeader();
   let languages: Record<string, number> = {};
   let indexedRepositories = 0;
@@ -237,9 +228,7 @@ export const lookupLanguages = async (
             headers: headers,
           });
           if (!response.ok) {
-            throw new Error(
-              `Request code ${response.status} '${response.statusText}'`,
-            );
+            throw new Error(`Request code ${response.status} '${response.statusText}'`);
           }
           const parsedJson = (await response.json()) as Record<string, number>;
           for (const name in parsedJson) {
@@ -272,4 +261,59 @@ export const lookupLanguages = async (
     );
   }
   return languages;
+};
+
+/**
+ * Function that handles updating the cached data in the database
+ * @param client Supabase instance
+ * @param table Table name
+ * @param requestData Function that handles getting real-time data
+ * @returns Exposable `string` containing error message, or `undefined` when successful
+ */
+export const timedCache = async (
+  client: SupabaseType,
+  table: "github_repository" | "github_languages",
+  syncJob: () => Promise<void>,
+) => {
+  const lastUpdateKey = table === "github_repository" ? "repositories" : "languages";
+
+  console.log(`⌚ Checking time elapsed since caching ${lastUpdateKey}...`);
+
+  // Checking the time since last cache
+  const lastUpdates = (await getTable(client, "github_last_update")) as
+    | LastUpdate[]
+    | undefined;
+  let selectedLastUpdate = lastUpdates?.find((row) => row.scope === lastUpdateKey) ?? {
+    scope: lastUpdateKey,
+    epoch: 0,
+  };
+
+  const now = Math.floor(Date.now() / 1000);
+  const refreshRateSeconds =
+    lastUpdateKey === "repositories" ? REPOSITORY_REFRESH : LANGUAGE_REFRESH;
+  const timeElapsed = now - selectedLastUpdate.epoch;
+
+  if (timeElapsed < refreshRateSeconds) {
+    const message = `Wait (${new Date((refreshRateSeconds - timeElapsed) * 1000).toISOString().substring(11, 19)}) before updating cached ${lastUpdateKey}.`;
+    console.warn(`⌚⚠️ ${message}`);
+    return message;
+  }
+  console.log(`⌚ Verified elapsed time since last ${lastUpdateKey} cache.`);
+
+  // Temporarily flagging as updated
+  const cachedLastUpdated = selectedLastUpdate.epoch; // Store the previous last update, in case this current update fails
+  selectedLastUpdate.epoch = now; // Update the epoch to flag as updated (for now, so that updates requested during this one block)
+  await pushTable(client, "github_last_update", [selectedLastUpdate]);
+
+  try {
+    console.error(`⌚ Running cache job for ${lastUpdateKey}...`);
+    await syncJob();
+    console.error(`⌚✅ Cached new data for ${lastUpdateKey}.`);
+  } catch (error) {
+    selectedLastUpdate.epoch = cachedLastUpdated;
+    await pushTable(client, "github_last_update", [selectedLastUpdate]);
+    console.error(`⌚❌ Updating cached ${lastUpdateKey} failed: `, error);
+    return "An internal error occurred while syncing cache.";
+  }
+  return undefined;
 };

@@ -86,7 +86,7 @@ const PushButton = forwardRef<HTMLButtonElement, PushButtonAttributes>(
 
     return (
       <button
-        className={`pushbutton ${className}`}
+        className={`${className}`}
         ref={(node) => bindRefAndForwardRef(node, forwardedRef, buttonRef)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
