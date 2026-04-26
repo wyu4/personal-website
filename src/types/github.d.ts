@@ -64,3 +64,18 @@ declare type LanguageMetadata = {
   language: string;
   bytes: number;
 };
+
+/**
+ * Properties of a repository UI card
+ */
+declare type RepositoryCardProps = DivAttributes & {
+  repository?: Repository;
+  characterLimit?: number;
+};
+
+/**
+ * Properties of a repository UI tag
+ */
+declare type RepositoryTagProps = DivAttributes & {
+  text: string;
+};
