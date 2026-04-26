@@ -1,3 +1,4 @@
+import { CRON_SECRET } from "@/utils/environment";
 import {
   createSupabase,
   lookupRepositories,
@@ -9,7 +10,14 @@ import {
 import { StatusCodes } from "http-status-codes";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authHeader = request.headers.get("Authorization");
+  if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
+    return NextResponse.json("Missing authorization to run this cron job.", {
+      status: StatusCodes.UNAUTHORIZED,
+    });
+  }
+
   const client = createSupabase();
   if (!client) {
     return NextResponse.json("Failed to get database.", {
