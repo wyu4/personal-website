@@ -2,11 +2,13 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import AnimatedName from "./animated-name";
 import { RepositoryCard } from "./gallery";
+import { getFromServer, getRepositories } from "@/utils/http-helpers";
 
 const NO_ZOOM = true;
+const RETRY_TIME = 1000; // Milliseconds
 
 export default function Banner() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -14,6 +16,27 @@ export default function Banner() {
   const textContainerRef = useRef<HTMLDivElement>(null);
 
   const timeline = gsap.timeline();
+
+  const [repositories, setRepositories] = useState<Repository[]>([]);
+
+  // Get repositories, if it fails auto-try again later
+  useCallback(async () => {
+    let id: NodeJS.Timeout | undefined = undefined;
+    const update = async () => {
+      const data = await getRepositories();
+      if (!data) {
+        id = setTimeout(async () => {
+          await update();
+        }, RETRY_TIME);
+      }
+    };
+
+    return () => {
+      if (id) {
+        clearTimeout(id);
+      }
+    };
+  }, []);
 
   useGSAP(() => {
     timeline
@@ -54,8 +77,8 @@ export default function Banner() {
           ref={textContainerRef}
           className="grid place-items-center pointer-events-none"
         >
+          {/* <RepositoryCard className="absolute" /> */}
           <AnimatedName />
-          {/* <RepositoryCard /> */}
         </div>
       </div>
     </section>
