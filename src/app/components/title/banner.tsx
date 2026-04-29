@@ -154,7 +154,7 @@ function Background({ repositories, visible }: BackgroundProps) {
   return (
     <div
       ref={container}
-      className="absolute w-full h-full grid place-items-center pointer-events-none perspective-distant"
+      className="absolute w-full h-full grid place-items-center overflow-clip pointer-events-none perspective-distant"
     >
       <div
         ref={plane}
