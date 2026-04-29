@@ -5,27 +5,42 @@ import { forwardRef, useRef } from "react";
 
 declare type RepositoryCarouselProps = DivAttributes & {
   repositories: Repository[] | undefined;
-  secondsPerCard: number;
+  secondsPerCard?: number;
   inverted?: boolean;
+  loopEnabled?: boolean;
 };
 
 const Gallery = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
   (
-    { repositories, secondsPerCard, inverted = false, className = "", ...props },
+    {
+      repositories,
+      secondsPerCard,
+      inverted = false,
+      loopEnabled = true,
+      className = "",
+      ...props
+    },
     carouselContainerRef,
   ) => {
+    const randomSecondsPerCard = useRef(gsap.utils.random(5, 10)).current;
     const carouselRef = useRef<HTMLDivElement>(null);
+
     useGSAP(() => {
-      if (!repositories || repositories.length <= 0) return;
       if (carouselRef.current === null) return;
 
       let carouselTween: GSAPTween | null = null;
 
       const carouselObserver = new ResizeObserver(() => {
+        if (!repositories || repositories.length <= 0) return;
         const fullWidth = carouselRef.current!.scrollWidth;
         const loopWidth = fullWidth / 2;
 
         carouselTween?.kill();
+
+        if (!loopEnabled) {
+          carouselTween = gsap.set(carouselRef.current, { x: inverted ? -loopWidth : 0 });
+          return;
+        }
 
         carouselTween = gsap.fromTo(
           carouselRef.current,
@@ -33,28 +48,31 @@ const Gallery = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
           {
             x: inverted ? 0 : -loopWidth,
             ease: "none",
-            duration: repositories.length * secondsPerCard,
+            duration: repositories.length * (secondsPerCard ?? randomSecondsPerCard),
             repeat: -1,
+            modifiers: {
+              x: gsap.utils.unitize((x) => Math.round(parseFloat(x))), // 👈 key fix
+            },
           },
         );
       });
       carouselObserver.observe(carouselRef.current);
 
       return () => {
-        carouselTween?.kill();
         carouselObserver.disconnect();
+        carouselTween?.kill();
       };
-    }, [repositories, inverted]);
+    }, [repositories, inverted, loopEnabled]);
     return (
       <div
         ref={carouselContainerRef}
-        className={`relative w-full overflow-visible h-auto will-change-transform bg-[#00000000] opacity-75 z-5 ${className}`}
+        className={`w-full shrink-0 overflow-visible h-auto will-change-transform bg-[#00000000] opacity-75 z-5 ${className}`}
         {...props}
       >
-        <div className="overflow-x-hidden overflow-visible p-0">
+        <div className="overflow-visible p-0">
           <div
             ref={carouselRef}
-            className="top-0 min-w-full flex w-max gap-5 py-5"
+            className="top-0 min-w-full flex w-max gap-5 py-3"
             style={
               inverted
                 ? {
@@ -126,7 +144,7 @@ export const RepositoryCard = forwardRef<HTMLDivElement, DivAttributes & Reposit
           </div>
           <div className="flex flex-col justify-start items-center shrink-0 rounded-2xl overflow-clip">
             <img
-              className="aspect-square h-32 select-none opacity-70"
+              className="aspect-square h-32 select-none opacity-70 pointer-events-none"
               src={repository.owner.avatar_url}
             />
           </div>

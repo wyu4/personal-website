@@ -61,11 +61,11 @@ export default function AnimatedName() {
   }, []);
 
   return (
-    <div className=" relative flex flex-row gap-10 flex-nowrap z-10">
-      <h1 ref={preRef} className="text-gray-900 select-none text-8xl md:text-9xl">
+    <div className="relative flex flex-row gap-10 flex-nowrap z-10">
+      <h1 ref={preRef} className="relative text-gray-900 select-none text-8xl md:text-9xl">
         Wilson
       </h1>
-      <h1 ref={lastRef} className="text-gray-900 select-none text-8xl md:text-9xl">
+      <h1 ref={lastRef} className="relative text-gray-900 select-none text-8xl md:text-9xl">
         Yu
       </h1>
     </div>
