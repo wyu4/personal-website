@@ -1,4 +1,5 @@
 import { completeRepositories, createSupabase, getTable } from "@/utils/github";
+import { createCacheHeaders } from "@/utils/http-helpers";
 import { StatusCodes } from "http-status-codes";
 import { NextResponse } from "next/server";
 
@@ -29,5 +30,5 @@ export async function GET() {
     (repo) => repo.visibility === "public",
   );
 
-  return NextResponse.json(completeRepositories(publishable, owners));
+  return NextResponse.json(completeRepositories(publishable, owners), { headers: createCacheHeaders() });
 }

@@ -9,6 +9,7 @@ import {
   simplifyRepositories,
   timedCache,
 } from "@/utils/github";
+import { createCacheHeaders } from "@/utils/http-helpers";
 import { StatusCodes } from "http-status-codes";
 import { NextResponse } from "next/server";
 
@@ -44,8 +45,7 @@ export async function GET(request: Request) {
     }
 
     const success = await overwriteTable(client, "github_languages", languages);
-    if (!success)
-      throw Error("Something went wrong while overwriting the languages table.");
+    if (!success) throw Error("Something went wrong while overwriting the languages table.");
   };
 
   const error = await timedCache(client, "github_languages", syncJob);
@@ -56,5 +56,5 @@ export async function GET(request: Request) {
     });
   }
 
-  return NextResponse.json("Cache request sent.");
+  return NextResponse.json("Cache request sent.", { headers: createCacheHeaders() });
 }

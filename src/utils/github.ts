@@ -18,10 +18,7 @@ type SupabaseType = ReturnType<typeof createClient>;
  * @param owners Owners index
  * @returns Completed repositories
  */
-export const completeRepositories = (
-  simplified: SimplifiedRepository[],
-  owners: Owner[],
-) => {
+export const completeRepositories = (simplified: SimplifiedRepository[], owners: Owner[]) => {
   return simplified.map((repo) => {
     const { order, ...orderlessRepo } = repo;
     const login = orderlessRepo.owner;
@@ -40,9 +37,7 @@ export const completeRepositories = (
  * @param completed Completed repositories
  * @returns Simplified repositories and owners
  */
-export const simplifyRepositories = (
-  completed: Repository[],
-): RepositorySimplificationResult => {
+export const simplifyRepositories = (completed: Repository[]): RepositorySimplificationResult => {
   let owners: Owner[] = [];
 
   const simplified = completed.map((repo, i) => {
@@ -194,10 +189,7 @@ export const lookupRepositories = async () => {
 
     return stripped;
   } catch (error) {
-    console.error(
-      `⌨️❌ Could not query to GitHub ['${GITHUB_LOGIN}' => repositories]:`,
-      error,
-    );
+    console.error(`⌨️❌ Could not query to GitHub ['${GITHUB_LOGIN}' => repositories]:`, error);
     return undefined;
   }
 };
@@ -206,9 +198,7 @@ export const lookupRepositories = async () => {
  * Method that sums up bytes of languages used in a list of repositories using provided credentials.
  * @return `Record` with the language name as the key, and the total number of bytes
  */
-export const lookupLanguages = async (
-  repositories: Repository[] | SimplifiedRepository[],
-) => {
+export const lookupLanguages = async (repositories: Repository[] | SimplifiedRepository[]) => {
   console.log(`🌐 Querying languages from ${repositories.length} repositories...`);
   const headers = createGithubHeader();
   let languages: Record<string, number> = {};
@@ -280,9 +270,7 @@ export const timedCache = async (
   console.log(`⌚ Checking time elapsed since caching ${lastUpdateKey}...`);
 
   // Checking the time since last cache
-  const lastUpdates = (await getTable(client, "github_last_update")) as
-    | LastUpdate[]
-    | undefined;
+  const lastUpdates = (await getTable(client, "github_last_update")) as LastUpdate[] | undefined;
   let selectedLastUpdate = lastUpdates?.find((row) => row.scope === lastUpdateKey) ?? {
     scope: lastUpdateKey,
     epoch: 0,

@@ -4,7 +4,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useCallback, useEffect, useRef, useState } from "react";
 import AnimatedName from "./animated-name";
-import { RepositoryCard } from "./gallery";
+import Gallery, { RepositoryCard } from "./gallery";
 import { getFromServer, getRepositories } from "@/utils/http-helpers";
 
 const NO_ZOOM = true;
@@ -20,16 +20,20 @@ export default function Banner() {
   const [repositories, setRepositories] = useState<Repository[]>([]);
 
   // Get repositories, if it fails auto-try again later
-  useCallback(async () => {
+  const reloadRepositories = useCallback(async () => {
     let id: NodeJS.Timeout | undefined = undefined;
     const update = async () => {
       const data = await getRepositories();
-      if (!data) {
-        id = setTimeout(async () => {
-          await update();
-        }, RETRY_TIME);
+      if (data) {
+        id = undefined;
+        setRepositories([...data]);
+        return;
       }
+      id = setTimeout(async () => {
+        await update();
+      }, RETRY_TIME);
     };
+    update();
 
     return () => {
       if (id) {
@@ -38,11 +42,17 @@ export default function Banner() {
     };
   }, []);
 
+  useEffect(() => {
+    reloadRepositories();
+  }, []);
+
   useGSAP(() => {
     timeline
+      // Setup
       .set(containerRef.current, {
         scale: 6,
       })
+      // Name animation
       .fromTo(sectionRef.current, { opacity: 0 }, { opacity: 1, duration: 0.5 })
       .fromTo(
         containerRef.current,
@@ -55,13 +65,17 @@ export default function Banner() {
         { x: "-60rem", y: "-10rem" },
         { x: "-70rem", y: "-10rem", duration: 0.75 },
       )
-      .to(containerRef.current, {
-        x: 0,
-        y: 0,
-        duration: 0.75,
-        scale: 1,
-        ease: "power2.inOut",
-      });
+      .to(
+        containerRef.current,
+        {
+          x: 0,
+          y: 0,
+          duration: 0.75,
+          scale: 1,
+          ease: "power2.inOut",
+        },
+        // Make repositories appear
+      );
   }, []);
 
   return (
@@ -73,11 +87,8 @@ export default function Banner() {
         ref={containerRef}
         className="absolute w-[200%] h-[200%] grid place-items-center bg-radial-[at_50%_50%] from-gray-100 from-10% to-gray-200 to-90%"
       >
-        <div
-          ref={textContainerRef}
-          className="grid place-items-center pointer-events-none"
-        >
-          {/* <RepositoryCard className="absolute" /> */}
+        <div ref={textContainerRef} className="grid place-items-center pointer-events-none">
+          {repositories.length >= 0 && <Gallery repositories={repositories} secondsPerCard={4} />}
           <AnimatedName />
         </div>
       </div>
