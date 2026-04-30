@@ -156,7 +156,7 @@ function Background({ repositories }: BackgroundProps) {
   }, [repositories]);
 
   useGSAP(() => {
-    if (repositories.length === 0) return;
+    if (repositories.length === 0 || verticalPadding === 0) return;
 
     const animate = () => {
       const timeline = gsap.timeline();
@@ -175,7 +175,7 @@ function Background({ repositories }: BackgroundProps) {
 
     const id = setTimeout(animate, 1500);
     return () => clearInterval(id);
-  }, [repositories]);
+  }, [repositories, verticalPadding]);
 
   return (
     <div
