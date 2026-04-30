@@ -61,7 +61,13 @@ const AnimatedName = forwardRef<HTMLDivElement, DivAttributes>(({}, ref) => {
   }, []);
 
   return (
-    <div ref={ref} className="relative flex flex-row gap-10 flex-nowrap z-10">
+    <div
+      ref={ref}
+      className="relative flex flex-row gap-10 flex-nowrap translate-z-0 z-10"
+      style={{
+        willChange: "transform, filter",
+      }}
+    >
       <h1
         ref={preRef}
         className="relative text-gray-900 select-none text-6xl sm:text-7xl md:text-9xl"
