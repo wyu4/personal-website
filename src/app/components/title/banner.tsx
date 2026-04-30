@@ -162,7 +162,7 @@ function Background({ repositories }: BackgroundProps) {
     const animate = () => {
       if (!visible.current) {
         timeline
-          .set(plane.current, { scale: 30, x: "100%", y: "100%" })
+          .set(plane.current, { scale: 50, x: "100%", y: "100%" })
           .to(plane.current, {
             x: 0,
             y: 0,
