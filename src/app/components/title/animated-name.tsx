@@ -1,9 +1,9 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
-import { useRef } from "react";
+import { forwardRef, useRef } from "react";
 
-export default function AnimatedName() {
+const AnimatedName = forwardRef<HTMLDivElement, DivAttributes>(({}, ref) => {
   const preRef = useRef<HTMLHeadingElement>(null);
   const lastRef = useRef<HTMLHeadingElement>(null);
 
@@ -61,13 +61,21 @@ export default function AnimatedName() {
   }, []);
 
   return (
-    <div className="relative flex flex-row gap-10 flex-nowrap z-10">
-      <h1 ref={preRef} className="relative text-gray-900 select-none text-8xl md:text-9xl">
+    <div ref={ref} className="relative flex flex-row gap-10 flex-nowrap z-10">
+      <h1
+        ref={preRef}
+        className="relative text-gray-900 select-none text-6xl sm:text-7xl md:text-9xl"
+      >
         Wilson
       </h1>
-      <h1 ref={lastRef} className="relative text-gray-900 select-none text-8xl md:text-9xl">
+      <h1
+        ref={lastRef}
+        className="relative text-gray-900 select-none text-6xl sm:text-7xl md:text-9xl"
+      >
         Yu
       </h1>
     </div>
   );
-}
+});
+
+export default AnimatedName;

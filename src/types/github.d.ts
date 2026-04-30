@@ -71,6 +71,7 @@ declare type LanguageMetadata = {
 declare type RepositoryCardProps = DivAttributes & {
   repository?: Repository;
   characterLimit?: number;
+  shineTowardsCenter?: boolean;
 };
 
 /**

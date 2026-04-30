@@ -15,6 +15,7 @@ export default function Banner() {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
+  const nameRef = useRef<HTMLDivElement>(null);
 
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [backgroundVisible, setBackgroundVisible] = useState(false);
@@ -47,32 +48,35 @@ export default function Banner() {
   }, []);
 
   useGSAP(() => {
+    const width = nameRef.current?.offsetWidth ?? 0;
     const timeline = gsap.timeline();
     timeline
       // Setup
       .set(containerRef.current, {
         scale: 6,
+        filter: "blur(0.1rem)",
       })
       // Name animation
       .fromTo(sectionRef.current, { opacity: 0 }, { opacity: 1, duration: 0.5 })
       .fromTo(
         containerRef.current,
-        { x: "40rem", y: "0" },
-        { x: "70rem", y: "0", duration: 0.75 },
+        { x: width, y: "0" },
+        { x: width * 2, y: "0", duration: 0.75 },
         "<",
       )
       .fromTo(
         containerRef.current,
-        { x: "-60rem", y: "-10rem" },
-        { x: "-70rem", y: "-10rem", duration: 0.75 },
+        { x: -width * 2, y: "-10rem" },
+        { x: -width * 2.25, y: "-10rem", duration: 0.75 },
       )
       .to(
         containerRef.current,
         {
           x: 0,
           y: 0,
-          duration: 0.75,
+          duration: 1,
           scale: 1,
+          filter: "blur(0px)",
           ease: "power2.inOut",
         },
         // Make repositories appear
@@ -80,8 +84,6 @@ export default function Banner() {
     const id = setTimeout(() => setBackgroundVisible(true), timeline.duration() * 1000 - 400);
     return () => clearTimeout(id);
   }, []);
-
-  console.log("hello");
 
   return (
     <section
@@ -97,9 +99,7 @@ export default function Banner() {
           ref={textContainerRef}
           className="relative grid place-items-center pointer-events-none w-full"
         >
-          {/* {repositories.length >= 0 && <Gallery repositories={repositories} secondsPerCard={4} />} */}
-
-          <AnimatedName />
+          <AnimatedName ref={nameRef} />
         </div>
       </div>
     </section>
@@ -115,15 +115,30 @@ function Background({ repositories, visible }: BackgroundProps) {
   const container = useRef<HTMLDivElement>(null);
   const plane = useRef<HTMLDivElement>(null);
   const chunks = useMemo(() => {
-    const result: Repository[][] = [];
+    const linear: Repository[][] = [];
     for (let i = 0; i < repositories.length; i += GITHUB_GALLERY_SIZE) {
       const chunk = repositories.slice(i, i + GITHUB_GALLERY_SIZE);
-      if (chunk.length < GITHUB_GALLERY_SIZE && result.length > 0) {
-        result[result.length - 1] = result[result.length - 1].concat(chunk);
+      if (chunk.length < GITHUB_GALLERY_SIZE && linear.length > 0) {
+        linear[linear.length - 1] = linear[linear.length - 1].concat(chunk);
         break;
       }
-      result.push(chunk);
+      linear.push(chunk);
     }
+
+    const result = new Array<Repository[]>(linear.length);
+    const center = Math.floor(result.length / 2);
+
+    let left = center;
+    let right = center + 1;
+
+    for (let i = 0; i < linear.length; i++) {
+      if (i % 2 === 0) {
+        result[left--] = linear[i];
+      } else {
+        result[right++] = linear[i];
+      }
+    }
+
     return result;
   }, [repositories]);
   const [verticalPadding, setVerticalPadding] = useState(0);
@@ -147,8 +162,12 @@ function Background({ repositories, visible }: BackgroundProps) {
         opacity: 1,
         duration: 0.25,
       })
-      .to(plane.current, { scale: 1, filter: "blur(0px)", duration: 2, ease: "sine.out" }, "<")
-      .to(plane.current, { rotateX: 20, duration: 3, ease: "sine.inOut" }, "<");
+      .to(plane.current, { scale: 1, filter: "blur(0px)", duration: 4, ease: "power4.out" }, "<")
+      .to(
+        plane.current,
+        { rotateX: 20, translateY: -verticalPadding, duration: 4, ease: "power4.out" },
+        "<",
+      );
   }, [visible]);
 
   return (
@@ -158,7 +177,7 @@ function Background({ repositories, visible }: BackgroundProps) {
     >
       <div
         ref={plane}
-        className="relative flex flex-col-reverse justify-center items-center"
+        className="relative flex flex-col-reverse justify-start items-center"
         style={{
           gap: verticalPadding,
         }}

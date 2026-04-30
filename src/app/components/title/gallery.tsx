@@ -1,7 +1,8 @@
+import { bindRefAndForwardRef } from "@/utils/ref-helpers";
 import { limitText } from "@/utils/text-helpers";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { forwardRef, useRef } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 
 declare type RepositoryCarouselProps = DivAttributes & {
   repositories: Repository[] | undefined;
@@ -22,7 +23,7 @@ const Gallery = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
     },
     carouselContainerRef,
   ) => {
-    const randomSecondsPerCard = useRef(gsap.utils.random(5, 10)).current;
+    const randomSecondsPerCard = useRef(gsap.utils.random(2, 4)).current;
     const carouselRef = useRef<HTMLDivElement>(null);
 
     useGSAP(() => {
@@ -66,7 +67,7 @@ const Gallery = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
     return (
       <div
         ref={carouselContainerRef}
-        className={`w-full shrink-0 overflow-visible h-auto will-change-transform bg-[#00000000] opacity-75 z-5 ${className}`}
+        className={`w-screen shrink-0 overflow-visible h-auto will-change-transform bg-[#00000000] opacity-75 z-5 ${className}`}
         {...props}
       >
         <div className="overflow-visible p-0">
@@ -91,6 +92,7 @@ const Gallery = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
                     className="shrink-0"
                     repository={repository}
                     characterLimit={50}
+                    shineTowardsCenter={true}
                   />
                 ))}
               </>
@@ -121,16 +123,59 @@ const DEMO_REPOSITORY: Repository = {
 };
 
 export const RepositoryCard = forwardRef<HTMLDivElement, DivAttributes & RepositoryCardProps>(
-  ({ repository = DEMO_REPOSITORY, className = "", characterLimit = -1, ...props }, ref) => {
+  (
+    {
+      repository = DEMO_REPOSITORY,
+      className = "",
+      characterLimit = -1,
+      shineTowardsCenter = false,
+      ...props
+    },
+    forwardedRef,
+  ) => {
+    const container = useRef<HTMLDivElement>(null);
+
     const isTagged = () => {
       if (!repository) return false;
       return repository.archived || repository.fork;
     };
 
+    useEffect(() => {
+      if (!shineTowardsCenter) {
+        gsap.set(container.current, {
+          backgroundImage: `linear-gradient(-25deg, var(--gray-100), var(--gray-200))`,
+        });
+        return;
+      }
+      let frame: number | undefined = undefined;
+      const update = () => {
+        if (container.current) {
+          const w = window.innerWidth;
+          const h = window.innerHeight;
+          const currentBounds = container.current?.getBoundingClientRect();
+          const currentX = currentBounds.x + currentBounds.width / 2;
+          const currentY = currentBounds.y + currentBounds.height / 2;
+
+          const y = 100 - gsap.utils.clamp(0, 1, currentY / h) * 100;
+          const x = 100 - gsap.utils.clamp(0, 1, currentX / w) * 100;
+
+          gsap.set(container.current, {
+            backgroundImage: `radial-gradient(ellipse farthest-corner at ${x}% ${y}%, var(--gray-200), var(--gray-100))`,
+          });
+        }
+        frame = requestAnimationFrame(update);
+      };
+      update();
+
+      return () => {
+        if (frame) cancelAnimationFrame(frame);
+      };
+    }, [shineTowardsCenter]);
+
     return (
       <div
-        className={`rounded-3xl flex flex-col p-7 gap-5 -bg-linear-25 from-gray-100 to-gray-200 shadow-md shrink-0 ${className}`}
-        ref={ref}
+        className={`rounded-3xl flex flex-col p-7 gap-5 shadow-md shrink-0 ${className}`}
+        ref={(node) => bindRefAndForwardRef(node, forwardedRef, container)}
         {...props}
       >
         <div className="flex flex-row gap-5">
@@ -151,8 +196,8 @@ export const RepositoryCard = forwardRef<HTMLDivElement, DivAttributes & Reposit
         </div>
         {isTagged() && (
           <div className="flex flex-row gap-2">
-            {repository.archived && <Tag text="archived" />}
-            {repository.fork && <Tag text="forked" />}
+            {repository.archived && <Tag text="archive" />}
+            {repository.fork && <Tag text="fork" />}
           </div>
         )}
       </div>
