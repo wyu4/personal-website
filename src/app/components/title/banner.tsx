@@ -113,7 +113,6 @@ function Background({ repositories }: BackgroundProps) {
   const plane = useRef<HTMLDivElement>(null);
   const [chunks, setChunks] = useState<Repository[][]>([]);
   const [verticalPadding, setVerticalPadding] = useState(0);
-  const [visible, setVisible] = useState(false);
   const [_, startTransition] = useTransition();
 
   useInnerWindow(
@@ -155,19 +154,35 @@ function Background({ repositories }: BackgroundProps) {
     startTransition(fillChunksAction);
   }, [repositories]);
 
+  const visible = useRef(false);
+  const timeline = gsap.timeline();
   useGSAP(() => {
     if (repositories.length === 0 || verticalPadding === 0) return;
 
     const animate = () => {
-      const timeline = gsap.timeline();
-      timeline
-        .set(plane.current, { scale: 50 })
-        .to(plane.current, { scale: 1, filter: "blur(0px)", duration: 4, ease: "power4.out" }, "<")
-        .to(
-          plane.current,
-          { rotateX: 20, translateY: -verticalPadding, duration: 4, ease: "power4.out" },
-          "<",
-        );
+      if (!visible.current) {
+        timeline
+          .set(plane.current, { scale: 30, x: "100%", y: "100%" })
+          .to(plane.current, {
+            x: 0,
+            y: 0,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 4,
+            rotateX: 20,
+            ease: "power4.out",
+            onStart: () => (visible.current = true),
+          })
+          .to(
+            plane.current,
+            { translateY: -verticalPadding, duration: 4, ease: "power4.out" },
+            "<",
+          );
+      }
+
+      timeline.set(plane.current, {
+        translateY: -verticalPadding,
+      });
     };
 
     const id = setTimeout(animate, 500);
