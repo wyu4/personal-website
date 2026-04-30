@@ -71,16 +71,16 @@ export default function Banner() {
         { x: -width * 2, y: "-10rem" },
         { x: -width * 2.25, y: "-10rem", duration: 0.75 },
       )
-      .to(textContainerRef.current, { background: "hsl(210, 8%, 91%, 0)", duration: 0.5 }, "<")
+
       .to(containerRef.current, {
-        delay: 0.25,
         x: 0,
         y: 0,
         duration: 1,
         scale: 1,
         filter: "blur(0px)",
         ease: "power2.inOut",
-      });
+      })
+      .to(textContainerRef.current, { background: "hsl(210, 8%, 91%, 0)", duration: 0.5 }, "<");
   }, [repositories]);
 
   return (
@@ -173,7 +173,7 @@ function Background({ repositories }: BackgroundProps) {
         );
     };
 
-    const id = setTimeout(animate, 1500);
+    const id = setTimeout(animate, 500);
     return () => clearInterval(id);
   }, [repositories, verticalPadding]);
 

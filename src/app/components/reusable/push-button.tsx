@@ -1,3 +1,5 @@
+"use client";
+
 import { bindRefAndForwardRef } from "@/utils/ref-helpers";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";

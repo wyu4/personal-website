@@ -64,8 +64,32 @@
   --color-green-900: var(--green-900);
 }
 
-body {
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
   background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-900);
+  border-radius: 4px;
+}
+
+body {
+  background-color: var(--gray-100);
+}
+
+h1,
+h2,
+p,
+a {
+  color: var(--gray-900);
+}
+
+button {
+  background-color: var(--red-100);
 }
 
 h1 {
@@ -76,4 +100,12 @@ h1 {
 h2,
 p {
   font-family: var(--font-open-sans), sans-serif;
+}
+
+h2 {
+  font-weight: 800;
+}
+
+.code {
+  font-family: var(--font-code), sans-serif;
 }
