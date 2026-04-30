@@ -114,6 +114,7 @@ function Background({ repositories }: BackgroundProps) {
   const [chunks, setChunks] = useState<Repository[][]>([]);
   const [verticalPadding, setVerticalPadding] = useState(0);
   const [visible, setVisible] = useState(false);
+  const [_, startTransition] = useTransition();
 
   useInnerWindow(
     (_, h) => {
@@ -124,35 +125,38 @@ function Background({ repositories }: BackgroundProps) {
   );
 
   useEffect(() => {
-    const linear: Repository[][] = [];
-    for (let i = 0; i < repositories.length; i += GITHUB_GALLERY_SIZE) {
-      const chunk = repositories.slice(i, i + GITHUB_GALLERY_SIZE);
-      if (chunk.length < GITHUB_GALLERY_SIZE && linear.length > 0) {
-        linear[linear.length - 1] = linear[linear.length - 1].concat(chunk);
-        break;
+    const fillChunksAction = () => {
+      const linear: Repository[][] = [];
+      for (let i = 0; i < repositories.length; i += GITHUB_GALLERY_SIZE) {
+        const chunk = repositories.slice(i, i + GITHUB_GALLERY_SIZE);
+        if (chunk.length < GITHUB_GALLERY_SIZE && linear.length > 0) {
+          linear[linear.length - 1] = linear[linear.length - 1].concat(chunk);
+          break;
+        }
+        linear.push(chunk);
       }
-      linear.push(chunk);
-    }
 
-    const result = new Array<Repository[]>(linear.length);
-    const center = Math.floor(result.length / 2);
+      const result = new Array<Repository[]>(linear.length);
+      const center = Math.floor(result.length / 2);
 
-    let left = center;
-    let right = center + 1;
+      let left = center;
+      let right = center + 1;
 
-    for (let i = 0; i < linear.length; i++) {
-      if (i % 2 === 0) {
-        result[left--] = linear[i];
-      } else {
-        result[right++] = linear[i];
+      for (let i = 0; i < linear.length; i++) {
+        if (i % 2 === 0) {
+          result[left--] = linear[i];
+        } else {
+          result[right++] = linear[i];
+        }
       }
-    }
 
-    setChunks(result);
+      setChunks(result);
+    };
+    startTransition(fillChunksAction);
   }, [repositories]);
 
   useGSAP(() => {
-    if (repositories.length === 0) return;
+    if (repositories.length === 0 || verticalPadding === 0) return;
 
     const animate = () => {
       const timeline = gsap.timeline();
@@ -161,32 +165,17 @@ function Background({ repositories }: BackgroundProps) {
         .to(container.current, {
           duration: 0.25,
         })
+        .to(plane.current, { scale: 1, filter: "blur(0px)", duration: 4, ease: "power4.out" }, "<")
         .to(
           plane.current,
-          {
-            scale: 1,
-            filter: "blur(0px)",
-            duration: 4,
-            ease: "power4.out",
-            onStart: () => setVisible(true),
-          },
+          { rotateX: 20, translateY: -verticalPadding, duration: 4, ease: "power4.out" },
           "<",
         );
     };
 
     const id = setTimeout(animate, 500);
     return () => clearInterval(id);
-  }, [repositories]);
-
-  useGSAP(() => {
-    if (!visible || verticalPadding <= 0) return;
-    gsap.to(plane.current, {
-      rotateX: 20,
-      translateY: -verticalPadding,
-      duration: 4,
-      ease: "power4.out",
-    });
-  }, [verticalPadding, visible]);
+  }, [repositories, verticalPadding]);
 
   return (
     <div
