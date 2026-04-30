@@ -162,9 +162,6 @@ function Background({ repositories }: BackgroundProps) {
       const timeline = gsap.timeline();
       timeline
         .set(plane.current, { scale: 50 })
-        .to(container.current, {
-          duration: 0.25,
-        })
         .to(plane.current, { scale: 1, filter: "blur(0px)", duration: 4, ease: "power4.out" }, "<")
         .to(
           plane.current,
