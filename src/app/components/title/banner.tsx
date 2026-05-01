@@ -77,7 +77,11 @@ export default function Banner() {
         filter: "blur(0px)",
         ease: "power2.inOut",
       })
-      .to(textContainerRef.current, { background: "hsl(210, 8%, 91%, 0)", duration: 0.5 }, "<");
+      .to(
+        textContainerRef.current,
+        { background: "hsl(210, 8%, 91%, 0)", duration: 0.5 },
+        "<",
+      );
     return () => timeline.kill();
   }, [repositories, ready]);
 
@@ -88,7 +92,7 @@ export default function Banner() {
     >
       <div
         ref={containerRef}
-        className="absolute w-[200%] h-[200%] grid place-items-center bg-radial-[at_50%_50%] from-gray-100 from-10% to-gray-200 to-90%"
+        className="absolute w-[200%] h-[200%] grid place-items-center bg-radial-[at_50%_50%] from-gray-100 from-10% to-gray-300 to-90%"
       >
         <Background repositories={repositories} ready={ready} />
         <div
@@ -198,7 +202,11 @@ function Background({ repositories, ready }: BackgroundProps) {
         }}
       >
         {chunks.map((chunk, i) => (
-          <Gallery key={`banner-chunk-${i}`} repositories={chunk} inverted={i % 2 === 1} />
+          <Gallery
+            key={`banner-chunk-${i}`}
+            repositories={chunk}
+            inverted={i % 2 === 1}
+          />
         ))}
       </div>
     </div>

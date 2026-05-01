@@ -13,6 +13,8 @@ declare type RepositoryCarouselProps = DivAttributes & {
   loopEnabled?: boolean;
 };
 
+const SHINE_ENABLED = true;
+
 const Gallery = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
   (
     {
@@ -94,7 +96,7 @@ const Gallery = forwardRef<HTMLDivElement, RepositoryCarouselProps>(
                     className="shrink-0"
                     repository={repository}
                     characterLimit={50}
-                    shineTowardsCenter={true}
+                    shineTowardsCenter={SHINE_ENABLED}
                   />
                 ))}
               </>
@@ -124,7 +126,10 @@ const DEMO_REPOSITORY: Repository = {
   },
 };
 
-export const RepositoryCard = forwardRef<HTMLDivElement, DivAttributes & RepositoryCardProps>(
+export const RepositoryCard = forwardRef<
+  HTMLDivElement,
+  DivAttributes & RepositoryCardProps
+>(
   (
     {
       repository = DEMO_REPOSITORY,
@@ -145,7 +150,8 @@ export const RepositoryCard = forwardRef<HTMLDivElement, DivAttributes & Reposit
     useEffect(() => {
       if (!shineTowardsCenter) {
         gsap.set(container.current, {
-          backgroundImage: `linear-gradient(-25deg, var(--gray-100), var(--gray-200))`,
+          backgroundColor: `var(--gray-100)`,
+          // backgroundImage: `radial-gradient(ellipse farthest-corner at 50% 50%, var(--gray-100), var(--gray-300))`,
         });
         return;
       }
