@@ -189,7 +189,7 @@ export const RepositoryCard = forwardRef<HTMLDivElement, DivAttributes & Reposit
               </p>
             )}
           </div>
-          <div className="flex flex-col justify-start items-center shrink-0 rounded-2xl">
+          <div className="flex flex-col justify-start items-center shrink-0 rounded-2xl overflow-clip">
             <img
               className="aspect-square h-32 opacity-70"
               src={`${repository.owner.avatar_url}&s=128`}
