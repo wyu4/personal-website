@@ -3,12 +3,17 @@ import gsap from "gsap";
 import { SplitText } from "gsap/all";
 import { forwardRef, useRef } from "react";
 
-const AnimatedName = forwardRef<HTMLDivElement, DivAttributes>(({}, ref) => {
+type AnimatedNameProps = DivAttributes & {
+  ready: boolean;
+};
+
+const AnimatedName = forwardRef<HTMLDivElement, AnimatedNameProps>(({ ready }, ref) => {
   const preRef = useRef<HTMLHeadingElement>(null);
   const lastRef = useRef<HTMLHeadingElement>(null);
 
-  const timeline = gsap.timeline();
   useGSAP(() => {
+    if (!ready) return;
+    const timeline = gsap.timeline();
     const preSplit = new SplitText(preRef.current, {
       type: "words, chars",
     });
@@ -58,7 +63,12 @@ const AnimatedName = forwardRef<HTMLDivElement, DivAttributes>(({}, ref) => {
         },
         "<",
       );
-  }, []);
+    return () => {
+      timeline.kill();
+      preSplit.revert();
+      lastSplit.revert();
+    };
+  }, [ready]);
 
   return (
     <div

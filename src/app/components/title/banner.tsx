@@ -9,6 +9,7 @@ import { GITHUB_GALLERY_SIZE } from "@/utils/environment";
 import Gallery from "./gallery";
 import { useInnerWindowEffect } from "@/app/hooks/window";
 import { useRetryEffect } from "@/app/hooks/retry";
+import { useFontsLoaded } from "@/app/hooks/load";
 
 const RETRY_TIME = 1000; // Milliseconds
 
@@ -17,9 +18,11 @@ export default function Banner() {
   const containerRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
-
+  const fontsLoaded = useFontsLoaded();
   const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [ready, setReady] = useState(false);
 
+  // Load repos
   useRetryEffect(
     async () => {
       const data = await getRepositories();
@@ -33,8 +36,15 @@ export default function Banner() {
     "banner-repos",
   );
 
+  // Flag as ready when repos and fonts have loaded
+  useEffect(() => {
+    if (fontsLoaded && repositories.length > 0) {
+      setReady(true);
+    }
+  }, [fontsLoaded, repositories]);
+
   useGSAP(() => {
-    if (repositories.length === 0) return;
+    if (!ready || repositories.length === 0) return;
 
     const width = nameRef.current?.offsetWidth ?? 0;
     const timeline = gsap.timeline();
@@ -69,7 +79,7 @@ export default function Banner() {
       })
       .to(textContainerRef.current, { background: "hsl(210, 8%, 91%, 0)", duration: 0.5 }, "<");
     return () => timeline.kill();
-  }, [repositories]);
+  }, [repositories, ready]);
 
   return (
     <section
@@ -80,12 +90,12 @@ export default function Banner() {
         ref={containerRef}
         className="absolute w-[200%] h-[200%] grid place-items-center bg-radial-[at_50%_50%] from-gray-100 from-10% to-gray-200 to-90%"
       >
-        <Background repositories={repositories} />
+        <Background repositories={repositories} ready={ready} />
         <div
           ref={textContainerRef}
           className="relative h-full grid place-items-center pointer-events-none w-full"
         >
-          <AnimatedName ref={nameRef} />
+          <AnimatedName ref={nameRef} ready={ready} />
         </div>
       </div>
     </section>
@@ -94,9 +104,10 @@ export default function Banner() {
 
 type BackgroundProps = {
   repositories: Repository[];
+  ready: boolean;
 };
 
-function Background({ repositories }: BackgroundProps) {
+function Background({ repositories, ready }: BackgroundProps) {
   const container = useRef<HTMLDivElement>(null);
   const plane = useRef<HTMLDivElement>(null);
   const [chunks, setChunks] = useState<Repository[][]>([]);
@@ -149,7 +160,7 @@ function Background({ repositories }: BackgroundProps) {
   const visible = useRef(false);
 
   useGSAP(() => {
-    if (repositories.length === 0 || verticalPadding === 0) return;
+    if (!ready || repositories.length === 0 || verticalPadding === 0) return;
 
     const timeline = gsap.timeline();
     if (!visible.current) {
@@ -176,7 +187,7 @@ function Background({ repositories }: BackgroundProps) {
     return () => {
       timeline.kill();
     };
-  }, [repositories, verticalPadding]);
+  }, [repositories, verticalPadding, ready]);
 
   return (
     <div
