@@ -1,3 +1,5 @@
+"use client";
+
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
@@ -46,6 +48,7 @@ const AnimatedName = forwardRef<HTMLDivElement, AnimatedNameProps>(({ ready }, r
           from: "start",
         },
         ease: "power2.inOut",
+        onComplete: () => preSplit.revert(),
       })
       .to(
         lastSplit.chars,
@@ -60,6 +63,7 @@ const AnimatedName = forwardRef<HTMLDivElement, AnimatedNameProps>(({ ready }, r
             from: "end",
           },
           ease: "power2.inOut",
+          onComplete: () => lastSplit.revert(),
         },
         "<",
       );

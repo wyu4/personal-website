@@ -1,104 +1,151 @@
+"use client";
+
 import { forwardRef, useEffect, useRef, useState } from "react";
-import InsetDiv from "../reusable/inset-div";
 import { bindRefAndForwardRef } from "@/utils/ref-helpers";
-import { pieArcClasses, pieArcLabelClasses, PieChart } from "@mui/x-charts";
+import { useRetryEffect } from "@/app/hooks/retry";
+import { getLanguages } from "@/utils/client-http-helpers";
+import { Doughnut } from "react-chartjs-2";
+import { ArcElement, Legend, Tooltip, Chart as ChartJS, ChartData } from "chart.js";
+import { GITHUB_LANGUAGE_SIZE } from "@/utils/environment";
+import { useGSAP } from "@gsap/react";
+import { SplitText } from "gsap/all";
+import gsap from "gsap";
+import { InsetDiv, PopupDiv } from "../reusable/div-presets";
+import { useIsInView } from "@/app/hooks/view";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function Languages() {
-  const [languages, setLanguages] = useState<Map<string, number>>(new Map<string, number>());
+  const [languages, setLanguages] = useState<LanguageMetadata[]>([]);
+  const heading = useRef<HTMLHeadingElement>(null);
+
+  useRetryEffect(
+    async () => {
+      const data = await getLanguages();
+      if (data) {
+        setLanguages(data.sort((a, b) => b.bytes - a.bytes).slice(0, GITHUB_LANGUAGE_SIZE));
+      }
+      return data !== undefined;
+    },
+    1000,
+    [],
+    "bio-languages",
+  );
+
+  useGSAP(() => {
+    const split = new SplitText(heading.current, {
+      type: "words, chars",
+    });
+
+    gsap.fromTo(
+      split.chars,
+      {
+        opacity: 0,
+        y: "-1rem",
+      },
+      {
+        scrollTrigger: heading.current,
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        stagger: 0.05,
+        ease: "power2.inOut",
+        onComplete: () => split.revert(),
+      },
+    );
+
+    return () => split.revert();
+  }, []);
 
   return (
-    <InsetDiv>
-      <LanguageChart chartWidth={100} pieValues={undefined} />
+    <InsetDiv className="rounded-2xl w-full p-5 overflow-clip flex flex-row justify-center items-center gap-5">
+      <PopupDiv className="flex flex-col justify-center items-center gap-5 p-5 rounded-2xl">
+        <h2 ref={heading}>{`Top ${GITHUB_LANGUAGE_SIZE} Languages`}</h2>
+        <LanguageChart pieValues={languages} />
+      </PopupDiv>
     </InsetDiv>
   );
 }
 
-type ChartData = {
-  id: number;
-  value: number;
-  label: string;
-};
-
 type BioChartProps = DivAttributes & {
-  chartWidth: number;
-  pieValues: ChartData[] | undefined;
+  pieValues: LanguageMetadata[];
 };
 
-const LanguageChart = forwardRef<HTMLDivElement, BioChartProps>(
-  ({ pieValues, chartWidth, className }, forwardedRef) => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [renderedPieValues, setRenderedPieValues] = useState<ChartData[]>([]);
+const LanguageChart = forwardRef<HTMLDivElement, BioChartProps>(({ pieValues }, forwardedRef) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<ChartJS<"doughnut">>(null);
+  const [data, setData] = useState<ChartData<"doughnut"> | undefined>(undefined);
+  const [isInView, setIsInView] = useState(false);
 
-    useEffect(() => {
-      setRenderedPieValues([]);
-      if (!pieValues) return;
-      let currentIndex = 1;
-      let interval: NodeJS.Timeout | undefined = undefined;
-      interval = setInterval(() => {
-        setRenderedPieValues(pieValues.slice(0, currentIndex));
-        currentIndex += 1;
-        if (currentIndex > pieValues.length) {
-          clearInterval(interval);
-          interval = undefined;
-        }
-      }, 100);
+  const [createIsInView, cleanupIsInView] = useIsInView((view) => setIsInView(view), containerRef);
 
-      return () => {
-        if (!interval) return;
-        clearInterval(interval);
-      };
-    }, [pieValues]);
+  useEffect(() => {
+    let totalBytes = 0;
+    pieValues.forEach((lang) => (totalBytes += lang.bytes));
+    setData({
+      labels: pieValues.map((entry) => entry.language),
+      datasets: [
+        {
+          label: "%",
+          data: pieValues.map((entry) => (entry.bytes / totalBytes) * 100),
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+            "rgba(255, 159, 64, 0.2)",
+          ],
+          borderColor: [
+            "rgba(255, 99, 132, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
+            "rgba(153, 102, 255, 1)",
+            "rgba(255, 159, 64, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    });
+  }, [pieValues]);
 
-    return (
-      <div
-        ref={(node) => bindRefAndForwardRef(node, forwardedRef, containerRef)}
-        className={`${className} border rounded-2xl border-slate-400 bg-black flex flex-col justify-center items-center p-3`}
-      >
-        {renderedPieValues && (
-          <PieChart
-            series={[
-              {
-                data: pieValues ?? [],
-                arcLabelMinAngle: 15,
-                sortingValues: "desc",
-                innerRadius: chartWidth / 20,
-                outerRadius: chartWidth / 3,
-                paddingAngle: 2,
-                cornerRadius: 5,
-                startAngle: 0,
-                endAngle: 360,
-                highlightScope: {
-                  fade: "global",
-                  highlight: "item",
-                },
-              },
-            ]}
-            sx={{
-              [`& .${pieArcLabelClasses.root}`]: {
-                fontWeight: "bold",
-                fill: "#ffffff !important",
-              },
-              [`& .${pieArcClasses.root}`]: {
-                animationDuration: "5s !important",
-              },
-              ["& .MuiChartsLegend-label"]: {
-                color: "#ffffff !important",
-              },
-            }}
-            width={chartWidth}
-            height={chartWidth}
-            slotProps={{
+  useEffect(() => {
+    createIsInView();
+    return cleanupIsInView;
+  }, []);
+
+  useEffect(() => {
+    if (!chartRef.current || !isInView) return;
+    chartRef.current.reset();
+    chartRef.current.update();
+  }, [isInView]);
+
+  return (
+    <div
+      ref={(node) => bindRefAndForwardRef(node, forwardedRef, containerRef)}
+      className={`flex flex-col justify-center items-center`}
+    >
+      {data !== undefined && (
+        <Doughnut
+          ref={chartRef}
+          data={data}
+          redraw={true}
+          options={{
+            animation: {
+              duration: 2500,
+            },
+
+            plugins: {
               legend: {
-                direction: "horizontal",
-                position: {
-                  horizontal: "center",
-                  vertical: "bottom",
+                labels: {
+                  color: "var(--gray-900)",
                 },
               },
-            }}
-          />
-        )}
-      </div>
-    );
-  },
-);
+            },
+          }}
+        />
+      )}
+    </div>
+  );
+});

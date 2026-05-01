@@ -1,3 +1,5 @@
+"use client";
+
 import { bindRefAndForwardRef } from "@/utils/ref-helpers";
 import { limitText } from "@/utils/text-helpers";
 import { useGSAP } from "@gsap/react";
@@ -180,17 +182,17 @@ export const RepositoryCard = forwardRef<HTMLDivElement, DivAttributes & Reposit
       >
         <div className="flex flex-row gap-5">
           <div className="flex flex-col gap-2 justify-start items-start">
-            <h2 className="text-4xl text-gray-600 font-bold select-none">{repository.name}</h2>
+            <h2 className="text-4xl text-gray-600 font-bold">{repository.name}</h2>
             {repository.description && (
-              <p className="text-2xl text-gray-600 max-w-100 select-none">
+              <p className="text-2xl text-gray-600 max-w-100">
                 {`"${repository.description == "null" ? "No description" : limitText(repository.description, characterLimit)}"`}
               </p>
             )}
           </div>
-          <div className="flex flex-col justify-start items-center shrink-0 rounded-2xl overflow-clip">
+          <div className="flex flex-col justify-start items-center shrink-0 rounded-2xl">
             <img
-              className="aspect-square h-32 select-none opacity-70 pointer-events-none"
-              src={repository.owner.avatar_url}
+              className="aspect-square h-32 opacity-70"
+              src={`${repository.owner.avatar_url}&s=128`}
             />
           </div>
         </div>

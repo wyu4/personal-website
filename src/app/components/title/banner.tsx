@@ -84,7 +84,7 @@ export default function Banner() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full h-dvh overflow-clip grid place-items-center opacity-0"
+      className="relative w-full h-screen overflow-clip grid place-items-center opacity-0"
     >
       <div
         ref={containerRef}
@@ -121,10 +121,6 @@ function Background({ repositories, ready }: BackgroundProps) {
     },
     [chunks],
   );
-
-  useEffect(() => {
-    console.log(verticalPadding);
-  }, [verticalPadding]);
 
   useEffect(() => {
     const fillChunksAction = () => {

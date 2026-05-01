@@ -3,10 +3,10 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger, SplitText } from "gsap/all";
-import { forwardRef, useRef, useState } from "react";
+import { forwardRef, useRef } from "react";
 import { CiBank, CiCalendar, CiLocationOn } from "react-icons/ci";
-import InsetDiv from "../reusable/inset-div";
 import Languages from "./languages";
+import { InsetDiv, PopupDiv } from "../reusable/div-presets";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -65,14 +65,17 @@ export default function Bio() {
   return (
     <div
       ref={container}
-      className="relative flex flex-col lg:justify-start lg:items-center p-20 gap-5"
+      className="relative flex flex-col lg:justify-start lg:items-center p-5 sm:p-10 md:p-20 gap-5"
     >
       <div className="flex flex-col lg:flex-row lg:justify-center lg:items-start gap-5">
         <div className="flex flex-col justify-center items-center lg:items-start gap-5">
-          <h2 ref={heading} className="text-5xl text-center lg:text-start" id="about">
+          <h2 ref={heading} className="text-4xl md:text-5xl text-center lg:text-start" id="about">
             About Me
           </h2>
-          <p ref={paragraph} className="text-xl text-center lg:text-start gap-5 min-w-1/2">
+          <p
+            ref={paragraph}
+            className="text-lg md:text-xl text-center lg:text-start gap-5 min-w-1/2"
+          >
             I'm a high school student with a serious interest in software development. I mostly lean
             toward React for web projects and Java for desktop applications. I love the process of
             taking an idea from a rough concept to a working tool and I'm constantly looking for new
@@ -111,6 +114,8 @@ function Stat({
   const textRef = useRef<HTMLParagraphElement>(null);
 
   useGSAP(() => {
+    gsap.set(container.current, { opacity: 0 });
+
     const delay = order * 0.1 + 0.25;
 
     const split = new SplitText(textRef.current, {
@@ -159,11 +164,11 @@ function Stat({
 
 const Sticker = forwardRef<HTMLDivElement, DivAttributes>(({ children }, ref) => {
   return (
-    <div
+    <PopupDiv
       ref={ref}
-      className="text-3xl aspect-square shadow-md shadow-gray-300/50 bg-gray-200 rounded-md p-1"
+      className="text-3xl aspect-square bg-gray-200 rounded-md p-1"
     >
       {children}
-    </div>
+    </PopupDiv>
   );
 });
