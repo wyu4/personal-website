@@ -1,5 +1,5 @@
 import { completeRepositories, createSupabase, getTable } from "@/utils/github";
-import { createCacheHeaders } from "@/utils/http-helpers";
+import { createCacheHeaders } from "@/utils/client-http-helpers";
 import { StatusCodes } from "http-status-codes";
 import { NextResponse } from "next/server";
 
@@ -12,12 +12,8 @@ export async function GET() {
   }
 
   const [allRepositories, owners] = await Promise.all([
-    getTable(client, "github_repository") as Promise<
-      SimplifiedRepository[] | undefined
-    >,
-    getTable(client, "github_repository_owners") as Promise<
-      Owner[] | undefined
-    >,
+    getTable(client, "github_repository") as Promise<SimplifiedRepository[] | undefined>,
+    getTable(client, "github_repository_owners") as Promise<Owner[] | undefined>,
   ]);
 
   if (!allRepositories || !owners) {
@@ -26,9 +22,9 @@ export async function GET() {
     });
   }
 
-  const publishable = allRepositories.filter(
-    (repo) => repo.visibility === "public",
-  );
+  const publishable = allRepositories.filter((repo) => repo.visibility === "public");
 
-  return NextResponse.json(completeRepositories(publishable, owners), { headers: createCacheHeaders() });
+  return NextResponse.json(completeRepositories(publishable, owners), {
+    headers: createCacheHeaders(),
+  });
 }

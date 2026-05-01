@@ -2,12 +2,13 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { JSX, useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { JSX, useCallback, useEffect, useRef, useState, useTransition } from "react";
 import AnimatedName from "./animated-name";
-import Gallery, { RepositoryCard } from "./gallery";
-import { getRepositories } from "@/utils/http-helpers";
+import { getRepositories } from "@/utils/client-http-helpers";
 import { GITHUB_GALLERY_SIZE } from "@/utils/environment";
-import { useInnerWindow } from "@/app/hooks/window";
+import Gallery from "./gallery";
+import { useInnerWindowEffect } from "@/app/hooks/window";
+import { useRetryEffect } from "@/app/hooks/retry";
 
 const RETRY_TIME = 1000; // Milliseconds
 
@@ -19,32 +20,18 @@ export default function Banner() {
 
   const [repositories, setRepositories] = useState<Repository[]>([]);
 
-  // Get repositories, if it fails auto-try again later
-  const reloadRepositories = useCallback(async () => {
-    let id: NodeJS.Timeout | undefined = undefined;
-    const update = async () => {
+  useRetryEffect(
+    async () => {
       const data = await getRepositories();
       if (data) {
-        id = undefined;
         setRepositories(data);
-        return;
       }
-      id = setTimeout(async () => {
-        await update();
-      }, RETRY_TIME);
-    };
-    update();
-
-    return () => {
-      if (id) {
-        clearTimeout(id);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    reloadRepositories();
-  }, []);
+      return data !== undefined;
+    },
+    RETRY_TIME,
+    [],
+    "banner-repos",
+  );
 
   useGSAP(() => {
     if (repositories.length === 0) return;
@@ -115,7 +102,7 @@ function Background({ repositories }: BackgroundProps) {
   const [verticalPadding, setVerticalPadding] = useState(0);
   const [_, startTransition] = useTransition();
 
-  useInnerWindow(
+  useInnerWindowEffect(
     (_, h) => {
       if (chunks.length <= 0) return;
       setVerticalPadding(Math.max(h / chunks.length / 8, 0));

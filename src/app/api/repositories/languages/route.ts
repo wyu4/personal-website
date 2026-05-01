@@ -1,5 +1,5 @@
 import { createSupabase, getTable } from "@/utils/github";
-import { createCacheHeaders } from "@/utils/http-helpers";
+import { createCacheHeaders } from "@/utils/client-http-helpers";
 import { StatusCodes } from "http-status-codes";
 import { NextResponse } from "next/server";
 
@@ -21,9 +21,9 @@ export async function GET() {
     });
   }
 
-  const publishable: Record<string, number> = {};
+  // const publishable: Record<string, number> = {};
 
-  languages.forEach((metadata) => (publishable[metadata.language] = metadata.bytes));
+  // languages.forEach((metadata) => (publishable[metadata.language] = metadata.bytes));
 
-  return NextResponse.json(publishable, { headers: createCacheHeaders() });
+  return NextResponse.json(languages, { headers: createCacheHeaders() });
 }

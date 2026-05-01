@@ -42,3 +42,24 @@ export async function getRepositories() {
 
   return repositories;
 }
+
+let languages: LanguageMetadata[] | undefined = undefined;
+/**
+ * Get the user's languages. If this is the first time this method is called, it will fetch the data using {@link getFromServer}. Otherwise, a cached result is returned.
+ * @returns Languages
+ */
+export async function getLanguages() {
+  if (!languages) {
+    const response = await getFromServer("/api/repositories/languages");
+    if (!response.ok) {
+      return;
+    }
+
+    const parsed = (await response.json()) as LanguageMetadata[] | undefined;
+    if (parsed) {
+      languages = parsed;
+    }
+  }
+
+  return languages;
+}

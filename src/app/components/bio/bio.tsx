@@ -3,8 +3,10 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger, SplitText } from "gsap/all";
-import { forwardRef, useRef } from "react";
+import { forwardRef, useRef, useState } from "react";
 import { CiBank, CiCalendar, CiLocationOn } from "react-icons/ci";
+import InsetDiv from "../reusable/inset-div";
+import Languages from "./languages";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,6 +14,8 @@ export default function Bio() {
   const container = useRef<HTMLDivElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const paragraph = useRef<HTMLParagraphElement>(null);
+
+  const statContainer = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
@@ -59,29 +63,38 @@ export default function Bio() {
   );
 
   return (
-    <div ref={container} className="relative flex flex-col lg:flex-row gap-5 p-20">
-      <div className="flex flex-col justify-center items-center lg:items-start gap-5">
-        <h2 ref={heading} className="text-5xl text-center lg:text-start">
-          About Me
-        </h2>
-        <p ref={paragraph} className="text-xl text-center lg:text-start gap-5 min-w-1/2">
-          I'm a high school student with a serious interest in software development. I mostly lean
-          toward React for web projects and Java for desktop applications. I love the process of
-          taking an idea from a rough concept to a working tool and I'm constantly looking for new
-          projects to contribute to.
-        </p>
+    <div
+      ref={container}
+      className="relative flex flex-col lg:justify-start lg:items-center p-20 gap-5"
+    >
+      <div className="flex flex-col lg:flex-row lg:justify-center lg:items-start gap-5">
+        <div className="flex flex-col justify-center items-center lg:items-start gap-5">
+          <h2 ref={heading} className="text-5xl text-center lg:text-start" id="about">
+            About Me
+          </h2>
+          <p ref={paragraph} className="text-xl text-center lg:text-start gap-5 min-w-1/2">
+            I'm a high school student with a serious interest in software development. I mostly lean
+            toward React for web projects and Java for desktop applications. I love the process of
+            taking an idea from a rough concept to a working tool and I'm constantly looking for new
+            projects to contribute to.
+          </p>
+        </div>
+        <InsetDiv
+          ref={statContainer}
+          className="p-10 xl:px-20 xl:py-10 rounded-2xl flex flex-col justify-center items-start gap-2 lg:gap-4 overflow-clip"
+        >
+          <Stat text="17 years old">
+            <CiCalendar />
+          </Stat>
+          <Stat text="Ottawa, Canada" order={1}>
+            <CiLocationOn />
+          </Stat>
+          <Stat text="Earl of March" order={2}>
+            <CiBank />
+          </Stat>
+        </InsetDiv>
       </div>
-      <div className="p-10 xl:p-20 inset-shadow-gray-300/50 inset-shadow-sm rounded-2xl flex flex-col justify-center items-start gap-2 lg:gap-4">
-        <Stat text="17 years old">
-          <CiCalendar />
-        </Stat>
-        <Stat text="Ottawa, Canada">
-          <CiLocationOn />
-        </Stat>
-        <Stat text="Earl of March Secondary School">
-          <CiBank />
-        </Stat>
-      </div>
+      <Languages />
     </div>
   );
 }
@@ -89,13 +102,57 @@ export default function Bio() {
 function Stat({
   children,
   text,
+  order = 0,
 }: DivAttributes & {
   text: string;
+  order?: number;
 }) {
+  const container = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLParagraphElement>(null);
+
+  useGSAP(() => {
+    const delay = order * 0.1 + 0.25;
+
+    const split = new SplitText(textRef.current, {
+      type: "words, chars",
+    });
+
+    gsap.fromTo(
+      container.current,
+      { opacity: 0 },
+      {
+        delay: delay,
+        opacity: 1,
+        duration: 1,
+        scrollTrigger: container.current,
+      },
+    );
+
+    gsap.fromTo(
+      split.chars,
+      { opacity: 0, x: "1rem" },
+      {
+        delay: delay * 2,
+        opacity: 1,
+        x: 0,
+        stagger: 0.01,
+        duration: 0.5,
+        scrollTrigger: container.current,
+        onComplete: split.revert,
+      },
+    );
+
+    return () => {
+      split.revert();
+    };
+  }, [order]);
   return (
-    <div className="flex flex-row flex-nowrap justify-center items-center shrink-0 gap-2 xl:gap-4">
+    <div
+      ref={container}
+      className="flex flex-row flex-nowrap justify-center items-center shrink-0 gap-2 xl:gap-4"
+    >
       <Sticker>{children}</Sticker>
-      <p className="code text-xs xl:text-xl text-nowrap code">{`[${text}]`}</p>
+      <p ref={textRef} className="code text-xs xl:text-xl text-nowrap code">{`[${text}]`}</p>
     </div>
   );
 }
