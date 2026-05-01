@@ -68,6 +68,7 @@ export default function Banner() {
         ease: "power2.inOut",
       })
       .to(textContainerRef.current, { background: "hsl(210, 8%, 91%, 0)", duration: 0.5 }, "<");
+    return () => timeline.kill();
   }, [repositories]);
 
   return (
@@ -107,8 +108,12 @@ function Background({ repositories }: BackgroundProps) {
       if (chunks.length <= 0) return;
       setVerticalPadding(Math.max(h / chunks.length / 8, 0));
     },
-    [chunks.length],
+    [chunks],
   );
+
+  useEffect(() => {
+    console.log(verticalPadding);
+  }, [verticalPadding]);
 
   useEffect(() => {
     const fillChunksAction = () => {
@@ -142,60 +147,51 @@ function Background({ repositories }: BackgroundProps) {
   }, [repositories]);
 
   const visible = useRef(false);
-  const timeline = gsap.timeline();
+
   useGSAP(() => {
     if (repositories.length === 0 || verticalPadding === 0) return;
 
-    const animate = () => {
-      if (!visible.current) {
-        timeline
-          .set(plane.current, { scale: 50, x: "100%", y: "100%" })
-          .to(plane.current, {
-            x: 0,
-            y: 0,
-            scale: 1,
-            filter: "blur(0px)",
-            duration: 4,
-            rotateX: 20,
-            ease: "power4.out",
-            onStart: () => (visible.current = true),
-          })
-          .to(
-            plane.current,
-            { translateY: -verticalPadding, duration: 4, ease: "power4.out" },
-            "<",
-          );
-      }
-
+    const timeline = gsap.timeline();
+    if (!visible.current) {
+      timeline.fromTo(
+        plane.current,
+        { filter: "blur(20px)", scale: 50, x: "100%", y: "100%" },
+        {
+          delay: 0.5,
+          x: 0,
+          y: -verticalPadding,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: 4,
+          ease: "power4.out",
+          onStart: () => (visible.current = true),
+        },
+      );
+    } else {
       timeline.set(plane.current, {
-        translateY: -verticalPadding,
+        y: -verticalPadding,
       });
-    };
+    }
 
-    const id = setTimeout(animate, 500);
-    return () => clearInterval(id);
+    return () => {
+      timeline.kill();
+    };
   }, [repositories, verticalPadding]);
 
   return (
     <div
       ref={container}
-      className="absolute w-full h-full grid place-items-center overflow-clip pointer-events-none perspective-distant"
+      className="absolute w-full h-full grid place-items-center pointer-events-none perspective-distant"
     >
       <div
         ref={plane}
-        className="relative flex flex-col-reverse justify-center items-center translate-z-0"
+        className="relative flex flex-col-reverse justify-center items-center rotate-x-20"
         style={{
           gap: verticalPadding,
-          filter: "blur(20px)",
-          willChange: "filter",
         }}
       >
         {chunks.map((chunk, i) => (
-          <Gallery
-            key={chunk.map((repo) => repo.html_url).join(".")}
-            repositories={chunk}
-            inverted={i % 2 === 1}
-          />
+          <Gallery key={`banner-chunk-${i}`} repositories={chunk} inverted={i % 2 === 1} />
         ))}
       </div>
     </div>
