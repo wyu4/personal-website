@@ -3,10 +3,10 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger, SplitText } from "gsap/all";
-import { forwardRef, useRef } from "react";
+import {  useRef } from "react";
 import { CiBank, CiCalendar, CiLocationOn } from "react-icons/ci";
-import Languages from "./languages";
-import { InsetDiv, PopupDiv } from "../reusable/div-presets";
+import { InsetDiv, Sticker } from "../reusable/div-presets";
+import Stats from "./github-stats";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -63,7 +63,7 @@ export default function Bio() {
   );
 
   return (
-    <div
+    <section
       ref={container}
       className="relative flex flex-col lg:justify-start lg:items-center p-5 sm:p-10 md:p-20 gap-5"
     >
@@ -97,8 +97,8 @@ export default function Bio() {
           </Stat>
         </InsetDiv>
       </div>
-      <Languages />
-    </div>
+      <Stats />
+    </section>
   );
 }
 
@@ -162,13 +162,4 @@ function Stat({
   );
 }
 
-const Sticker = forwardRef<HTMLDivElement, DivAttributes>(({ children }, ref) => {
-  return (
-    <PopupDiv
-      ref={ref}
-      className="text-3xl aspect-square bg-gray-200 rounded-md p-1"
-    >
-      {children}
-    </PopupDiv>
-  );
-});
+

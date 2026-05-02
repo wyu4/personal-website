@@ -1,3 +1,5 @@
+import { GITHUB_LOGIN } from "./environment";
+
 /**
  * Create a default cache header for API returns
  * @param maxAge Maximum age of cache in seconds
@@ -62,4 +64,23 @@ export async function getLanguages() {
   }
 
   return languages;
+}
+
+let contributions: GithubContributionAPIResponse | undefined = undefined;
+export async function getContributions() {
+  if (!contributions) {
+    const response = await fetch(
+      `https://github-contributions-api.jogruber.de/v4/${GITHUB_LOGIN}?y=last`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+    if (!response.ok) {
+      return undefined;
+    }
+    contributions = (await response.json()) as GithubContributionAPIResponse;
+  }
+
+  return contributions;
 }

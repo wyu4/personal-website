@@ -80,3 +80,19 @@ declare type RepositoryCardProps = DivAttributes & {
 declare type RepositoryTagProps = DivAttributes & {
   text: string;
 };
+
+/**
+ * A GitHub contribution object
+ */
+declare type GithubContribution = {
+  date: string;
+  level: number;
+};
+
+/**
+ * The response format of the GitHub contributions API
+ */
+declare type GithubContributionAPIResponse = {
+  total: Map<string, number>;
+  contributions: GithubContribution[];
+};

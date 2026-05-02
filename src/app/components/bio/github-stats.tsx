@@ -12,25 +12,31 @@ import { SplitText } from "gsap/all";
 import gsap from "gsap";
 import { InsetDiv, PopupDiv } from "../reusable/div-presets";
 import { useIsInView } from "@/app/hooks/view";
+import Contributions from "./github-contributions";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function Languages() {
-  const [languages, setLanguages] = useState<LanguageMetadata[]>([]);
-  const heading = useRef<HTMLHeadingElement>(null);
-
-  useRetryEffect(
-    async () => {
-      const data = await getLanguages();
-      if (data) {
-        setLanguages(data.sort((a, b) => b.bytes - a.bytes).slice(0, GITHUB_LANGUAGE_SIZE));
-      }
-      return data !== undefined;
-    },
-    1000,
-    [],
-    "bio-languages",
+export default function Stats() {
+  return (
+    <InsetDiv className="rounded-2xl w-full p-5 overflow-clip grid grid-cols-1 lg:grid-cols-2 justify-center items-center gap-5">
+      <StatCard headingText={`Top ${GITHUB_LANGUAGE_SIZE} Languages`}>
+        <LanguageChart />
+      </StatCard>
+      <StatCard headingText="GitHub Contributions">
+        <Contributions />
+      </StatCard>
+    </InsetDiv>
   );
+}
+
+const StatCard = forwardRef<
+  HTMLDivElement,
+  DivAttributes & {
+    headingText: string;
+    headingDelay?: number;
+  }
+>(({ children, headingText, className, headingDelay }, ref) => {
+  const heading = useRef<HTMLHeadingElement>(null);
 
   useGSAP(() => {
     const split = new SplitText(heading.current, {
@@ -44,6 +50,7 @@ export default function Languages() {
         y: "-1rem",
       },
       {
+        delay: headingDelay,
         scrollTrigger: heading.current,
         y: 0,
         opacity: 1,
@@ -58,36 +65,48 @@ export default function Languages() {
   }, []);
 
   return (
-    <InsetDiv className="rounded-2xl w-full p-5 overflow-clip flex flex-row justify-center items-center gap-5">
-      <PopupDiv className="flex flex-col justify-center items-center gap-5 p-5 rounded-2xl">
-        <h2 ref={heading}>{`Top ${GITHUB_LANGUAGE_SIZE} Languages`}</h2>
-        <LanguageChart pieValues={languages} />
-      </PopupDiv>
-    </InsetDiv>
+    <PopupDiv
+      ref={ref}
+      className={`relative h-full flex flex-col justify-start items-center gap-5 p-5 rounded-2xl ${className}`}
+    >
+      <h2 ref={heading}>{headingText}</h2>
+      {children}
+    </PopupDiv>
   );
-}
+});
 
-type BioChartProps = DivAttributes & {
-  pieValues: LanguageMetadata[];
-};
-
-const LanguageChart = forwardRef<HTMLDivElement, BioChartProps>(({ pieValues }, forwardedRef) => {
+const LanguageChart = forwardRef<HTMLDivElement, DivAttributes>(({}, forwardedRef) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ChartJS<"doughnut">>(null);
   const [data, setData] = useState<ChartData<"doughnut"> | undefined>(undefined);
   const [isInView, setIsInView] = useState(false);
 
+  const [languages, setLanguages] = useState<LanguageMetadata[]>([]);
+
+  useRetryEffect(
+    async () => {
+      const data = await getLanguages();
+      if (data) {
+        setLanguages(data.sort((a, b) => b.bytes - a.bytes).slice(0, GITHUB_LANGUAGE_SIZE));
+      }
+      return data !== undefined;
+    },
+    5000,
+    [],
+    "bio-languages",
+  );
+
   const [createIsInView, cleanupIsInView] = useIsInView((view) => setIsInView(view), containerRef);
 
   useEffect(() => {
     let totalBytes = 0;
-    pieValues.forEach((lang) => (totalBytes += lang.bytes));
+    languages.forEach((lang) => (totalBytes += lang.bytes));
     setData({
-      labels: pieValues.map((entry) => entry.language),
+      labels: languages.map((entry) => entry.language),
       datasets: [
         {
           label: "%",
-          data: pieValues.map((entry) => (entry.bytes / totalBytes) * 100),
+          data: languages.map((entry) => +((entry.bytes / totalBytes) * 100).toFixed(2)),
           backgroundColor: [
             "rgba(255, 99, 132, 0.2)",
             "rgba(54, 162, 235, 0.2)",
@@ -108,7 +127,7 @@ const LanguageChart = forwardRef<HTMLDivElement, BioChartProps>(({ pieValues }, 
         },
       ],
     });
-  }, [pieValues]);
+  }, [languages]);
 
   useEffect(() => {
     createIsInView();
