@@ -84,6 +84,7 @@ body {
 h1,
 h2,
 p,
+b,
 a {
   color: var(--gray-900);
 }

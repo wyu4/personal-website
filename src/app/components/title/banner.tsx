@@ -11,10 +11,12 @@ import { useInnerWindowEffect } from "@/app/hooks/window";
 import { useRetryEffect } from "@/app/hooks/retry";
 import { useFontsLoaded } from "@/app/hooks/load";
 import PushButton from "../reusable/push-button";
-import ScrollButton from "./scroll-button";
+import { GoChevronDown } from "react-icons/go";
+import { ScrollToPlugin } from "gsap/all";
 
 const RETRY_TIME = 1000; // Milliseconds
 
+gsap.registerPlugin(ScrollToPlugin);
 export default function Banner() {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -103,6 +105,39 @@ export default function Banner() {
         </div>
       </div>
     </section>
+  );
+}
+
+type ScrollButtonProps = {
+  visible?: boolean;
+};
+
+function ScrollButton({ visible = true }: ScrollButtonProps) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  useGSAP(() => {
+    gsap.to(buttonRef.current, {
+      delay: 1,
+      opacity: visible ? 1 : 0,
+      duration: 0.5,
+      ease: "power2.inOut",
+    });
+  }, [visible]);
+
+  return (
+    <PushButton
+      ref={buttonRef}
+      onClick={() =>
+        gsap.to(window, {
+          scrollTo: { y: "#about", autoKill: true },
+          duration: 1,
+          ease: "power2.inOut",
+        })
+      }
+      className="text-4xl opacity-0"
+      disabled={!visible}
+    >
+      <GoChevronDown />
+    </PushButton>
   );
 }
 
