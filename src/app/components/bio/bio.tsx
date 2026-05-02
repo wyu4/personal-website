@@ -3,7 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger, SplitText } from "gsap/all";
-import {  useRef } from "react";
+import { useRef } from "react";
 import { CiBank, CiCalendar, CiLocationOn } from "react-icons/ci";
 import { InsetDiv, Sticker } from "../reusable/div-presets";
 import Stats from "./github-stats";
@@ -66,10 +66,11 @@ export default function Bio() {
     <section
       ref={container}
       className="relative flex flex-col lg:justify-start lg:items-center p-5 sm:p-10 md:p-20 gap-5"
+      id="about"
     >
       <div className="flex flex-col lg:flex-row lg:justify-center lg:items-start gap-5">
         <div className="flex flex-col justify-center items-center lg:items-start gap-5">
-          <h2 ref={heading} className="text-4xl md:text-5xl text-center lg:text-start" id="about">
+          <h2 ref={heading} className="text-4xl md:text-5xl text-center lg:text-start">
             About Me
           </h2>
           <p
@@ -161,5 +162,3 @@ function Stat({
     </div>
   );
 }
-
-

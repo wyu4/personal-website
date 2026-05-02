@@ -88,10 +88,6 @@ a {
   color: var(--gray-900);
 }
 
-button {
-  background-color: var(--red-100);
-}
-
 h1 {
   font-family: var(--font-lexend), sans-serif;
   font-weight: 800;

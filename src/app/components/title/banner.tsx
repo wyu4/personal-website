@@ -10,6 +10,8 @@ import Gallery from "./gallery";
 import { useInnerWindowEffect } from "@/app/hooks/window";
 import { useRetryEffect } from "@/app/hooks/retry";
 import { useFontsLoaded } from "@/app/hooks/load";
+import PushButton from "../reusable/push-button";
+import ScrollButton from "./scroll-button";
 
 const RETRY_TIME = 1000; // Milliseconds
 
@@ -95,8 +97,10 @@ export default function Banner() {
           <AnimatedName ref={nameRef} ready={ready} />
         </div>
       </div>
-      <div className="w-full h-full z-20 grid place-items-center">
-        <div className="relative shrink-0 w-full h-full"></div>
+      <div className="relative w-full h-dvh z-20">
+        <div className="absolute w-full bottom-0 flex flex-row justify-center items-center pb-20">
+          <ScrollButton visible={ready} />
+        </div>
       </div>
     </section>
   );
