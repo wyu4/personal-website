@@ -139,7 +139,7 @@ type DayProps = {
 };
 function Day({ level }: DayProps) {
   const clampedLevel = Math.max(0, Math.min(level, 4));
-  const color = `var(--green-${9 - clampedLevel}00)`;
+  const color = clampedLevel === 0 ? "var(--gray-300)" : `var(--green-${9 - clampedLevel}00)`;
   return (
     <div
       className="aspect-square w-2 rounded-xs"

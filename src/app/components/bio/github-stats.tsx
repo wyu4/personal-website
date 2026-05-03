@@ -67,7 +67,7 @@ const StatCard = forwardRef<
   return (
     <PopupDiv
       ref={ref}
-      className={`relative h-full flex flex-col justify-start items-center gap-5 p-5 rounded-2xl ${className}`}
+      className={`relative h-full flex flex-col justify-start items-center gap-5 p-5 rounded-2xl bg-gray-150 ${className}`}
     >
       <h2 ref={heading}>{headingText}</h2>
       {children}
