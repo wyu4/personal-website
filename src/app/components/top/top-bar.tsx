@@ -41,7 +41,7 @@ export default function TopBar() {
         <PushButton
           onClick={() =>
             gsap.to(window, {
-              scrollTo: { y: 0, autoKill: true },
+              scrollTo: 0,
               duration: 1,
               ease: "power2.inOut",
             })

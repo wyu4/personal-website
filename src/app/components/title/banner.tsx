@@ -81,12 +81,19 @@ export default function Banner() {
         filter: "blur(0px)",
         ease: "power2.inOut",
       })
-      .to(textContainerRef.current, { background: "hsl(210, 8%, 91%, 0)", duration: 0.5 }, "<");
+      .to(
+        textContainerRef.current,
+        { background: "hsl(210, 8%, 91%, 0)", duration: 0.5 },
+        "<",
+      );
     return () => timeline.kill();
   }, [repositories, ready]);
 
   return (
-    <section ref={sectionRef} className="relative w-full h-screen overflow-clip opacity-0">
+    <section
+      ref={sectionRef}
+      className="relative w-full h-screen overflow-clip opacity-0"
+    >
       <div
         ref={containerRef}
         className="absolute w-full h-full grid place-items-center bg-radial-[at_50%_50%] from-gray-100 from-10% to-gray-200 to-90% z-10"
@@ -128,7 +135,7 @@ function ScrollButton({ visible = true }: ScrollButtonProps) {
       ref={buttonRef}
       onClick={() =>
         gsap.to(window, {
-          scrollTo: { y: "#about", autoKill: true },
+          scrollTo: "#about",
           duration: 1,
           ease: "power2.inOut",
         })
@@ -237,7 +244,11 @@ function Background({ repositories, ready }: BackgroundProps) {
         }}
       >
         {chunks.map((chunk, i) => (
-          <Gallery key={`banner-chunk-${i}`} repositories={chunk} inverted={i % 2 === 1} />
+          <Gallery
+            key={`banner-chunk-${i}`}
+            repositories={chunk}
+            inverted={i % 2 === 1}
+          />
         ))}
       </div>
     </div>
