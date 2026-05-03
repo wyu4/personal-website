@@ -65,7 +65,7 @@ export default function Bio() {
   return (
     <section
       ref={container}
-      className="relative flex flex-col lg:justify-start lg:items-center p-5 sm:p-10 md:p-20 gap-5"
+      className="relative flex flex-col lg:justify-start lg:items-center py-10 px-5 sm:px-10 md:p-20 gap-5"
       id="about"
     >
       <div className="flex flex-col lg:flex-row lg:justify-center lg:items-start gap-5">
@@ -77,10 +77,10 @@ export default function Bio() {
             ref={paragraph}
             className="text-lg md:text-xl text-center lg:text-start gap-5 min-w-1/2"
           >
-            I'm a high school student with a serious interest in software development. I mostly lean
-            toward React for web projects and Java for desktop applications. I love the process of
-            taking an idea from a rough concept to a working tool and I'm constantly looking for new
-            projects to contribute to.
+            I'm a high school student with a serious interest in software development. I
+            mostly lean toward React for web projects and Java for desktop applications. I
+            love the process of taking an idea from a rough concept to a working tool and
+            I'm constantly looking for new projects to contribute to.
           </p>
         </div>
         <InsetDiv
@@ -158,7 +158,10 @@ function Stat({
       className="flex flex-row flex-nowrap justify-center items-center shrink-0 gap-2 xl:gap-4"
     >
       <Sticker>{children}</Sticker>
-      <p ref={textRef} className="code text-xs xl:text-xl text-nowrap code">{`[${text}]`}</p>
+      <p
+        ref={textRef}
+        className="code text-xs xl:text-xl text-nowrap code"
+      >{`[${text}]`}</p>
     </div>
   );
 }
