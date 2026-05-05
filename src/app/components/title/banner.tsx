@@ -16,19 +16,26 @@ import { ScrollToPlugin } from "gsap/all";
 
 const RETRY_TIME = 1000; // Milliseconds
 
+type BannerProps = {
+  repositories?: Repository[];
+};
+
 gsap.registerPlugin(ScrollToPlugin);
-export default function Banner() {
+export default function Banner({ repositories }: BannerProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
   const fontsLoaded = useFontsLoaded();
-  const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [localRepositories, setRepositories] = useState<Repository[] | undefined>(
+    repositories,
+  );
   const [ready, setReady] = useState(false);
 
   // Load repos
   useRetryEffect(
     async () => {
+      if (repositories) return true;
       const data = await getRepositories();
       if (data) {
         setRepositories(data);
@@ -42,13 +49,13 @@ export default function Banner() {
 
   // Flag as ready when repos and fonts have loaded
   useEffect(() => {
-    if (fontsLoaded && repositories.length > 0) {
+    if (fontsLoaded && localRepositories) {
       setReady(true);
     }
-  }, [fontsLoaded, repositories]);
+  }, [fontsLoaded, localRepositories]);
 
   useGSAP(() => {
-    if (!ready || repositories.length === 0) return;
+    if (!ready || !localRepositories) return;
 
     const width = nameRef.current?.offsetWidth ?? 0;
     const timeline = gsap.timeline();
@@ -87,7 +94,7 @@ export default function Banner() {
         "<",
       );
     return () => timeline.kill();
-  }, [repositories, ready]);
+  }, [localRepositories, ready]);
 
   return (
     <section
@@ -98,7 +105,7 @@ export default function Banner() {
         ref={containerRef}
         className="absolute w-full h-full grid place-items-center bg-radial-[at_50%_50%] from-gray-100 from-10% to-gray-200 to-90% z-10"
       >
-        <Background repositories={repositories} ready={ready} />
+        <Background repositories={localRepositories ?? []} ready={ready} />
         <div
           ref={textContainerRef}
           className="relative h-full grid place-items-center pointer-events-none w-full"
