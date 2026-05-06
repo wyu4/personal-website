@@ -35,7 +35,7 @@ export default function TopBar() {
   return (
     <section
       ref={container}
-      className="fixed w-full top-0 left-0 z-30 flex flex-row p-5 gap-10 md:gap-5 justify-center md:justify-between bg-linear-180 from-gray-300/75 to-gray-200/75 opacity-0 items-center"
+      className="fixed w-full top-0 left-0 z-30 flex flex-row p-5 gap-10 md:gap-5 justify-center md:justify-between bg-nav opacity-0 items-center"
     >
       <div className="flex flex-row justify-center items-center invisible md:visible absolute md:relative">
         <PushButton

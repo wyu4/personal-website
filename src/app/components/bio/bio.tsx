@@ -87,15 +87,15 @@ export default function Bio() {
           ref={statContainer}
           className="p-10 xl:px-20 xl:py-10 rounded-2xl flex flex-col justify-center items-start gap-2 lg:gap-4 overflow-clip"
         >
-          <Stat text="17 years old">
+          <MiniStat text="17 years old">
             <CiCalendar />
-          </Stat>
-          <Stat text="Ottawa, Canada" order={1}>
+          </MiniStat>
+          <MiniStat text="Ottawa, Canada" order={1}>
             <CiLocationOn />
-          </Stat>
-          <Stat text="Earl of March" order={2}>
+          </MiniStat>
+          <MiniStat text="Earl of March" order={2}>
             <CiBank />
-          </Stat>
+          </MiniStat>
         </InsetDiv>
       </div>
       <Stats />
@@ -103,7 +103,7 @@ export default function Bio() {
   );
 }
 
-function Stat({
+function MiniStat({
   children,
   text,
   order = 0,

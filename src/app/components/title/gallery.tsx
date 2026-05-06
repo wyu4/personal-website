@@ -5,6 +5,7 @@ import { limitText } from "@/utils/text-helpers";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { forwardRef, useEffect, useRef } from "react";
+import { PopupDiv } from "../reusable/div-presets";
 
 declare type RepositoryCarouselProps = DivAttributes & {
   repositories: Repository[] | undefined;
@@ -181,8 +182,8 @@ export const RepositoryCard = forwardRef<
     }, [shineTowardsCenter]);
 
     return (
-      <div
-        className={`rounded-3xl flex flex-col p-7 gap-5 shadow-md shrink-0 ${className}`}
+      <PopupDiv
+        className={`rounded-3xl flex flex-col p-7 gap-5 shrink-0 ${className}`}
         ref={(node) => bindRefAndForwardRef(node, forwardedRef, container)}
         {...props}
       >
@@ -208,7 +209,7 @@ export const RepositoryCard = forwardRef<
             {repository.fork && <Tag text="fork" />}
           </div>
         )}
-      </div>
+      </PopupDiv>
     );
   },
 );

@@ -103,7 +103,7 @@ export default function Banner({ repositories }: BannerProps) {
     >
       <div
         ref={containerRef}
-        className="absolute w-full h-full grid place-items-center bg-radial-[at_50%_50%] from-gray-100 from-10% to-gray-200 to-90% z-10"
+        className="absolute w-full h-full grid place-items-center bg-banner z-10"
       >
         <Background repositories={localRepositories ?? []} ready={ready} />
         <div

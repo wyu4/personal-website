@@ -13,6 +13,8 @@ import gsap from "gsap";
 import { InsetDiv, PopupDiv } from "../reusable/div-presets";
 import { useIsInView } from "@/app/hooks/view";
 import Contributions from "./github-contributions";
+import { getVar } from "@/utils/style-helpers";
+import { useRootClassEffect } from "@/app/hooks/misc";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -80,6 +82,7 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes>(({}, forwardedRe
   const chartRef = useRef<ChartJS<"doughnut">>(null);
   const [data, setData] = useState<ChartData<"doughnut"> | undefined>(undefined);
   const [isInView, setIsInView] = useState(false);
+  const rootClasses = useRootClassEffect();
 
   const [languages, setLanguages] = useState<LanguageMetadata[]>([]);
 
@@ -87,7 +90,9 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes>(({}, forwardedRe
     async () => {
       const data = await getLanguages();
       if (data) {
-        setLanguages(data.sort((a, b) => b.bytes - a.bytes).slice(0, GITHUB_LANGUAGE_SIZE));
+        setLanguages(
+          data.sort((a, b) => b.bytes - a.bytes).slice(0, GITHUB_LANGUAGE_SIZE),
+        );
       }
       return data !== undefined;
     },
@@ -96,11 +101,15 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes>(({}, forwardedRe
     "bio-languages",
   );
 
-  const [createIsInView, cleanupIsInView] = useIsInView((view) => setIsInView(view), containerRef);
+  const [createIsInView, cleanupIsInView] = useIsInView(
+    (view) => setIsInView(view),
+    containerRef,
+  );
 
   useEffect(() => {
     let totalBytes = 0;
     languages.forEach((lang) => (totalBytes += lang.bytes));
+
     setData({
       labels: languages.map((entry) => entry.language),
       datasets: [
@@ -108,26 +117,26 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes>(({}, forwardedRe
           label: "%",
           data: languages.map((entry) => +((entry.bytes / totalBytes) * 100).toFixed(2)),
           backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-            "rgba(153, 102, 255, 0.2)",
-            "rgba(255, 159, 64, 0.2)",
+            getVar("--chart-1"),
+            getVar("--chart-2"),
+            getVar("--chart-3"),
+            getVar("--chart-4"),
+            getVar("--chart-5"),
+            getVar("--chart-6"),
           ],
           borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(255, 206, 86, 1)",
-            "rgba(75, 192, 192, 1)",
-            "rgba(153, 102, 255, 1)",
-            "rgba(255, 159, 64, 1)",
+            getVar("--chart-1-border"),
+            getVar("--chart-2-border"),
+            getVar("--chart-3-border"),
+            getVar("--chart-4-border"),
+            getVar("--chart-5-border"),
+            getVar("--chart-6-border"),
           ],
           borderWidth: 1,
         },
       ],
     });
-  }, [languages]);
+  }, [languages, rootClasses]);
 
   useEffect(() => {
     createIsInView();
