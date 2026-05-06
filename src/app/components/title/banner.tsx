@@ -13,6 +13,8 @@ import { useFontsLoaded } from "@/app/hooks/load";
 import PushButton from "../reusable/push-button";
 import { GoChevronDown } from "react-icons/go";
 import { ScrollToPlugin } from "gsap/all";
+import { useRootClassEffect } from "@/app/hooks/misc";
+import { getVar } from "@/utils/style-helpers";
 
 const RETRY_TIME = 1000; // Milliseconds
 
@@ -30,6 +32,7 @@ export default function Banner({ repositories }: BannerProps) {
   const [localRepositories, setRepositories] = useState<Repository[] | undefined>(
     repositories,
   );
+  const rootClasses = useRootClassEffect();
   const [ready, setReady] = useState(false);
 
   // Load repos
@@ -54,18 +57,24 @@ export default function Banner({ repositories }: BannerProps) {
     }
   }, [fontsLoaded, localRepositories]);
 
+  const timeline = useRef<gsap.core.Timeline | undefined>(undefined);
   useGSAP(() => {
     if (!ready || !localRepositories) return;
 
+    const background = getVar("--gray-100");
+
     const width = nameRef.current?.offsetWidth ?? 0;
-    const timeline = gsap.timeline();
-    timeline
+    if (timeline.current) {
+      timeline.current.kill();
+    }
+    timeline.current = gsap.timeline();
+    timeline.current
       // Setup
       .set(containerRef.current, {
         scale: 6,
         filter: "blur(1px)",
       })
-      .set(textContainerRef.current, { background: "hsl(210, 8%, 91%)" })
+      .set(textContainerRef.current, { backgroundColor: background })
       // Name animation
       .fromTo(sectionRef.current, { opacity: 0 }, { opacity: 1, duration: 0.5 })
       .fromTo(
@@ -90,11 +99,10 @@ export default function Banner({ repositories }: BannerProps) {
       })
       .to(
         textContainerRef.current,
-        { background: "hsl(210, 8%, 91%, 0)", duration: 0.5 },
+        { background: `${background}00`, duration: 0.5 },
         "<",
       );
-    return () => timeline.kill();
-  }, [localRepositories, ready]);
+  }, [localRepositories, ready, rootClasses]);
 
   return (
     <section

@@ -83,6 +83,7 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes>(({}, forwardedRe
   const [data, setData] = useState<ChartData<"doughnut"> | undefined>(undefined);
   const [isInView, setIsInView] = useState(false);
   const rootClasses = useRootClassEffect();
+  const [textColor, setTextColor] = useState("var(--gray-900)");
 
   const [languages, setLanguages] = useState<LanguageMetadata[]>([]);
 
@@ -149,6 +150,8 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes>(({}, forwardedRe
     chartRef.current.update();
   }, [isInView]);
 
+  useEffect(() => setTextColor(getVar("--gray-900")), [rootClasses]);
+
   return (
     <div
       ref={(node) => bindRefAndForwardRef(node, forwardedRef, containerRef)}
@@ -167,7 +170,7 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes>(({}, forwardedRe
             plugins: {
               legend: {
                 labels: {
-                  color: "var(--gray-900)",
+                  color: textColor,
                 },
               },
             },

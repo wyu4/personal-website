@@ -1,5 +1,6 @@
 "use client";
 
+import { useRootClassEffect } from "@/app/hooks/misc";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
@@ -12,6 +13,7 @@ type AnimatedNameProps = DivAttributes & {
 const AnimatedName = forwardRef<HTMLDivElement, AnimatedNameProps>(({ ready }, ref) => {
   const preRef = useRef<HTMLHeadingElement>(null);
   const lastRef = useRef<HTMLHeadingElement>(null);
+  const rootClasses = useRootClassEffect();
 
   useGSAP(() => {
     if (!ready) return;
@@ -48,7 +50,9 @@ const AnimatedName = forwardRef<HTMLDivElement, AnimatedNameProps>(({ ready }, r
           from: "start",
         },
         ease: "power2.inOut",
-        onComplete: () => preSplit.revert(),
+        onComplete: () => {
+          if (timeline.isActive()) preSplit.revert();
+        },
       })
       .to(
         lastSplit.chars,
@@ -63,7 +67,9 @@ const AnimatedName = forwardRef<HTMLDivElement, AnimatedNameProps>(({ ready }, r
             from: "end",
           },
           ease: "power2.inOut",
-          onComplete: () => lastSplit.revert(),
+          onComplete: () => {
+            if (timeline.isActive()) lastSplit.revert();
+          },
         },
         "<",
       );
@@ -72,7 +78,7 @@ const AnimatedName = forwardRef<HTMLDivElement, AnimatedNameProps>(({ ready }, r
       preSplit.revert();
       lastSplit.revert();
     };
-  }, [ready]);
+  }, [ready, rootClasses]);
 
   return (
     <div

@@ -22,7 +22,7 @@ export const Sticker = forwardRef<HTMLDivElement, DivAttributes>(({ children }, 
   return (
     <PopupDiv
       ref={ref}
-      className="text-3xl aspect-square bg(--gray-200) rounded-md p-1 grid place-items-center"
+      className="text-3xl text-(--gray-900) aspect-square bg(--gray-200) rounded-md p-1 grid place-items-center"
     >
       {children}
     </PopupDiv>

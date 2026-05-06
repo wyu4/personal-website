@@ -62,6 +62,14 @@
   .shadow-div {
     --tw-shadow-color: color-mix(in srgb, var(--gray-500) 50%, transparent);
   }
+
+  .dark-mode .inset-shadow-div {
+    --tw-inset-shadow-color: color-mix(in srgb, var(--gray-0) 50%, transparent);
+  }
+
+  .dark-mode .shadow-div {
+    --tw-shadow-color: color-mix(in srgb, var(--gray-0) 50%, transparent);
+  }
 }
 
 ::-webkit-scrollbar {
@@ -187,4 +195,42 @@ h3 {
   --chart-4-border: rgba(255, 255, 0, 1);
   --chart-5-border: rgba(255, 0, 255, 1);
   --chart-6-border: rgba(0, 255, 255, 1);
+}
+
+:root.dark-mode {
+  --gray-0: hsl(214, 45%, 8%);
+  --gray-100: hsl(213, 42%, 11%);
+  --gray-150: hsl(213, 40%, 14%);
+  --gray-200: hsl(212, 38%, 18%);
+  --gray-300: hsl(211, 32%, 27%);
+  --gray-400: hsl(210, 24%, 40%);
+  --gray-500: hsl(209, 16%, 55%);
+  --gray-600: hsl(208, 10%, 68%);
+  --gray-700: hsl(207, 7%, 80%);
+  --gray-800: hsl(206, 4%, 90%);
+  --gray-900: hsl(0, 0%, 100%);
+
+  --green-100: hsl(141, 100%, 69%);
+  --green-200: hsl(141, 87%, 61%);
+  --green-300: hsl(141, 76%, 55%);
+  --green-400: hsl(141, 67%, 51%);
+  --green-500: hsl(141, 72%, 46%);
+  --green-600: hsl(141, 77%, 40%);
+  --green-700: hsl(141, 83%, 33%);
+  --green-800: hsl(141, 89%, 25%);
+  --green-900: hsl(141, 96%, 20%);
+
+  --chart-1: rgba(255, 99, 132, 0.15);
+  --chart-2: rgba(54, 162, 235, 0.15);
+  --chart-3: rgba(255, 206, 86, 0.15);
+  --chart-4: rgba(75, 192, 192, 0.15);
+  --chart-5: rgba(153, 102, 255, 0.15);
+  --chart-6: rgba(255, 159, 64, 0.15);
+
+  --chart-1-border: rgba(255, 99, 132, 0.8);
+  --chart-2-border: rgba(54, 162, 235, 0.8);
+  --chart-3-border: rgba(255, 206, 86, 0.8);
+  --chart-4-border: rgba(75, 192, 192, 0.8);
+  --chart-5-border: rgba(153, 102, 255, 0.8);
+  --chart-6-border: rgba(255, 159, 64, 0.8);
 }

@@ -126,7 +126,7 @@ type MonthPanelProps = {
 function MonthPanel({ data }: MonthPanelProps) {
   return (
     <div className="month flex flex-col flex-nowrap items-center justify-start gap-1 p-1 opacity-0">
-      <h3 className="select-none">{data.month}</h3>
+      <h3 className="select-none text-(--gray-900)">{data.month}</h3>
       <div className="relative grid grid-cols-7 gap-1">
         {data.dailyContributionLevels.map((level, i) => (
           <Day key={`${data.year}-${data.month}-${i}`} level={level} />

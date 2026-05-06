@@ -88,7 +88,7 @@ const PushButton = forwardRef<HTMLButtonElement, PushButtonAttributes>(
 
     return (
       <button
-        className={`${className}`}
+        className={`text-(--gray-900) ${className}`}
         ref={(node) => bindRefAndForwardRef(node, forwardedRef, buttonRef)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
