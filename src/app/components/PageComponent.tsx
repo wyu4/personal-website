@@ -6,6 +6,7 @@ import Banner from "./title/banner";
 import TopBar from "./top/top-bar";
 import { useTypingSecret } from "../hooks/misc";
 import { getCookie, setCookie } from "cookies-next/client";
+import TechStack from "./stack/tech-stack";
 
 type PageComponentProps = {
   repositories?: Repository[];
@@ -58,6 +59,7 @@ export default function PageComponent({ repositories }: PageComponentProps) {
       <TopBar />
       <Banner repositories={repositories} />
       <Bio />
+      <TechStack />
     </>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 import gsap from "gsap";
-import PushButton from "../reusable/push-button";
+import PushButton, { PushAnchor } from "../reusable/push-button";
 import { ScrollToPlugin } from "gsap/all";
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
@@ -52,20 +52,20 @@ export default function TopBar() {
         </PushButton>
       </div>
       <div className="flex flex-row justify-center items-center gap-[inherit]">
-        <PushButton
+        <PushAnchor
           className=" text-4xl md:text-2xl"
           disabled={!visible}
-          onClick={() => window.open("mailto:wilsonyu657@gmail.com")}
+          href="mailto:wilsonyu657@gmail.com"
         >
           <CiMail />
-        </PushButton>
-        <PushButton
+        </PushAnchor>
+        <PushAnchor
           className="text-4xl md:text-2xl"
           disabled={!visible}
-          onClick={() => window.open("https://github.com/wyu4", "_blank")}
+          href="https://github.com/wyu4"
         >
           <FaGithub />
-        </PushButton>
+        </PushAnchor>
       </div>
     </section>
   );

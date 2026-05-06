@@ -7,37 +7,22 @@ import { useRef } from "react";
 import { CiBank, CiCalendar, CiLocationOn } from "react-icons/ci";
 import { InsetDiv, Sticker } from "../reusable/div-presets";
 import Stats from "./github-stats";
+import { FadeInHeading } from "../reusable/heading-presets";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Bio() {
   const container = useRef<HTMLDivElement>(null);
-  const heading = useRef<HTMLHeadingElement>(null);
   const paragraph = useRef<HTMLParagraphElement>(null);
 
   const statContainer = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
-      const splitHeading = new SplitText(heading.current, {
-        type: "words, chars",
-      });
       const splitParagraph = new SplitText(paragraph.current, {
         type: "words, chars",
       });
 
-      gsap.fromTo(
-        splitHeading.chars,
-        { opacity: 0, y: "1rem" },
-        {
-          scrollTrigger: heading.current,
-          opacity: 1,
-          y: 0,
-          stagger: 0.1,
-          duration: 1,
-          ease: "power3.inOut",
-        },
-      );
       gsap.fromTo(
         splitParagraph.chars,
         { opacity: 0 },
@@ -52,7 +37,6 @@ export default function Bio() {
       );
 
       return () => {
-        splitHeading.revert();
         splitParagraph.revert();
       };
     },
@@ -65,22 +49,20 @@ export default function Bio() {
   return (
     <section
       ref={container}
-      className="relative flex flex-col lg:justify-start lg:items-center py-10 px-5 sm:px-10 md:p-20 gap-5"
+      className="page-section relative flex flex-col lg:justify-start lg:items-center"
       id="about"
     >
       <div className="flex flex-col lg:flex-row lg:justify-center lg:items-start gap-5">
         <div className="flex flex-col justify-center items-center lg:items-start gap-5">
-          <h2 ref={heading} className="text-4xl md:text-5xl text-center lg:text-start">
+          <FadeInHeading className="text-4xl md:text-5xl text-center lg:text-start">
             About Me
-          </h2>
+          </FadeInHeading>
           <p
             ref={paragraph}
             className="text-lg md:text-xl text-center lg:text-start gap-5 min-w-1/2"
           >
             I'm a high school student with a serious interest in software development. I
-            mostly lean toward React for web projects and Java for desktop applications. I
-            love the process of taking an idea from a rough concept to a working tool and
-            I'm constantly looking for new projects to contribute to.
+            mostly lean toward React for web projects and Java for desktop applications.
           </p>
         </div>
         <InsetDiv

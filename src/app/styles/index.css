@@ -23,6 +23,17 @@
   --green-800: hsl(141, 89%, 25%);
   --green-900: hsl(141, 96%, 20%);
 
+  --red-100: hsl(0, 100%, 95%);
+  --red-150: hsl(0, 85%, 81%);
+  --red-200: hsl(0, 68%, 69%);
+  --red-300: hsl(0, 56%, 58%);
+  --red-400: hsl(0, 50%, 48%);
+  --red-500: hsl(0, 57%, 39%);
+  --red-600: hsl(0, 61%, 28%);
+  --red-700: hsl(0, 63%, 23%);
+  --red-800: hsl(0, 65%, 15%);
+  --red-900: hsl(0, 65%, 15%);
+
   --chart-1: rgba(255, 99, 132, 0.2);
   --chart-2: rgba(54, 162, 235, 0.2);
   --chart-3: rgba(255, 206, 86, 0.2);
@@ -89,6 +100,10 @@ body {
   background-color: var(--gray-100);
 }
 
+.page-section {
+  @apply py-10 px-5 sm:px-10 md:p-20 gap-5;
+}
+
 h1,
 h2,
 p,
@@ -118,6 +133,10 @@ h3 {
 
 .code {
   font-family: var(--font-code), sans-serif;
+}
+
+.slanted {
+  clip-path: polygon(0% 0%, 100% 5rem, 100% 100%, 0% calc(100% - 5rem));
 }
 
 /* Silly colors */

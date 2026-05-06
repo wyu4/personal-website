@@ -8,7 +8,7 @@ import { Doughnut } from "react-chartjs-2";
 import { ArcElement, Legend, Tooltip, Chart as ChartJS, ChartData } from "chart.js";
 import { GITHUB_LANGUAGE_SIZE } from "@/utils/environment";
 import { useGSAP } from "@gsap/react";
-import { SplitText } from "gsap/all";
+import { ScrollTrigger, SplitText } from "gsap/all";
 import gsap from "gsap";
 import { InsetDiv, PopupDiv } from "../reusable/div-presets";
 import { useIsInView } from "@/app/hooks/view";
@@ -18,9 +18,40 @@ import { useRootClassEffect } from "@/app/hooks/misc";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function Stats() {
+  const container = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      gsap.fromTo(
+        ".stat-card",
+        {
+          opacity: 0,
+          y: "2rem",
+        },
+        {
+          scrollTrigger: container.current,
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.5,
+          ease: "power2.inOut",
+        },
+      );
+    },
+    {
+      dependencies: [],
+      scope: container,
+    },
+  );
+
   return (
-    <InsetDiv className="rounded-2xl w-full p-5 overflow-clip grid grid-cols-1 lg:grid-cols-2 justify-center items-center gap-5">
+    <InsetDiv
+      ref={container}
+      className="rounded-2xl w-full p-5 overflow-clip grid grid-cols-1 lg:grid-cols-2 justify-center items-center gap-5"
+    >
       <StatCard headingText={`Top ${GITHUB_LANGUAGE_SIZE} Languages`}>
         <LanguageChart />
       </StatCard>
@@ -69,7 +100,7 @@ const StatCard = forwardRef<
   return (
     <PopupDiv
       ref={ref}
-      className={`relative h-full flex flex-col justify-start items-center gap-5 p-5 rounded-2xl bg-gray-150 ${className}`}
+      className={`stat-card relative h-full flex flex-col justify-start items-center gap-5 p-5 rounded-2xl bg-gray-150 ${className}`}
     >
       <h2 ref={heading}>{headingText}</h2>
       {children}
