@@ -222,10 +222,10 @@ const Tag = forwardRef<HTMLDivElement, DivAttributes & RepositoryTagProps>(
     return (
       <div
         ref={ref}
-        className={`flex justify-center items-center py-1 px-4 rounded-full bg-gray-100 shadow-inner inset-shadow-2xs ${className}`}
+        className={`flex justify-center items-center py-1 px-4 rounded-full bg-(--gray-100) shadow-inner inset-shadow-2xs ${className}`}
         {...props}
       >
-        <p aria-hidden={true} className="select-none text-gray-600">
+        <p aria-hidden={true} className="select-none text-(--gray-600)">
           {text}
         </p>
       </div>

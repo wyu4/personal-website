@@ -22,7 +22,7 @@ export default function PageComponent({ repositories }: PageComponentProps) {
   const theme = useRef<ThemeType>("None");
   const setTheme = (newTheme: ThemeType) => {
     setCookie("user_theme", newTheme, {
-      maxAge: 60 * 60 * 24 * 3,
+      maxAge: 60 * 60 * 24 * 30,
     });
     theme.current = newTheme;
   };
