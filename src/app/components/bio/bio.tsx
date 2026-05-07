@@ -54,7 +54,7 @@ export default function Bio() {
       id="about"
     >
       <GlowBackground
-        cssVariable="--red-100"
+        cssVariable="--red-150"
         count={5}
         className="absolute top-0 left-0 w-full h-full z-10"
       />
