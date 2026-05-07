@@ -22,7 +22,7 @@ export function useIsInView(
         ([entry]) => {
           callback(entry.isIntersecting);
         },
-        { threshold: 0.1 },
+        { threshold: threshold },
       );
     }
 

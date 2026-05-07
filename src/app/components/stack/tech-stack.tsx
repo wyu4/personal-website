@@ -5,6 +5,7 @@ import { PushAnchor } from "../reusable/push-button";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
+import { GlowBackground } from "../reusable/backgrounds";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,13 +37,18 @@ export default function TechStack() {
   return (
     <section id="stack">
       <InsetDiv className="relative page-section flex flex-col justify-center items-center">
+        <GlowBackground
+          cssVariable="--red-200"
+          count={5}
+          className="absolute w-full h-full"
+        />
         <FadeInHeading className="z-10 text-4xl md:text-5xl text-center lg:text-start mb-5">
           Tech Stack
         </FadeInHeading>
         <div className="flex flex-col justify-center items-center z-20">
           <div
             ref={serviceContainer}
-            className="relative flex flex-row flex-wrap justify-center items-start gap-10 px-20 md:px-50"
+            className="relative flex flex-row flex-wrap justify-center items-start gap-5 sm:gap-10 px-10 md:px-20"
           >
             <Service
               name="TypeScript"
@@ -74,6 +80,7 @@ function Service({ src, name, href }: ServiceProps) {
   const [loaded, setLoaded] = useState(false);
   const [hovering, setHovering] = useState(false);
   const timeline = useRef<gsap.core.Timeline | undefined>(undefined);
+  const idleTimeline = useRef<gsap.core.Timeline | undefined>(undefined);
 
   const container = useRef<HTMLDivElement>(null);
   const anchor = useRef<HTMLAnchorElement>(null);
@@ -96,7 +103,7 @@ function Service({ src, name, href }: ServiceProps) {
           { padding: 0, width: "100%", height: "100%", margin: 0 },
           {
             padding: `2rem`,
-            width: "200%",
+            width: "300%",
             height: "200%",
             duration: 0.3,
             ease: "power2.out",
@@ -121,12 +128,38 @@ function Service({ src, name, href }: ServiceProps) {
         );
     }
 
+    if (!idleTimeline.current) {
+      const INTENSITY = 0.5;
+      const DURATION = 5;
+      const inverse = Math.random() < 0.5 ? -1 : 1;
+      idleTimeline.current = gsap.timeline();
+      const idle = idleTimeline.current;
+      idle.pause();
+      idle.fromTo(
+        container.current,
+        {
+          y: `${inverse * INTENSITY}rem`,
+        },
+        {
+          y: `${-inverse * INTENSITY}rem`,
+          duration: DURATION,
+          ease: "sine.inOut",
+          repeat: -1,
+          yoyo: true,
+        },
+      );
+
+      idle.seek(Math.random() * DURATION);
+    }
+
     gsap.set(container.current, { zIndex: hovering ? 40 : 10 });
 
     if (hovering) {
       timeline.current.play();
+      idleTimeline.current.pause();
     } else {
       timeline.current.reverse();
+      idleTimeline.current.play();
     }
   }, [hovering]);
 
@@ -167,7 +200,10 @@ function Service({ src, name, href }: ServiceProps) {
   }, []);
 
   return (
-    <div ref={container} className="service relative grid place-items-center w-20 h-20">
+    <div
+      ref={container}
+      className="service relative grid place-items-center w-10 sm:w-20 aspect-square"
+    >
       <PushAnchor
         ref={anchor}
         href={href}
@@ -178,7 +214,7 @@ function Service({ src, name, href }: ServiceProps) {
         <PopupDiv
           ref={background}
           hoverEffectEnabled={false}
-          className="absolute w-full h-full rounded-2xl opacity-0 z-10"
+          className="absolute w-full h-full rounded-xl sm:rounded-2xl opacity-0 z-10"
           style={{
             backgroundColor: hue,
           }}
@@ -189,11 +225,11 @@ function Service({ src, name, href }: ServiceProps) {
           onLoad={() => setLoaded(true)}
           src={src === "" ? undefined : src}
           alt={name}
-          className="max-h-20 z-20 rounded-2xl"
+          className="max-h-10 sm:max-h-20 z-20 rounded-xl sm:rounded-2xl"
         />
         <h2
           ref={heading}
-          className="text-xl text-center -mb-7.5 opacity-0 pointer-events-none z-20"
+          className="text-sm sm:text-xl text-center -mb-7.5 opacity-0 pointer-events-none z-20"
         >
           {name}
         </h2>

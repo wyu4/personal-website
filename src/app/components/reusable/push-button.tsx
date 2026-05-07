@@ -111,6 +111,7 @@ export default PushButton;
 
 type PushAnchorAttributes = AnchorAttributes & {
   disabled?: boolean;
+  hoverCursor?: string;
 };
 
 export const PushAnchor = forwardRef<
@@ -129,6 +130,7 @@ export const PushAnchor = forwardRef<
       onClick,
       disabled = false,
       style = {},
+      hoverCursor = "pointer",
       ...props
     },
     forwardedRef,
@@ -141,7 +143,7 @@ export const PushAnchor = forwardRef<
     useGSAP(() => {
       if (hovering) {
         if (disabled) return;
-        setCursor("pointer");
+        setCursor(hoverCursor);
         if (down) {
           gsap.to(buttonRef.current, {
             scale: 0.9,
@@ -166,7 +168,7 @@ export const PushAnchor = forwardRef<
           overwrite: "auto",
         });
       }
-    }, [hovering, down]);
+    }, [hovering, down, hoverCursor]);
 
     const handleMouseEnter = (event: React.MouseEvent<HTMLAnchorElement>) => {
       setHovering(true);
