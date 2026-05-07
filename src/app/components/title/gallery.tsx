@@ -189,15 +189,18 @@ export const RepositoryCard = forwardRef<
       >
         <div className="flex flex-row gap-5">
           <div className="flex flex-col gap-2 justify-start items-start">
-            <h2 className="text-4xl text-gray-600 font-bold">{repository.name}</h2>
+            <h2 aria-hidden={true} className="text-4xl text-gray-600 font-bold">
+              {repository.name}
+            </h2>
             {repository.description && (
-              <p className="text-2xl text-gray-600 max-w-100">
+              <p aria-hidden={true} className="text-2xl text-gray-600 max-w-100">
                 {`"${repository.description == "null" ? "No description" : limitText(repository.description, characterLimit)}"`}
               </p>
             )}
           </div>
           <div className="flex flex-col justify-start items-center shrink-0 rounded-2xl overflow-clip">
             <img
+              aria-hidden={true}
               className="aspect-square h-32 opacity-70"
               src={`${repository.owner.avatar_url}&s=128`}
             />
@@ -222,7 +225,9 @@ const Tag = forwardRef<HTMLDivElement, DivAttributes & RepositoryTagProps>(
         className={`flex justify-center items-center py-1 px-4 rounded-full bg-gray-100 shadow-inner inset-shadow-2xs ${className}`}
         {...props}
       >
-        <p className="select-none text-gray-600">{text}</p>
+        <p aria-hidden={true} className="select-none text-gray-600">
+          {text}
+        </p>
       </div>
     );
   },
