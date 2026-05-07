@@ -15,6 +15,7 @@ import { useIsInView } from "@/app/hooks/view";
 import Contributions from "./github-contributions";
 import { getVar } from "@/utils/style-helpers";
 import { useRootClassEffect } from "@/app/hooks/misc";
+import { GlowBackground } from "../reusable/backgrounds";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -50,12 +51,15 @@ export default function Stats() {
   return (
     <InsetDiv
       ref={container}
-      className="rounded-2xl w-full p-5 overflow-clip grid grid-cols-1 lg:grid-cols-2 justify-center items-center gap-5"
+      className="relative rounded-2xl w-full p-5 overflow-clip bg-(--gray-100)/50 grid grid-cols-1 lg:grid-cols-2 justify-center items-center gap-5 z-20"
     >
-      <StatCard headingText={`Top ${GITHUB_LANGUAGE_SIZE} Languages`}>
+      <StatCard
+        className="relative z-20"
+        headingText={`Top ${GITHUB_LANGUAGE_SIZE} Languages`}
+      >
         <LanguageChart />
       </StatCard>
-      <StatCard headingText="GitHub Contributions">
+      <StatCard className="relative z-20" headingText="GitHub Contributions">
         <Contributions />
       </StatCard>
     </InsetDiv>
@@ -100,7 +104,7 @@ const StatCard = forwardRef<
   return (
     <PopupDiv
       ref={ref}
-      className={`stat-card relative h-full flex flex-col justify-start items-center gap-5 p-5 rounded-2xl bg-gray-150 ${className}`}
+      className={`stat-card relative h-full flex flex-col justify-start items-center gap-5 p-5 rounded-2xl bg-(--gray-150)/50 ${className}`}
     >
       <h2 ref={heading}>{headingText}</h2>
       {children}

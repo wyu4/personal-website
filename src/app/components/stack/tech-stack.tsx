@@ -35,36 +35,32 @@ export default function TechStack() {
   );
 
   return (
-    <section id="stack">
-      <InsetDiv className="relative page-section flex flex-col justify-center items-center">
-        <GlowBackground
-          cssVariable="--red-200"
-          count={5}
-          className="absolute w-full h-full"
-        />
-        <FadeInHeading className="z-10 text-4xl md:text-5xl text-center lg:text-start mb-5">
-          Tech Stack
-        </FadeInHeading>
-        <div className="flex flex-col justify-center items-center z-20">
-          <div
-            ref={serviceContainer}
-            className="relative flex flex-row flex-wrap justify-center items-start gap-5 sm:gap-10 px-10 md:px-20"
-          >
-            <Service
-              name="TypeScript"
-              src="/typescript.png"
-              href="https://www.typescriptlang.org/"
-            />
+    <section
+      id="stack"
+      className="relative page-section flex flex-col justify-center items-center bg-(--gray-150)"
+    >
+      <FadeInHeading className="z-10 text-4xl md:text-5xl text-center lg:text-start mb-5">
+        Tech Stack
+      </FadeInHeading>
+      <div className="flex flex-col justify-center items-center z-20">
+        <div
+          ref={serviceContainer}
+          className="relative flex flex-row flex-wrap justify-center items-start gap-5 sm:gap-10 px-10 md:px-20"
+        >
+          <Service
+            name="TypeScript"
+            src="/typescript.png"
+            href="https://www.typescriptlang.org/"
+          />
 
-            <Service name="Java" src="/java.png" href="https://www.java.com/" />
-            <Service name="Python" src="/python.webp" href="https://www.python.org/" />
-            <Service name="React" src="/react.webp" href="https://react.dev/" />
-            <Service name="GSAP" src="/gsap.webp" href="https://gsap.com/" />
-            <Service name="NextJS" src="/next.webp" href="https://nextjs.org/" />
-            <Service name="Vite" src="/vite.webp" href="https://vite.dev/" />
-          </div>
+          <Service name="Java" src="/java.png" href="https://www.java.com/" />
+          <Service name="Python" src="/python.webp" href="https://www.python.org/" />
+          <Service name="React" src="/react.webp" href="https://react.dev/" />
+          <Service name="GSAP" src="/gsap.webp" href="https://gsap.com/" />
+          <Service name="NextJS" src="/next.webp" href="https://nextjs.org/" />
+          <Service name="Vite" src="/vite.webp" href="https://vite.dev/" />
         </div>
-      </InsetDiv>
+      </div>
     </section>
   );
 }

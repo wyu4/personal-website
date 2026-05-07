@@ -8,6 +8,7 @@ import { CiBank, CiCalendar, CiLocationOn } from "react-icons/ci";
 import { InsetDiv, Sticker } from "../reusable/div-presets";
 import Stats from "./github-stats";
 import { FadeInHeading } from "../reusable/heading-presets";
+import { GlowBackground } from "../reusable/backgrounds";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -52,7 +53,12 @@ export default function Bio() {
       className="page-section relative flex flex-col lg:justify-start lg:items-center"
       id="about"
     >
-      <div className="flex flex-col lg:flex-row lg:justify-center lg:items-start gap-5">
+      <GlowBackground
+        cssVariable="--red-100"
+        count={5}
+        className="absolute top-0 left-0 w-full h-full z-10"
+      />
+      <div className="relative flex flex-col lg:flex-row lg:justify-center lg:items-start gap-5 z-20">
         <div className="flex flex-col justify-center items-center lg:items-start gap-5">
           <FadeInHeading className="text-4xl md:text-5xl text-center lg:text-start">
             About Me
@@ -67,7 +73,7 @@ export default function Bio() {
         </div>
         <InsetDiv
           ref={statContainer}
-          className="p-10 xl:px-20 xl:py-10 rounded-2xl flex flex-col justify-center items-start gap-2 lg:gap-4 overflow-clip"
+          className="p-10 xl:px-20 xl:py-10 rounded-2xl bg-(--gray-100)/50 flex flex-col justify-center items-start gap-2 lg:gap-4 overflow-clip"
         >
           <MiniStat text="17 years old">
             <CiCalendar />
