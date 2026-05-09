@@ -54,7 +54,7 @@ export default function Bio() {
       id="about"
     >
       <GlowBackground
-        cssVariable="--red-150"
+        cssVariable="--gray-300"
         count={5}
         className="absolute top-0 left-0 w-full h-full z-10"
       />
@@ -67,8 +67,8 @@ export default function Bio() {
             ref={paragraph}
             className="text-lg md:text-xl text-center lg:text-start gap-5 min-w-1/2"
           >
-            I'm a high school student with a serious interest in software development. I
-            mostly lean toward React for web projects and Java for desktop applications.
+            I'm a high school student with a serious interest in software development. I mostly lean
+            toward React for web projects and Java for desktop applications.
           </p>
         </div>
         <InsetDiv
@@ -146,10 +146,7 @@ function MiniStat({
       className="flex flex-row flex-nowrap justify-center items-center shrink-0 gap-2 xl:gap-4"
     >
       <Sticker>{children}</Sticker>
-      <p
-        ref={textRef}
-        className="code text-xs xl:text-xl text-nowrap code"
-      >{`[${text}]`}</p>
+      <p ref={textRef} className="code text-xs xl:text-xl text-nowrap code">{`[${text}]`}</p>
     </div>
   );
 }

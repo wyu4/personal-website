@@ -12,11 +12,7 @@ export function useTypingSecret(secret: string, callback: () => void) {
   useEffect(() => {
     const onKeyPressed = (ev: KeyboardEvent) => {
       const target = ev.target as HTMLElement;
-      if (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable
-      ) {
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
         return;
       }
 
@@ -37,7 +33,7 @@ export function useTypingSecret(secret: string, callback: () => void) {
 /**
  * Returns a stateful value representing the classes of the `:root` element.
  */
-export function useRootClassEffect() {
+export function useRootClass() {
   const [themeClass, setThemeClass] = useState("");
 
   useEffect(() => {

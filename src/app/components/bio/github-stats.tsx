@@ -14,7 +14,7 @@ import { InsetDiv, PopupDiv } from "../reusable/div-presets";
 import { useIsInView } from "@/app/hooks/view";
 import Contributions from "./github-contributions";
 import { getVar } from "@/utils/style-helpers";
-import { useRootClassEffect } from "@/app/hooks/misc";
+import { useRootClass } from "@/app/hooks/misc";
 import { GlowBackground } from "../reusable/backgrounds";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -53,10 +53,7 @@ export default function Stats() {
       ref={container}
       className="relative rounded-2xl w-full p-5 overflow-clip bg-(--gray-100)/50 grid grid-cols-1 lg:grid-cols-2 justify-center items-center gap-5 z-20"
     >
-      <StatCard
-        className="relative z-20"
-        headingText={`Top ${GITHUB_LANGUAGE_SIZE} Languages`}
-      >
+      <StatCard className="relative z-20" headingText={`Top ${GITHUB_LANGUAGE_SIZE} Languages`}>
         <LanguageChart />
       </StatCard>
       <StatCard className="relative z-20" headingText="GitHub Contributions">
@@ -117,7 +114,7 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes>(({}, forwardedRe
   const chartRef = useRef<ChartJS<"doughnut">>(null);
   const [data, setData] = useState<ChartData<"doughnut"> | undefined>(undefined);
   const [isInView, setIsInView] = useState(false);
-  const rootClasses = useRootClassEffect();
+  const rootClasses = useRootClass();
   const [textColor, setTextColor] = useState("var(--gray-900)");
 
   const [languages, setLanguages] = useState<LanguageMetadata[]>([]);
@@ -126,9 +123,7 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes>(({}, forwardedRe
     async () => {
       const data = await getLanguages();
       if (data) {
-        setLanguages(
-          data.sort((a, b) => b.bytes - a.bytes).slice(0, GITHUB_LANGUAGE_SIZE),
-        );
+        setLanguages(data.sort((a, b) => b.bytes - a.bytes).slice(0, GITHUB_LANGUAGE_SIZE));
       }
       return data !== undefined;
     },
@@ -137,10 +132,7 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes>(({}, forwardedRe
     "bio-languages",
   );
 
-  const [createIsInView, cleanupIsInView] = useIsInView(
-    (view) => setIsInView(view),
-    containerRef,
-  );
+  const [createIsInView, cleanupIsInView] = useIsInView((view) => setIsInView(view), containerRef);
 
   useEffect(() => {
     let totalBytes = 0;

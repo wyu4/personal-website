@@ -1,6 +1,6 @@
 "use client";
 
-import { useRootClassEffect } from "@/app/hooks/misc";
+import { useRootClass } from "@/app/hooks/misc";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
@@ -13,7 +13,7 @@ type AnimatedNameProps = DivAttributes & {
 const AnimatedName = forwardRef<HTMLDivElement, AnimatedNameProps>(({ ready }, ref) => {
   const preRef = useRef<HTMLHeadingElement>(null);
   const lastRef = useRef<HTMLHeadingElement>(null);
-  const rootClasses = useRootClassEffect();
+  const rootClasses = useRootClass();
 
   useGSAP(() => {
     if (!ready) return;

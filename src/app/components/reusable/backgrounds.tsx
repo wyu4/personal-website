@@ -1,3 +1,4 @@
+import { useRootClass } from "@/app/hooks/misc";
 import { useIsInView } from "@/app/hooks/view";
 import { bindRefAndForwardRef } from "@/utils/ref-helpers";
 import { getVar } from "@/utils/style-helpers";
@@ -31,7 +32,8 @@ export const GlowBackground = forwardRef<
 
   const [isInView, setIsInView] = useState(false);
 
-  const [create, cleanup] = useIsInView((is) => setIsInView(is), container, 0.01);
+  const [create, cleanup] = useIsInView((is) => setIsInView(is), container);
+  const rootClasses = useRootClass();
 
   useEffect(() => {
     create();
@@ -40,12 +42,14 @@ export const GlowBackground = forwardRef<
 
   useEffect(() => {
     if (!canvasRef.current || !isInView) return;
-    const color = getVar(cssVariable);
+    let color: string | undefined = undefined;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
     if (!ctx) return;
 
+    let w = 1;
+    let h = 1;
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
 
@@ -53,6 +57,8 @@ export const GlowBackground = forwardRef<
 
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
+      w = canvas.width;
+      h = canvas.height;
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
@@ -65,7 +71,7 @@ export const GlowBackground = forwardRef<
       glows = [];
       for (let i = 0; i < count; i++) {
         glows.push({
-          color: color,
+          color: "",
           opacity: gsap.utils.random(0.75, 0.1),
           finalOpacity: 1,
           enabled: true,
@@ -80,16 +86,13 @@ export const GlowBackground = forwardRef<
 
     let frame: number | undefined = undefined;
 
-    const step = (
-      ctx: CanvasRenderingContext2D,
-      canvas: HTMLCanvasElement,
-      glows: Particle[],
-    ) => {
+    const step = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, glows: Particle[]) => {
+      if (!color) {
+        color = getVar(cssVariable);
+      }
       if (lastStep.current !== 0) {
         const deltaStep = (Date.now() - lastStep.current) / 1000;
-        const bounds = canvas.getBoundingClientRect();
-        const w = bounds.width;
-        const h = bounds.height;
+
         const minDimension = Math.min(w, h);
         const rad = minDimension * 0.75;
         ctx.clearRect(0, 0, w, h);
@@ -125,8 +128,8 @@ export const GlowBackground = forwardRef<
             .toString(16)
             .padStart(2, "0");
           const gradient = ctx.createRadialGradient(x, y, 0, x, y, rad);
-          gradient.addColorStop(0, `${glow.color}${alpha}`);
-          gradient.addColorStop(1, `${glow.color}00`);
+          gradient.addColorStop(0, `${color}${alpha}`);
+          gradient.addColorStop(1, `${color}00`);
 
           ctx.fillStyle = gradient;
           ctx.beginPath();
@@ -144,7 +147,7 @@ export const GlowBackground = forwardRef<
       if (frame) cancelAnimationFrame(frame);
       window.removeEventListener("resize", resize);
     };
-  }, [cssVariable, isInView]);
+  }, [cssVariable, isInView, rootClasses]);
 
   return (
     <div

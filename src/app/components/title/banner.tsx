@@ -13,7 +13,7 @@ import { useFontsLoaded } from "@/app/hooks/load";
 import PushButton from "../reusable/push-button";
 import { GoChevronDown } from "react-icons/go";
 import { ScrollToPlugin } from "gsap/all";
-import { useRootClassEffect } from "@/app/hooks/misc";
+import { useRootClass } from "@/app/hooks/misc";
 import { getVar } from "@/utils/style-helpers";
 
 const RETRY_TIME = 1000; // Milliseconds
@@ -29,10 +29,8 @@ export default function Banner({ repositories }: BannerProps) {
   const textContainerRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
   const fontsLoaded = useFontsLoaded();
-  const [localRepositories, setRepositories] = useState<Repository[] | undefined>(
-    repositories,
-  );
-  const rootClasses = useRootClassEffect();
+  const [localRepositories, setRepositories] = useState<Repository[] | undefined>(repositories);
+  const rootClasses = useRootClass();
   const [ready, setReady] = useState(false);
 
   // Load repos
@@ -97,18 +95,11 @@ export default function Banner({ repositories }: BannerProps) {
         filter: "blur(0px)",
         ease: "power2.inOut",
       })
-      .to(
-        textContainerRef.current,
-        { background: `${background}00`, duration: 0.5 },
-        "<",
-      );
+      .to(textContainerRef.current, { background: `${background}00`, duration: 0.5 }, "<");
   }, [localRepositories, ready, rootClasses]);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative w-full h-screen overflow-clip opacity-0"
-    >
+    <section ref={sectionRef} className="relative w-full h-screen overflow-clip opacity-0">
       <div
         ref={containerRef}
         className="absolute w-full h-full grid place-items-center bg-banner z-10"
@@ -259,11 +250,7 @@ function Background({ repositories, ready }: BackgroundProps) {
         }}
       >
         {chunks.map((chunk, i) => (
-          <Gallery
-            key={`banner-chunk-${i}`}
-            repositories={chunk}
-            inverted={i % 2 === 1}
-          />
+          <Gallery key={`banner-chunk-${i}`} repositories={chunk} inverted={i % 2 === 1} />
         ))}
       </div>
     </div>

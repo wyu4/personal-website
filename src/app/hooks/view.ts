@@ -12,7 +12,7 @@ import { RefObject, useRef } from "react";
 export function useIsInView(
   callback: (isInView: boolean) => void,
   container: RefObject<HTMLElement | null>,
-  threshold: number = 0.1,
+  threshold: number = 0,
 ) {
   const observer = useRef<IntersectionObserver | null>(null);
 
