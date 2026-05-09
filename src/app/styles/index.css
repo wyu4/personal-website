@@ -51,19 +51,15 @@
 
 @layer utilities {
   .bg-banner {
-    background-image: radial-gradient(
-      at 50% 50%,
-      var(--gray-100) 10%,
-      var(--gray-200) 90%
-    );
+    background-image: radial-gradient(at 50% 50%,
+        var(--gray-100) 10%,
+        var(--gray-200) 90%);
   }
 
   .bg-nav {
-    background-image: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--gray-300) 75%, transparent),
-      color-mix(in srgb, var(--gray-200) 75%, transparent)
-    );
+    background-image: linear-gradient(180deg,
+        color-mix(in srgb, var(--gray-300) 75%, transparent),
+        color-mix(in srgb, var(--gray-200) 75%, transparent));
   }
 
   .inset-shadow-div {
@@ -239,16 +235,16 @@ h3 {
 }
 
 :root.dark-mode {
-  --gray-0: hsl(214, 45%, 8%);
-  --gray-100: hsl(213, 42%, 11%);
-  --gray-150: hsl(213, 40%, 14%);
-  --gray-200: hsl(212, 38%, 18%);
-  --gray-300: hsl(211, 32%, 27%);
-  --gray-400: hsl(210, 24%, 40%);
-  --gray-500: hsl(209, 16%, 55%);
-  --gray-600: hsl(208, 10%, 68%);
-  --gray-700: hsl(207, 7%, 80%);
-  --gray-800: hsl(206, 4%, 90%);
+  --gray-0: hsl(214, 10%, 8%);
+  --gray-100: hsl(213, 8%, 11%);
+  --gray-150: hsl(213, 7%, 14%);
+  --gray-200: hsl(212, 6%, 18%);
+  --gray-300: hsl(211, 5%, 27%);
+  --gray-400: hsl(210, 4%, 40%);
+  --gray-500: hsl(209, 3%, 55%);
+  --gray-600: hsl(208, 2%, 68%);
+  --gray-700: hsl(207, 2%, 80%);
+  --gray-800: hsl(206, 1%, 90%);
   --gray-900: hsl(0, 0%, 100%);
 
   --green-100: hsl(141, 100%, 69%);
