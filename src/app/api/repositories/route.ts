@@ -1,5 +1,5 @@
-import { repositoryAPI } from "@/utils/server-http-helpers";
+import { repositoryAPI, responseMetadataToResponse } from "@/utils/server-http-helpers";
 
 export async function GET() {
-  return await repositoryAPI();
+  return await responseMetadataToResponse(await repositoryAPI());
 }

@@ -5,12 +5,19 @@ import { completeRepositories, createSupabase, getTable } from "./github";
 import { StatusCodes } from "http-status-codes";
 import { createCacheHeaders } from "./client-http-helpers";
 
-export async function repositoryAPI() {
+type ResponseMetadata<T> = {
+  statusMessage?: string;
+  status: number;
+  body?: T;
+};
+
+export async function repositoryAPI(): Promise<ResponseMetadata<Repository[]>> {
   const client = createSupabase();
   if (!client) {
-    return NextResponse.json("Failed to get database.", {
+    return {
+      statusMessage: "Failed to get database.",
       status: StatusCodes.INTERNAL_SERVER_ERROR,
-    });
+    };
   }
 
   const [allRepositories, owners] = await Promise.all([
@@ -19,24 +26,26 @@ export async function repositoryAPI() {
   ]);
 
   if (!allRepositories || !owners) {
-    return NextResponse.json("Failed to connect/read database.", {
+    return {
+      statusMessage: "Failed to connect/read database.",
       status: StatusCodes.INTERNAL_SERVER_ERROR,
-    });
+    };
   }
 
   const publishable = allRepositories.filter((repo) => repo.visibility === "public");
-
-  return NextResponse.json(completeRepositories(publishable, owners), {
-    headers: createCacheHeaders(),
-  });
+  return {
+    status: StatusCodes.OK,
+    body: completeRepositories(publishable, owners),
+  };
 }
 
-export async function languageAPI() {
+export async function languageAPI(): Promise<ResponseMetadata<LanguageMetadata[]>> {
   const client = createSupabase();
   if (!client) {
-    return NextResponse.json("Failed to get database.", {
+    return {
+      statusMessage: "Failed to get database.",
       status: StatusCodes.INTERNAL_SERVER_ERROR,
-    });
+    };
   }
 
   const languages = await (getTable(client, "github_languages") as Promise<
@@ -44,14 +53,31 @@ export async function languageAPI() {
   >);
 
   if (!languages) {
-    return NextResponse.json("Failed to connect/read database.", {
+    return {
+      statusMessage: "Failed to connect/read database.",
       status: StatusCodes.INTERNAL_SERVER_ERROR,
-    });
+    };
   }
 
   // const publishable: Record<string, number> = {};
 
   // languages.forEach((metadata) => (publishable[metadata.language] = metadata.bytes));
 
-  return NextResponse.json(languages, { headers: createCacheHeaders() });
+  return {
+    status: StatusCodes.OK,
+    body: languages,
+  };
+}
+
+export async function responseMetadataToResponse<T>(metadata: ResponseMetadata<T>) {
+  if (metadata.status === StatusCodes.OK) {
+    return NextResponse.json(metadata.body, {
+      headers: createCacheHeaders(),
+    });
+  }
+  return NextResponse.json(metadata.statusMessage, {
+    headers: createCacheHeaders(),
+    status: metadata.status,
+    statusText: metadata.statusMessage,
+  });
 }

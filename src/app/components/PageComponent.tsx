@@ -10,6 +10,7 @@ import TechStack from "./stack/tech-stack";
 
 type PageComponentProps = {
   repositories?: Repository[];
+  languages?: LanguageMetadata[];
 };
 
 const THEME_INDEX = ["None", "Pink", "Pretty", "Dark"] as const;
@@ -18,7 +19,7 @@ type ThemeType = (typeof THEME_INDEX)[number];
 /**
  * The main component that is fed to the client.
  */
-export default function PageComponent({ repositories }: PageComponentProps) {
+export default function PageComponent({ repositories, languages }: PageComponentProps) {
   const theme = useRef<ThemeType>("None");
   const setTheme = (newTheme: ThemeType) => {
     setCookie("user_theme", newTheme, {
@@ -58,7 +59,7 @@ export default function PageComponent({ repositories }: PageComponentProps) {
     <>
       <TopBar />
       <Banner repositories={repositories} />
-      <Bio />
+      <Bio languages={languages} />
       <TechStack />
     </>
   );

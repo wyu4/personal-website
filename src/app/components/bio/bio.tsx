@@ -12,7 +12,11 @@ import { GlowBackground } from "../reusable/backgrounds";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Bio() {
+type BioProps = {
+  languages?: LanguageMetadata[];
+};
+
+export default function Bio({ languages }: BioProps) {
   const container = useRef<HTMLDivElement>(null);
   const paragraph = useRef<HTMLParagraphElement>(null);
 
@@ -86,7 +90,7 @@ export default function Bio() {
           </MiniStat>
         </InsetDiv>
       </div>
-      <Stats />
+      <Stats languages={languages} />
     </section>
   );
 }

@@ -1,5 +1,5 @@
-import { languageAPI } from "@/utils/server-http-helpers";
+import { languageAPI, responseMetadataToResponse } from "@/utils/server-http-helpers";
 
 export async function GET() {
-  return await languageAPI();
+  return await responseMetadataToResponse(await languageAPI());
 }
