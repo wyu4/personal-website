@@ -5,13 +5,7 @@ import { forwardRef, useRef, useState } from "react";
 
 export const InsetDiv = forwardRef<HTMLDivElement, DivAttributes>(
   ({ className, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={`inset-shadow-div inset-shadow-sm ${className}`}
-        {...props}
-      />
-    );
+    return <div ref={ref} className={`inset-shadow-div inset-shadow-sm ${className}`} {...props} />;
   },
 );
 
@@ -48,6 +42,7 @@ export const Sticker = forwardRef<HTMLDivElement, DivAttributes>(({ children }, 
   return (
     <PopupDiv
       ref={ref}
+      hoverEffectEnabled={false}
       className="text-3xl text-(--gray-900) aspect-square bg(--gray-200) rounded-md p-1 grid place-items-center"
     >
       {children}

@@ -62,7 +62,7 @@ export default function Bio({ languages }: BioProps) {
         count={5}
         className="absolute top-0 left-0 w-full h-full z-10"
       />
-      <div className="relative flex flex-col lg:flex-row lg:justify-center lg:items-start gap-5 z-20">
+      <div className="relative w-full flex flex-col lg:flex-row lg:justify-between lg:items-start gap-5 z-20">
         <div className="flex flex-col justify-center items-center lg:items-start gap-5">
           <FadeInHeading className="text-4xl md:text-5xl text-center lg:text-start">
             About Me
@@ -71,8 +71,15 @@ export default function Bio({ languages }: BioProps) {
             ref={paragraph}
             className="text-lg md:text-xl text-center lg:text-start gap-5 min-w-1/2"
           >
-            I'm a high school student with a serious interest in software development. I mostly lean
-            toward React for web projects and Java for desktop applications.
+            Hi, <b>I'm Wilson!</b> I am a 17 year computer science student, and I've been making
+            stuff for almost six years now. What I always found the coolest to make is apps that
+            connect to the real world in some way, creating projects ranging from an app that tracks
+            in-game events via articles online, to a live web-game that utilizes a real city's live
+            traffic cameras. Right now,{" "}
+            <b>
+              I am building my web development skills, and delving into the AI / Machine Learning
+              industry.
+            </b>
           </p>
         </div>
         <InsetDiv

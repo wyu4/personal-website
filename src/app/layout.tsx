@@ -25,7 +25,7 @@ const code = Source_Code_Pro({
 
 export const metadata: Metadata = {
   title: "Wilson Yu",
-  description: "My personal website!",
+  description: "Wilson Yu, a 17 year old computer science student based in Ottawa, Canada.",
   icons: "https://avatars.githubusercontent.com/u/139521392?s=32",
 };
 

@@ -40,7 +40,7 @@ export default function TechStack() {
       className="relative page-section flex flex-col justify-center items-center bg-(--gray-150)"
     >
       <FadeInHeading className="z-10 text-4xl md:text-5xl text-center lg:text-start mb-5">
-        Tech Stack
+        I Like Using:
       </FadeInHeading>
       <div className="flex flex-col justify-center items-center z-20">
         <div

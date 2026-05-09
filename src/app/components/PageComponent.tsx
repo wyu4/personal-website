@@ -7,6 +7,8 @@ import TopBar from "./top/top-bar";
 import { useTypingSecret } from "../hooks/misc";
 import { getCookie, setCookie } from "cookies-next/client";
 import TechStack from "./stack/tech-stack";
+import Projects from "./projects/projects";
+import Footer from "./footer/footer";
 
 type PageComponentProps = {
   repositories?: Repository[];
@@ -61,6 +63,8 @@ export default function PageComponent({ repositories, languages }: PageComponent
       <Banner repositories={repositories} />
       <Bio languages={languages} />
       <TechStack />
+      <Projects />
+      <Footer />
     </>
   );
 }
