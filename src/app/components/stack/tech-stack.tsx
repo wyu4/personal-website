@@ -5,7 +5,7 @@ import { PushAnchor } from "../reusable/push-button";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
-import { GlowBackground } from "../reusable/backgrounds";
+import { BeamBackground, GlowBackground } from "../reusable/backgrounds";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -39,7 +39,12 @@ export default function TechStack() {
       id="stack"
       className="relative page-section flex flex-col justify-center items-center bg-(--gray-150)"
     >
-      <FadeInHeading className="z-10 text-4xl md:text-5xl text-center lg:text-start mb-5">
+      <BeamBackground
+        className="absolute w-full h-full left-0 top-0 z-5"
+        pathColor="var(--gray-200)"
+        pathAmount={10}
+      />
+      <FadeInHeading className="z-10 text-4xl md:text-5xl text-center lg:text-start mb-5 ">
         I Like Using:
       </FadeInHeading>
       <div className="flex flex-col justify-center items-center z-20">
@@ -47,11 +52,7 @@ export default function TechStack() {
           ref={serviceContainer}
           className="relative flex flex-row flex-wrap justify-center items-start gap-5 sm:gap-10 px-10 md:px-20"
         >
-          <Service
-            name="TypeScript"
-            src="/typescript.png"
-            href="https://www.typescriptlang.org/"
-          />
+          <Service name="TypeScript" src="/typescript.png" href="https://www.typescriptlang.org/" />
 
           <Service name="Java" src="/java.png" href="https://www.java.com/" />
           <Service name="Python" src="/python.webp" href="https://www.python.org/" />

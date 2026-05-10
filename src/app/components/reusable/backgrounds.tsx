@@ -2,9 +2,11 @@ import { useRootClass } from "@/app/hooks/misc";
 import { useIsInView } from "@/app/hooks/view";
 import { bindRefAndForwardRef } from "@/utils/ref-helpers";
 import { getVar } from "@/utils/style-helpers";
-import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { DrawSVGPlugin, MotionPathHelper } from "gsap/all";
 import { forwardRef, useEffect, useRef, useState } from "react";
+
+gsap.registerPlugin(DrawSVGPlugin, MotionPathHelper);
 
 type Particle = {
   x: number;
@@ -159,3 +161,118 @@ export const GlowBackground = forwardRef<
     </div>
   );
 });
+
+type BeamBackgroundProps = DivAttributes & {
+  pathColor: string;
+  pathAmount: number;
+};
+
+export const BeamBackground = forwardRef<HTMLDivElement, BeamBackgroundProps>(
+  ({ pathColor, pathAmount, className, ...props }, forwardedRef) => {
+    const container = useRef<HTMLDivElement>(null);
+
+    const [size, setSize] = useState({ width: 0, height: 0 });
+    const [beamPaths, setBeamPaths] = useState<string[]>([]);
+    const pathGroupRef = useRef<SVGGElement>(null);
+
+    useEffect(() => {
+      if (!container.current) return;
+      const observer = new ResizeObserver(([entry]) =>
+        setSize({
+          width: entry.contentRect.width,
+          height: entry.contentRect.height,
+        }),
+      );
+      observer.observe(container.current);
+      return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+      if (size.width === 0 || size.height === 0) return;
+      const w = size.width;
+      const h = size.height;
+      const paths: string[] = [];
+      const generate = (hOffset: number) => {
+        return `M 0 ${hOffset - h / 2 - h * 0.25} C ${w * 0.25} ${h * 0.75 + hOffset - h / 2}, ${w * 0.75} ${h * 0.5 + hOffset - h / 2}, ${w} ${h * 1.25 + hOffset - h / 2}`;
+      };
+      for (let i = 0; i < pathAmount; i++) {
+        paths.push(generate((h / (pathAmount * 0.75)) * i));
+      }
+      setBeamPaths(paths);
+    }, [size, pathAmount]);
+
+    useEffect(() => {
+      if (!pathGroupRef.current || beamPaths.length === 0) return;
+
+      const tracePaths = Array.from(pathGroupRef.current.querySelectorAll("path"));
+      const animations: gsap.core.Timeline[] = [];
+
+      gsap.set(tracePaths, { drawSVG: "0% 0%" });
+
+      const animatePath = (index: number, path: Element, firstTime: boolean = false) => {
+        if (!animations[index]) {
+          animations[index] = gsap.timeline();
+        }
+        const tl = animations[index];
+
+        const duration = gsap.utils.random(3, 4);
+        const downTime = gsap.utils.random(0, 1);
+        const easeIn = gsap.utils.random(1, 4, 1);
+        const easeOut = gsap.utils.random(1, 4, 1);
+
+        gsap.set(path, { drawSVG: "0% 0%" });
+
+        tl.delay(firstTime ? gsap.utils.random(0, 4) : 0)
+          .to(path, {
+            drawSVG: "0% 100%",
+            duration,
+            ease: `power${easeIn}.in`,
+          })
+          .to(path, { drawSVG: "100% 100%", duration, ease: `power${easeOut}.out` })
+          .call(() => animatePath(index, path), [], `+=${downTime}`);
+      };
+
+      tracePaths.forEach((path, i) => animatePath(i, path, true));
+
+      return () => animations.forEach((t) => t?.kill());
+    }, [beamPaths]);
+
+    return (
+      <div
+        ref={(node) => bindRefAndForwardRef(node, forwardedRef, container)}
+        className={`grid place-items-center overflow-clip ${className}`}
+        {...props}
+      >
+        <svg
+          className="w-full h-full"
+          viewBox={`0 0 ${size.width} ${size.height}`}
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g ref={pathGroupRef}>
+            {beamPaths.map((path, i) => (
+              <path
+                key={`background-path-${i}`}
+                d={path}
+                fill="none"
+                stroke={pathColor}
+                strokeWidth={1}
+              />
+            ))}
+          </g>
+          <g>
+            {beamPaths.map((path, i) => (
+              <path
+                opacity={0.25}
+                key={`background-track-${i}`}
+                d={path}
+                fill="none"
+                stroke={pathColor}
+                strokeWidth={1}
+              />
+            ))}
+          </g>
+        </svg>
+      </div>
+    );
+  },
+);
