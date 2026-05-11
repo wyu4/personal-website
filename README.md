@@ -15,6 +15,9 @@ I'm a high school student with a serious interest in software development. I mos
 
 See the [live demo](https://wyu.app/).
 
+> [!NOTE]
+> This website has an older version located in the `archive` branch, and is hosted [here](https://v3.wyu.app).
+
 ## 💻 Installation
 
 ### Requirements
