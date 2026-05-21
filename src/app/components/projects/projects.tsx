@@ -66,7 +66,7 @@ function Overlay({
       type: "lines, words",
     });
     const split2 = new SplitText(headings.current[1], {
-      type: "words",
+      type: "words, chars",
     });
 
     const tl = timeline.current;
@@ -132,12 +132,12 @@ function Overlay({
       .set([headings.current[1], headings.current[2]], {
         overflow: "visible",
       })
-      .to([split1.words, split2.words, headings.current[2]], {
+      .to([split1.words, split2.chars, headings.current[2]], {
         y: "100vh",
         duration: 0.75,
         rotate: () => gsap.utils.random(-90, 90),
         stagger: {
-          each: 0.05,
+          each: 0.01,
           from: "random",
         },
         ease: "power2.in",
@@ -151,7 +151,12 @@ function Overlay({
           ease: "sine.inOut",
         },
         "-=0.5",
-      );
+      )
+      .set(container.current, { visibility: "hidden" })
+      .call(() => {
+        split1.revert();
+        split2.revert();
+      });
 
     return () => {
       tl.kill();
