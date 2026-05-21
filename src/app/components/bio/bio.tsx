@@ -62,7 +62,7 @@ export default function Bio({ languages }: BioProps) {
         count={5}
         className="absolute top-0 left-0 w-full h-full z-10"
       />
-      <div className="relative w-full flex flex-col lg:flex-row lg:justify-between lg:items-start gap-5 z-20">
+      <div className="relative w-full flex flex-col lg:flex-row lg:justify-between lg:items-end gap-5 z-20">
         <div className="flex flex-col justify-center items-center lg:items-start gap-5">
           <FadeInHeading className="text-4xl md:text-5xl text-center lg:text-start">
             About Me
@@ -71,14 +71,14 @@ export default function Bio({ languages }: BioProps) {
             ref={paragraph}
             className="text-lg md:text-xl text-center lg:text-start gap-5 min-w-1/2"
           >
-            Hi, <b>I'm Wilson!</b> I am a 17 year computer science student, and I've been making
-            stuff for almost six years now. What I always found the coolest to make is apps that
-            connect to the real world in some way, creating projects ranging from an app that tracks
-            in-game events via articles online, to a live web-game that utilizes a real city's live
-            traffic cameras. Right now,{" "}
+            Hi, <b>I'm Wilson!</b> I am a 17 year computer science student, and I've been
+            making stuff for almost six years now. What I always found the coolest to make
+            is apps that connect to the real world in some way, creating projects ranging
+            from an app that tracks in-game events via articles online, to a live web-game
+            that utilizes a real city's live traffic cameras. Right now,{" "}
             <b>
-              I am building my web development skills, and delving into the AI / Machine Learning
-              industry.
+              I am building my web development skills, and delving into the AI / Machine
+              Learning industry.
             </b>
           </p>
         </div>
@@ -157,7 +157,10 @@ function MiniStat({
       className="flex flex-row flex-nowrap justify-center items-center shrink-0 gap-2 xl:gap-4"
     >
       <Sticker>{children}</Sticker>
-      <p ref={textRef} className="code text-xs xl:text-xl text-nowrap code">{`[${text}]`}</p>
+      <p
+        ref={textRef}
+        className="code text-xs xl:text-xl text-nowrap code"
+      >{`[${text}]`}</p>
     </div>
   );
 }
