@@ -6,8 +6,14 @@ export const DATABASE_URL: string | undefined = process.env.DATABASE_URL;
 export const DATABASE_KEY: string | undefined = process.env.DATABASE_KEY;
 export const THREAD_CAP: number = +(process.env.THREAD_CAP ?? 20);
 export const CRON_SECRET: string | undefined = process.env.CRON_SECRET;
-export const GITHUB_GALLERY_SIZE: number = +(process.env.NEXT_PUBLIC_GITHUB_GALLERY_SIZE ?? 10);
-export const GITHUB_LANGUAGE_SIZE: number = +(process.env.NEXT_PUBLIC_GITHUB_LANGUAGE_SIZE ?? 6);
+export const GITHUB_GALLERY_SIZE: number = +(
+  process.env.NEXT_PUBLIC_GITHUB_GALLERY_SIZE ?? 10
+);
+export const GITHUB_LANGUAGE_SIZE: number = +(
+  process.env.NEXT_PUBLIC_GITHUB_LANGUAGE_SIZE ?? 6
+);
+export const PROJECTS_MAINTENANCE: boolean =
+  (process.env.PROJECTS_MAINTENANCE ?? "0") === "1";
 
 /**
  * Method that checks if an instance of the database can be created.

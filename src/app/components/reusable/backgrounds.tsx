@@ -25,7 +25,7 @@ export const GlowBackground = forwardRef<
     cssVariable: string;
     count?: number;
   }
->(({ className, cssVariable, count = 1, ...props }, forwardedRef) => {
+>(({ className, cssVariable, hidden, count = 1, ...props }, forwardedRef) => {
   const container = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -43,7 +43,7 @@ export const GlowBackground = forwardRef<
   }, []);
 
   useEffect(() => {
-    if (!canvasRef.current || !isInView) return;
+    if (!canvasRef.current || !isInView || hidden) return;
     let color: string | undefined = undefined;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -88,7 +88,11 @@ export const GlowBackground = forwardRef<
 
     let frame: number | undefined = undefined;
 
-    const step = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, glows: Particle[]) => {
+    const step = (
+      ctx: CanvasRenderingContext2D,
+      canvas: HTMLCanvasElement,
+      glows: Particle[],
+    ) => {
       if (!color) {
         color = getVar(cssVariable);
       }
@@ -149,10 +153,11 @@ export const GlowBackground = forwardRef<
       if (frame) cancelAnimationFrame(frame);
       window.removeEventListener("resize", resize);
     };
-  }, [cssVariable, isInView, rootClasses]);
+  }, [cssVariable, isInView, hidden, rootClasses]);
 
   return (
     <div
+      hidden={hidden}
       ref={(node) => bindRefAndForwardRef(node, forwardedRef, container)}
       className={`grid place-items-center overflow-clip ${className}`}
       {...props}

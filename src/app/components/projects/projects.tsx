@@ -3,11 +3,14 @@ import { getCookie, setCookie } from "cookies-next/client";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { InsetDiv, PopupDiv } from "../reusable/div-presets";
+import { MdConstruction } from "react-icons/md";
+import { GlowBackground } from "../reusable/backgrounds";
 
 export default function Projects() {
   const container = useRef<HTMLElement>(null);
   const [triggered, setTriggered] = useState(false);
-  const [covered, setCovered] = useState(false);
+  const [showSection, setShowSection] = useState(false);
 
   const viewTriggeredFlag = useRef(false);
   const [enableIsInView, cleanupIsInView] = useIsInView(
@@ -32,10 +35,29 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="relative min-h-[80vh] overflow-clip"
+      className="relative min-h-[80vh] flex flex-col items-center justify-center p-5 overflow-clip"
       ref={container}
     >
-      <Overlay triggered={triggered} setCovered={setCovered} />
+      <GlowBackground
+        hidden={!showSection}
+        cssVariable="--gray-200"
+        count={5}
+        className="absolute top-0 left-0 w-full h-full z-10"
+      />
+      <Overlay triggered={triggered} setShowSection={setShowSection} />
+      <InsetDiv
+        hidden={!showSection}
+        className="relative rounded-2xl flex flex-col justify-center items-center p-5 gap-5 z-15"
+      >
+        <PopupDiv
+          className="rounded-2xl bg-(--gray-200)-1/2 text-3xl md:text-5xl p-2 md:p-3"
+          hoverEffectEnabled={false}
+        >
+          <MdConstruction />
+        </PopupDiv>
+
+        <p className="code text-xl text-center">[This section is under construction.]</p>
+      </InsetDiv>
     </section>
   );
 }
@@ -43,11 +65,11 @@ export default function Projects() {
 function Overlay({
   className,
   triggered,
-  setCovered,
+  setShowSection,
   ...props
 }: DivAttributes & {
   triggered: boolean;
-  setCovered: Dispatch<SetStateAction<boolean>>;
+  setShowSection: Dispatch<SetStateAction<boolean>>;
 }) {
   const cutsceneDisabled = useRef(true);
   const container = useRef<HTMLDivElement>(null);
@@ -132,6 +154,7 @@ function Overlay({
       .set([headings.current[1], headings.current[2]], {
         overflow: "visible",
       })
+      .call(() => setShowSection(true))
       .to([split1.words, split2.chars, headings.current[2]], {
         y: "100vh",
         duration: 0.75,
@@ -167,7 +190,7 @@ function Overlay({
 
   return (
     <div
-      className={`absolute top-0 left-0 w-full h-full bg-(--gray-950) pointer-events-none opacity-0 grid place-items-center overflow-clip ${className}`}
+      className={`absolute top-0 left-0 w-full h-full bg-(--gray-950) pointer-events-none opacity-0 grid place-items-center overflow-clip z-100 ${className}`}
       ref={container}
       {...props}
     >
