@@ -167,19 +167,19 @@ function Overlay({
 
   return (
     <div
-      className={`absolute top-0 left-0 w-full h-200 bg-(--gray-950) pointer-events-none opacity-0 grid place-items-center overflow-clip ${className}`}
+      className={`absolute top-0 left-0 w-full h-full bg-(--gray-950) pointer-events-none opacity-0 grid place-items-center overflow-clip ${className}`}
       ref={container}
       {...props}
     >
       <div
         ref={textContainer}
-        className="relative flex flex-col justify-start items-center gap-10 py-10 pointer-none:"
+        className="relative flex flex-col justify-start items-center gap-2 md:gap-10 py-10 pointer-none:"
       >
         <h1
           ref={(node) => {
             headings.current[0] = node;
           }}
-          className="text-8xl text-(--gray-100)! select-none"
+          className="text-3xl md:text-5xl lg:text-8xl text-(--gray-100)! select-none"
           aria-hidden={true}
         >
           Talk, is talk.
@@ -188,7 +188,7 @@ function Overlay({
           ref={(node) => {
             headings.current[1] = node;
           }}
-          className="text-8xl text-(--gray-100)! h-0 select-none overflow-clip"
+          className="text-3xl md:text-5xl lg:text-8xl text-(--gray-100)! h-0 select-none overflow-clip"
           aria-hidden={true}
         >
           Show me the code.
@@ -197,7 +197,7 @@ function Overlay({
           ref={(node) => {
             headings.current[2] = node;
           }}
-          className="text-2xl text-(--gray-100)! select-none h-0 overflow-clip"
+          className="text-sm md:text-2xl text-(--gray-100)! select-none h-0 overflow-clip"
           aria-hidden={true}
         >
           - Linus Torvalds
