@@ -20,7 +20,7 @@ export default function Projects() {
       setTriggered(true);
     },
     container,
-    0.7,
+    0.9,
   );
 
   useEffect(() => {
