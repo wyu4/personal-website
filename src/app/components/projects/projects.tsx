@@ -72,7 +72,7 @@ function Overlay({
     const tl = timeline.current;
     tl.set(container.current, { opacity: 1, y: "100vh", pointerEvents: "none" })
       .set(textContainer.current, { y: "-100vh" })
-      .set(split1.lines, { scale: 2 })
+      .set(split1.lines, { scale: 1.5 })
       .set(split1.words, { y: "-100%", opacity: 0 })
       .set(split2.words, { y: "100%" })
       .to([container.current, textContainer.current], {
