@@ -134,7 +134,7 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes & StatsProps>(
         let data: LanguageMetadata[] | undefined = undefined;
         if (languages) {
           data = languages;
-          console.log(data.map((l) => `${l.language}: ${l.bytes}`).join("\n"));
+          // console.log(data.map((l) => `${l.language}: ${l.bytes}`).join("\n"));
         } else {
           data = await getLanguages();
         }
