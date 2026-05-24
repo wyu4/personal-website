@@ -2,10 +2,17 @@ import { bindRefAndForwardRef } from "@/utils/ref-helpers";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { forwardRef, useRef, useState } from "react";
+import { MdConstruction } from "react-icons/md";
 
 export const InsetDiv = forwardRef<HTMLDivElement, DivAttributes>(
   ({ className, ...props }, ref) => {
-    return <div ref={ref} className={`inset-shadow-div inset-shadow-sm ${className}`} {...props} />;
+    return (
+      <div
+        ref={ref}
+        className={`inset-shadow-div inset-shadow-sm ${className}`}
+        {...props}
+      />
+    );
   },
 );
 
@@ -49,3 +56,24 @@ export const Sticker = forwardRef<HTMLDivElement, DivAttributes>(({ children }, 
     </PopupDiv>
   );
 });
+
+export const ConstructionDiv = forwardRef<HTMLDivElement, DivAttributes>(
+  ({ className, ...props }, forwardedRef) => {
+    return (
+      <InsetDiv
+        ref={forwardedRef}
+        {...props}
+        className={`relative rounded-2xl flex flex-col justify-center items-center p-5 gap-5 z-15 ${className}`}
+      >
+        <PopupDiv
+          className="rounded-2xl bg-(--gray-200)-1/2 text-3xl md:text-5xl p-2 md:p-3"
+          hoverEffectEnabled={false}
+        >
+          <MdConstruction />
+        </PopupDiv>
+
+        <p className="code text-xl text-center">[This section is under construction.]</p>
+      </InsetDiv>
+    );
+  },
+);

@@ -1,13 +1,16 @@
 import { useIsInView } from "@/app/hooks/view";
-import { getCookie, setCookie } from "cookies-next/client";
+import { getCookie } from "cookies-next/client";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { InsetDiv, PopupDiv } from "../reusable/div-presets";
-import { MdConstruction } from "react-icons/md";
+import { ConstructionDiv } from "../reusable/div-presets";
 import { GlowBackground } from "../reusable/backgrounds";
 
-export default function Projects() {
+type ProjectsProps = {
+  maintenance: boolean;
+};
+
+export default function Projects({ maintenance }: ProjectsProps) {
   const container = useRef<HTMLElement>(null);
   const [triggered, setTriggered] = useState(false);
   const [showSection, setShowSection] = useState(false);
@@ -35,29 +38,18 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="relative min-h-[80vh] flex flex-col items-center justify-center p-5 overflow-clip"
+      className="relative min-h-[80vh] flex flex-col items-center justify-center p-5 overflow-clip bg-(--gray-100)"
       ref={container}
     >
-      <GlowBackground
-        hidden={!showSection}
-        cssVariable="--gray-200"
-        count={5}
-        className="absolute top-0 left-0 w-full h-full z-10"
-      />
+      <div className="" hidden={!showSection}>
+        <GlowBackground
+          cssVariable="--gray-200"
+          count={5}
+          className="absolute top-0 left-0 w-full h-full z-10"
+        />
+        {maintenance ? <ConstructionDiv /> : null}
+      </div>
       <Overlay triggered={triggered} setShowSection={setShowSection} />
-      <InsetDiv
-        hidden={!showSection}
-        className="relative rounded-2xl flex flex-col justify-center items-center p-5 gap-5 z-15"
-      >
-        <PopupDiv
-          className="rounded-2xl bg-(--gray-200)-1/2 text-3xl md:text-5xl p-2 md:p-3"
-          hoverEffectEnabled={false}
-        >
-          <MdConstruction />
-        </PopupDiv>
-
-        <p className="code text-xl text-center">[This section is under construction.]</p>
-      </InsetDiv>
     </section>
   );
 }

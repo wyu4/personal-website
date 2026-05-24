@@ -13,6 +13,7 @@ import Footer from "./footer/footer";
 type PageComponentProps = {
   repositories?: Repository[];
   languages?: LanguageMetadata[];
+  projectsMaintenance: boolean;
 };
 
 const THEME_INDEX = ["None", "Pink", "Pretty", "Dark"] as const;
@@ -21,7 +22,11 @@ type ThemeType = (typeof THEME_INDEX)[number];
 /**
  * The main component that is fed to the client.
  */
-export default function PageComponent({ repositories, languages }: PageComponentProps) {
+export default function PageComponent({
+  repositories,
+  languages,
+  projectsMaintenance,
+}: PageComponentProps) {
   const theme = useRef<ThemeType>("None");
   const setTheme = (newTheme: ThemeType) => {
     setCookie("user_theme", newTheme, {
@@ -63,7 +68,7 @@ export default function PageComponent({ repositories, languages }: PageComponent
       <Banner repositories={repositories} />
       <Bio languages={languages} />
       <TechStack />
-      <Projects />
+      <Projects maintenance={projectsMaintenance} />
       <Footer />
     </>
   );

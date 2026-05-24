@@ -57,7 +57,10 @@ export default function Stats({ languages }: StatsProps) {
       ref={container}
       className="relative rounded-2xl w-full p-5 overflow-clip bg-(--gray-100)/50 grid grid-cols-1 lg:grid-cols-2 justify-center items-center gap-5 z-20"
     >
-      <StatCard className="relative z-20" headingText={`Top ${GITHUB_LANGUAGE_SIZE} Languages`}>
+      <StatCard
+        className="relative z-20"
+        headingText={`Top ${GITHUB_LANGUAGE_SIZE} Languages`}
+      >
         <LanguageChart languages={languages} />
       </StatCard>
       <StatCard className="relative z-20" headingText="GitHub Contributions">
@@ -122,14 +125,23 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes & StatsProps>(
     const rootClasses = useRootClass();
     const [textColor, setTextColor] = useState("var(--gray-900)");
 
-    const [languagesState, setLanguages] = useState<LanguageMetadata[] | undefined>(languages);
+    const [languagesState, setLanguages] = useState<LanguageMetadata[] | undefined>(
+      languages,
+    );
 
     useRetryEffect(
       async () => {
-        if (languages) return true;
-        const data = await getLanguages();
+        let data: LanguageMetadata[] | undefined = undefined;
+        if (languages) {
+          data = languages;
+          console.log(data.map((l) => `${l.language}: ${l.bytes}`).join("\n"));
+        } else {
+          data = await getLanguages();
+        }
         if (data) {
-          setLanguages(data.sort((a, b) => b.bytes - a.bytes).slice(0, GITHUB_LANGUAGE_SIZE));
+          setLanguages(
+            data.sort((a, b) => b.bytes - a.bytes).slice(0, GITHUB_LANGUAGE_SIZE),
+          );
         }
         return data !== undefined;
       },
@@ -153,7 +165,9 @@ const LanguageChart = forwardRef<HTMLDivElement, DivAttributes & StatsProps>(
         datasets: [
           {
             label: "%",
-            data: languagesState.map((entry) => +((entry.bytes / totalBytes) * 100).toFixed(2)),
+            data: languagesState.map(
+              (entry) => +((entry.bytes / totalBytes) * 100).toFixed(2),
+            ),
             backgroundColor: [
               getVar("--chart-1"),
               getVar("--chart-2"),
