@@ -23,7 +23,7 @@ export default function Projects({ maintenance }: ProjectsProps) {
       setTriggered(true);
     },
     container,
-    0.7,
+    0.9,
   );
 
   useEffect(() => {
