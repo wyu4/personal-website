@@ -6,21 +6,19 @@ import { ScrollTrigger, SplitText } from "gsap/all";
 import { useRef } from "react";
 import { CiBank, CiCalendar, CiLocationOn } from "react-icons/ci";
 import { InsetDiv, Sticker } from "../reusable/div-presets";
-import Stats from "./github-stats";
 import { FadeInHeading } from "../reusable/heading-presets";
-import { GlowBackground } from "../reusable/backgrounds";
+import PushButton from "../reusable/push-button";
+import Contacts from "../reusable/contacts";
+import { GlowBackground, LaserBackground } from "../reusable/backgrounds";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type BioProps = {
-  languages?: LanguageMetadata[];
-};
-
-export default function Bio({ languages }: BioProps) {
+export default function Bio() {
   const container = useRef<HTMLDivElement>(null);
   const paragraph = useRef<HTMLParagraphElement>(null);
 
   const statContainer = useRef<HTMLDivElement>(null);
+  const contactContainer = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
@@ -41,6 +39,17 @@ export default function Bio({ languages }: BioProps) {
         },
       );
 
+      gsap.fromTo(
+        contactContainer.current,
+        { opacity: 0 },
+        {
+          delay: 0.5,
+          scrollTrigger: contactContainer.current,
+          opacity: 1,
+          duration: 0.5,
+        },
+      );
+
       return () => {
         splitParagraph.revert();
       };
@@ -54,50 +63,54 @@ export default function Bio({ languages }: BioProps) {
   return (
     <section
       ref={container}
-      className="page-section relative flex flex-col lg:justify-start lg:items-center"
+      className="page-section relative w-full flex flex-col lg:flex-row lg:justify-between lg:items-center gap-5 z-20"
       id="about"
     >
+      {/* <LaserBackground className="absolute top-0 left-0 w-full h-full z-1" /> */}
       <GlowBackground
-        cssVariable="--gray-300"
-        count={5}
+        cssVariable="--gray-200"
+        count={2}
         className="absolute top-0 left-0 w-full h-full z-10"
       />
-      <div className="relative w-full flex flex-col lg:flex-row lg:justify-between lg:items-end gap-5 z-20">
-        <div className="flex flex-col justify-center items-center lg:items-start gap-5">
-          <FadeInHeading className="text-4xl md:text-5xl text-center lg:text-start">
-            About Me
-          </FadeInHeading>
-          <p
-            ref={paragraph}
-            className="text-lg md:text-xl text-center lg:text-start gap-5 min-w-1/2"
-          >
-            Hi, <b>I'm Wilson!</b> I am a 17 year computer science student, and I've been
-            making stuff for almost six years now. What I always found the coolest to make
-            is apps that connect to the real world in some way, creating projects ranging
-            from an app that tracks in-game events via articles online, to a live web-game
-            that utilizes a real city's live traffic cameras. Right now,{" "}
-            <b>
-              I am building my web development skills, and delving into the AI / Machine
-              Learning industry.
-            </b>
-          </p>
-        </div>
-        <InsetDiv
-          ref={statContainer}
-          className="p-10 xl:px-20 xl:py-10 rounded-2xl bg-(--gray-100)/50 flex flex-col justify-center items-start gap-2 lg:gap-4 overflow-clip"
+      <div className="flex flex-col justify-center items-center lg:items-start gap-5 z-10">
+        <FadeInHeading className="text-4xl md:text-5xl text-center lg:text-start">
+          Who Am I?
+        </FadeInHeading>
+        <div
+          ref={contactContainer}
+          className="flex flex-row w-full justify-center lg:justify-start items-center gap-5"
         >
-          <MiniStat text="17 years old">
-            <CiCalendar />
-          </MiniStat>
-          <MiniStat text="Ottawa, Canada" order={1}>
-            <CiLocationOn />
-          </MiniStat>
-          <MiniStat text="Earl of March" order={2}>
-            <CiBank />
-          </MiniStat>
-        </InsetDiv>
+          <Contacts />
+        </div>
+        <p
+          ref={paragraph}
+          className="text-lg md:text-xl text-center lg:text-start gap-5 min-w-1/2"
+        >
+          Hi, <b>I'm Wilson!</b> I am a 17 year computer science student, and I've been
+          making stuff for almost six years now. What I always found the coolest to make
+          is apps that connect to the real world in some way, creating projects ranging
+          from an app that tracks in-game events via articles online, to a live web-game
+          that utilizes a real city's live traffic cameras. Right now,{" "}
+          <b>
+            I am building my web development skills, and delving into the AI / Machine
+            Learning industry.
+          </b>
+        </p>
       </div>
-      <Stats languages={languages} />
+      <InsetDiv
+        ref={statContainer}
+        className="p-10 xl:px-20 xl:py-10 rounded-2xl bg-(--gray-100)/50 flex flex-col justify-center items-start gap-2 lg:gap-4 overflow-clip z-10"
+      >
+        <MiniStat text="17 years old">
+          <CiCalendar />
+        </MiniStat>
+        <MiniStat text="Ottawa, Canada" order={1}>
+          <CiLocationOn />
+        </MiniStat>
+        <MiniStat text="Earl of March" order={2}>
+          <CiBank />
+        </MiniStat>
+      </InsetDiv>
     </section>
   );
 }

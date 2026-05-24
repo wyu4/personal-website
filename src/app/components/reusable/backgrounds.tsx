@@ -281,3 +281,18 @@ export const BeamBackground = forwardRef<HTMLDivElement, BeamBackgroundProps>(
     );
   },
 );
+
+type LaserBackgroundProps = DivAttributes & {
+  color?: string;
+};
+export const LaserBackground = forwardRef<HTMLDivElement, LaserBackgroundProps>(
+  ({ className, color = "var(--gray-100)" }, forwardedRef) => {
+    const container = useRef<HTMLDivElement>(null);
+    return (
+      <div
+        ref={(node) => bindRefAndForwardRef(node, forwardedRef, container)}
+        className={` ${className}`}
+      ></div>
+    );
+  },
+);

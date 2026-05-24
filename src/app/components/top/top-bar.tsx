@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { CiMail } from "react-icons/ci";
 import { FaGithub } from "react-icons/fa";
+import Contacts from "../reusable/contacts";
 
 gsap.registerPlugin(ScrollToPlugin);
 export default function TopBar() {
@@ -52,20 +53,7 @@ export default function TopBar() {
         </PushButton>
       </div>
       <div className="flex flex-row justify-center items-center gap-[inherit]">
-        <PushAnchor
-          className=" text-4xl md:text-2xl"
-          disabled={!visible}
-          href="mailto:wilsonyu657@gmail.com"
-        >
-          <CiMail />
-        </PushAnchor>
-        <PushAnchor
-          className="text-4xl md:text-2xl"
-          disabled={!visible}
-          href="https://github.com/wyu4"
-        >
-          <FaGithub />
-        </PushAnchor>
+        <Contacts className="text-4xl md:text-2xl" disabled={!visible} />
       </div>
     </section>
   );

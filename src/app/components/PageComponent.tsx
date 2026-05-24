@@ -9,6 +9,7 @@ import { getCookie, setCookie } from "cookies-next/client";
 import TechStack from "./stack/tech-stack";
 import Projects from "./projects/projects";
 import Footer from "./footer/footer";
+import Stats from "./stats/github-stats";
 
 type PageComponentProps = {
   repositories?: Repository[];
@@ -66,7 +67,8 @@ export default function PageComponent({
     <>
       <TopBar />
       <Banner repositories={repositories} />
-      <Bio languages={languages} />
+      <Bio />
+      <Stats languages={languages} />
       <TechStack />
       <Projects maintenance={projectsMaintenance} />
       <Footer />

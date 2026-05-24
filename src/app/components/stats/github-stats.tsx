@@ -12,10 +12,10 @@ import { ScrollTrigger, SplitText } from "gsap/all";
 import gsap from "gsap";
 import { InsetDiv, PopupDiv } from "../reusable/div-presets";
 import { useIsInView } from "@/app/hooks/view";
-import Contributions from "./github-contributions";
 import { getVar } from "@/utils/style-helpers";
 import { useRootClass } from "@/app/hooks/misc";
 import { GlowBackground } from "../reusable/backgrounds";
+import Contributions from "./github-contributions";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -53,20 +53,27 @@ export default function Stats({ languages }: StatsProps) {
   );
 
   return (
-    <InsetDiv
-      ref={container}
-      className="relative rounded-2xl w-full p-5 overflow-clip bg-(--gray-100)/50 grid grid-cols-1 lg:grid-cols-2 justify-center items-center gap-5 z-20"
-    >
-      <StatCard
-        className="relative z-20"
-        headingText={`Top ${GITHUB_LANGUAGE_SIZE} Languages`}
+    <section className="relative px-10 py-20">
+      <GlowBackground
+        cssVariable="--gray-300"
+        count={5}
+        className="absolute top-0 left-0 w-full h-full z-10"
+      />
+      <InsetDiv
+        ref={container}
+        className="relative rounded-2xl w-full p-5 overflow-clip bg-(--gray-100)/50 grid grid-cols-1 lg:grid-cols-2 justify-center items-center gap-5 z-20"
       >
-        <LanguageChart languages={languages} />
-      </StatCard>
-      <StatCard className="relative z-20" headingText="GitHub Contributions">
-        <Contributions />
-      </StatCard>
-    </InsetDiv>
+        <StatCard
+          className="relative z-20"
+          headingText={`Top ${GITHUB_LANGUAGE_SIZE} Languages`}
+        >
+          <LanguageChart languages={languages} />
+        </StatCard>
+        <StatCard className="relative z-20" headingText="GitHub Contributions">
+          <Contributions />
+        </StatCard>
+      </InsetDiv>
+    </section>
   );
 }
 
