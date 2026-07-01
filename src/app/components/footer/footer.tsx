@@ -15,12 +15,6 @@ export default function Footer() {
         <PushAnchor target="_blank" href="https://v3.wyu.app/">
           v3
         </PushAnchor>
-        <PushAnchor target="_blank" href="https://v2.wyu.app/">
-          v2
-        </PushAnchor>
-        {/* <PushAnchor target="_blank" href="https://v1.wyu.app/">
-          v1
-        </PushAnchor> */}
       </div>
     </section>
   );
