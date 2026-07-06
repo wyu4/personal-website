@@ -243,7 +243,7 @@ function Overlay({
 
 function ProjectsPanel({ projects }: { projects: ProjectMetadata[] }) {
   return (
-    <div className="relative flex flex-col md:flex-row justify-start items-start flex-wrap z-15 gap-4 p-8">
+    <div className="relative flex flex-row justify-center items-start flex-wrap z-15 gap-4 p-8">
       {projects.map((data) => (
         <ProjectDiv key={data.name} project={data} />
       ))}
