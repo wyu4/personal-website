@@ -89,6 +89,32 @@ export const getTable = async <T>(client: SupabaseType, name: Table) => {
 };
 
 /**
+ * Get all rows from a table in a particular order
+ * @param client Supabase instance
+ * @param name Name of the table
+ * @param sortedColumn Name of the column to sort
+ * @param options Sorting options
+ * @return `data` in the form of `never` type, otherwise `undefined`
+ */
+export const getOrderedTable = async <T>(
+  client: SupabaseType,
+  name: Table,
+  sortedColumn: string,
+  options: { ascending?: boolean; nullsFirst?: boolean; referencedTable?: undefined },
+) => {
+  console.log(`⛃ Querying table [${name}]...`);
+  try {
+    const { data, error } = await client.from(name).select("*").order(sortedColumn, options);
+    if (error) {
+      throw Error(error.message);
+    }
+    return data as unknown;
+  } catch (error) {
+    console.error(`⛃❌ Could not create query to table [${name}]:`, error);
+  }
+};
+
+/**
  * Clear a table
  * @param client Supabase instance
  * @param name Name of table

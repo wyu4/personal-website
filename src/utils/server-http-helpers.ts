@@ -1,7 +1,7 @@
 "use server";
 
 import { NextResponse } from "next/server";
-import { completeRepositories, createSupabase, getTable } from "./github";
+import { completeRepositories, createSupabase, getOrderedTable, getTable } from "./github";
 import { StatusCodes } from "http-status-codes";
 import { createCacheHeaders } from "./client-http-helpers";
 
@@ -78,7 +78,9 @@ export async function getProjects(): Promise<ResponseMetadata<ProjectMetadata[]>
     };
   }
 
-  const projects = await (getTable(client, "projects") as Promise<ProjectMetadata[] | undefined>);
+  const projects = await (getOrderedTable(client, "projects", "created", {
+    ascending: false,
+  }) as Promise<ProjectMetadata[] | undefined>);
 
   if (!projects) {
     return {
