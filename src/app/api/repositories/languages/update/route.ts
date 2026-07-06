@@ -3,10 +3,7 @@ import {
   createSupabase,
   getTable,
   lookupLanguages,
-  lookupRepositories,
   overwriteTable,
-  pushTable,
-  simplifyRepositories,
   timedCache,
 } from "@/utils/github";
 import { createCacheHeaders } from "@/utils/client-http-helpers";

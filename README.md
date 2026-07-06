@@ -9,7 +9,7 @@
 ![image](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![image](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 
-I'm a high school student with a serious interest in software development. I mostly lean toward React for web projects and Java for desktop applications. I love the process of taking an idea from a rough concept to a working tool and I'm constantly looking for new projects to contribute to.
+A full-stack personal website with dynamic GitHub project galleries, smooth GSAP animations, and a Supabase-backed API.
 
 ## 📦 Demo
 

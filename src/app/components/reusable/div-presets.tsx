@@ -3,16 +3,13 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { forwardRef, useRef, useState } from "react";
 import { MdConstruction } from "react-icons/md";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { PushAnchor } from "./push-button";
 
 export const InsetDiv = forwardRef<HTMLDivElement, DivAttributes>(
   ({ className, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={`inset-shadow-div inset-shadow-sm ${className}`}
-        {...props}
-      />
-    );
+    return <div ref={ref} className={`inset-shadow-div inset-shadow-sm ${className}`} {...props} />;
   },
 );
 
@@ -77,3 +74,31 @@ export const ConstructionDiv = forwardRef<HTMLDivElement, DivAttributes>(
     );
   },
 );
+
+export const MarkdownDiv = forwardRef<
+  HTMLDivElement,
+  Omit<DivAttributes, "children"> & { text?: string }
+>(({ text = "", ...props }, fref) => {
+  return (
+    <div ref={fref} {...props}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          a: ({ href, children, ...props }) => (
+            <PushAnchor href={href ?? "/"} className="underline" {...props}>
+              {children}
+            </PushAnchor>
+          ),
+          ul: ({ ...props }) => <ul {...props} className="list-disc list-inside my-2 space-y-1" />,
+          ol: ({ ...props }) => (
+            <ol {...props} className="list-decimal list-inside my-2 space-y-1" />
+          ),
+          li: ({ ...props }) => <li {...props} className="my-1" />,
+          hr: ({ ...props }) => <hr {...props} className="my-6 border-t border(--gray-900)" />,
+        }}
+      >
+        {text}
+      </ReactMarkdown>
+    </div>
+  );
+});

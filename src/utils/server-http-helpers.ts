@@ -69,7 +69,31 @@ export async function languageAPI(): Promise<ResponseMetadata<LanguageMetadata[]
   };
 }
 
-export async function responseMetadataToResponse<T>(metadata: ResponseMetadata<T>) {
+export async function getProjects(): Promise<ResponseMetadata<ProjectMetadata[]>> {
+  const client = createSupabase();
+  if (!client) {
+    return {
+      statusMessage: "Failed to get database.",
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+    };
+  }
+
+  const projects = await (getTable(client, "projects") as Promise<ProjectMetadata[] | undefined>);
+
+  if (!projects) {
+    return {
+      statusMessage: "Failed to connect/read database.",
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+    };
+  }
+
+  return {
+    status: StatusCodes.OK,
+    body: projects,
+  };
+}
+
+export async function responseMetadataToResponse(metadata: ResponseMetadata<unknown>) {
   if (metadata.status === StatusCodes.OK) {
     return NextResponse.json(metadata.body, {
       headers: createCacheHeaders(),

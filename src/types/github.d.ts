@@ -5,7 +5,8 @@ declare type Table =
   | "github_last_update"
   | "github_repository"
   | "github_repository_owners"
-  | "github_languages";
+  | "github_languages"
+  | "projects";
 
 /**
  * Properties of the owners table
@@ -95,4 +96,15 @@ declare type GithubContribution = {
 declare type GithubContributionAPIResponse = {
   total: Map<string, number>;
   contributions: GithubContribution[];
+};
+
+/**
+ * Properties of a project row
+ */
+declare type ProjectMetadata = {
+  name: string;
+  created: string;
+  description: string;
+  demo: string | null;
+  repo: string | null;
 };
