@@ -3,11 +3,11 @@ import { getCookie } from "cookies-next/client";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
 import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react";
-import { ConstructionDiv, MarkdownDiv, PopupDiv } from "../reusable/div-presets";
+import { ConstructionDiv, InsetDiv, MarkdownDiv, PopupDiv } from "../reusable/div-presets";
 import { GlowBackground } from "../reusable/backgrounds";
 import { getProjects } from "@/utils/server-http-helpers";
-import { IoIosLink, IoLogoGithub, IoMdSkipForward } from "react-icons/io";
-import { PushAnchor } from "../reusable/push-button";
+import { IoIosExpand, IoIosLink, IoLogoGithub } from "react-icons/io";
+import PushButton, { PushAnchor } from "../reusable/push-button";
 import { convertDateToReadable } from "@/utils/time-helpers";
 
 type ProjectsProps = {
@@ -19,6 +19,7 @@ export default function Projects({ maintenance }: ProjectsProps) {
   const [triggered, setTriggered] = useState(false);
   const [showSection, setShowSection] = useState(false);
   const [projects, setProjects] = useState<ProjectMetadata[] | null>(null);
+  const [opened, setOpened] = useState(false);
 
   useEffect(() => {
     getProjects().then((response) => {
@@ -36,7 +37,7 @@ export default function Projects({ maintenance }: ProjectsProps) {
       setTriggered(true);
     },
     container,
-    0.9,
+    0.5,
   );
 
   useEffect(() => {
@@ -66,7 +67,13 @@ export default function Projects({ maintenance }: ProjectsProps) {
           className="absolute top-0 left-0 w-full h-full z-10"
         />
         {maintenance ? <ConstructionDiv /> : null}
-        {projects && <ProjectsPanel projects={projects} />}
+        {!maintenance && projects && (
+          <div className="relative flex flex-row justify-center items-start flex-wrap z-15 gap-4 p-8">
+            {projects.map((data) => (
+              <ProjectDiv key={data.name} project={data} />
+            ))}
+          </div>
+        )}
       </div>
       <Overlay triggered={triggered} setShowSection={setShowSection} />
     </section>
@@ -241,40 +248,50 @@ function Overlay({
   );
 }
 
-function ProjectsPanel({ projects }: { projects: ProjectMetadata[] }) {
-  return (
-    <div className="relative flex flex-row justify-center items-start flex-wrap z-15 gap-4 p-8">
-      {projects.map((data) => (
-        <ProjectDiv key={data.name} project={data} />
-      ))}
-    </div>
-  );
-}
-
-function ProjectDiv({ project }: { project: ProjectMetadata }) {
+function ProjectDiv({
+  project,
+}: {
+  project: ProjectMetadata;
+}) {
   const createDate = convertDateToReadable(new Date(project.created));
+
+  const scopeDiv = useRef<HTMLDivElement>(null);
+  const interactionDiv = useRef<HTMLDivElement>(null);
 
   return (
     <PopupDiv
+      ref={scopeDiv}
       className="relative bg-(--gray-100) rounded-2xl flex flex-col max-w-100 p-8 gap-8 justify-center items-center"
       hoverEffectEnabled={false}
     >
       <div className="relative flex flex-col justify-center items-center gap-1">
-        <p className="text-sm"><i>{createDate}</i></p>
+        <p className="text-sm">
+          <i>{createDate}</i>
+        </p>
         <h2 className="text-3xl md:text-4xl text-center">{project.name}</h2>
       </div>
       <div className="relative max-h-50 overflow-clip">
-        <MarkdownDiv className="z-10" text={project.description} />
-        <div className="absolute z-15 top-0 bottom-0 left-0 right-0 bg-linear-to-t from-(--gray-100) to-(--gray-100)/0"></div>
+        <MarkdownDiv className="relative z-10" text={project.description} />
+        <div className="absolute z-15 top-0 bottom-0 left-0 right-0 flex flex-col justify-end items-center p-2 bg-linear-to-t from-(--gray-100) to-(--gray-100)/0" />
       </div>
-      <div className="relative flex flex-row gap-3 justify-center items-center">
-        <ProjectLink href={project.demo}>
-          <IoIosLink />
-        </ProjectLink>
-        <ProjectLink href={project.repo}>
-          <IoLogoGithub />
-        </ProjectLink>
-      </div>
+      <InsetDiv
+        ref={interactionDiv}
+        className="relative flex flex-col items-center justify-center gap-3 p-3 rounded-sm"
+      >
+        <div className="relative flex flex-row gap-3 justify-center items-center">
+          <ProjectLink href={project.demo}>
+            <IoIosLink />
+          </ProjectLink>
+          <ProjectLink href={project.repo}>
+            <IoLogoGithub />
+          </ProjectLink>
+        </div>
+        {/* <PushButton
+          className="bg-(--gray-100) grid place-items-center w-full p-1 text-2xl rounded-sm shadow-md shadow-div"
+        >
+          <IoIosExpand />
+        </PushButton> */}
+      </InsetDiv>
     </PopupDiv>
   );
 }
