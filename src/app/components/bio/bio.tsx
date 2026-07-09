@@ -13,6 +13,18 @@ import { GlowBackground, LaserBackground } from "../reusable/backgrounds";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const BIRTHDATE = new Date("2008-11-11T00:00:00-05:00");
+
+function getAge(birthdate: Date): number {
+  const now = new Date();
+  let age = now.getFullYear() - birthdate.getFullYear();
+  const m = now.getMonth() - birthdate.getMonth();
+  if (m < 0 || (m === 0 && now.getDate() < birthdate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
 export default function Bio() {
   const container = useRef<HTMLDivElement>(null);
   const paragraph = useRef<HTMLParagraphElement>(null);
@@ -101,13 +113,13 @@ export default function Bio() {
         ref={statContainer}
         className="p-10 xl:px-20 xl:py-10 rounded-2xl bg-(--gray-100)/50 flex flex-col justify-center items-start gap-2 lg:gap-4 overflow-clip z-10"
       >
-        <MiniStat text="17 years old">
+        <MiniStat text={`${getAge(BIRTHDATE)} years old`}>
           <CiCalendar />
         </MiniStat>
         <MiniStat text="Ottawa, Canada" order={1}>
           <CiLocationOn />
         </MiniStat>
-        <MiniStat text="Earl of March" order={2}>
+        <MiniStat text="Carleton University" order={2}>
           <CiBank />
         </MiniStat>
       </InsetDiv>
