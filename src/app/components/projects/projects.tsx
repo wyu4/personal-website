@@ -40,7 +40,7 @@ export default function Projects({ maintenance }: ProjectsProps) {
     if (!is || viewTriggeredFlag.current) return;
     viewTriggeredFlag.current = true;
     setTriggered(true);
-  }, trigger);
+  }, trigger, 0.5);
 
   useEffect(() => {
     enableIsInView();
