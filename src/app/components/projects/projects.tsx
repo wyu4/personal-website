@@ -320,9 +320,9 @@ function ProjectDiv({ project }: { project: ProjectMetadata }) {
         ref={interactionDiv}
         className="relative flex flex-col items-center justify-center gap-3 p-3 rounded-sm"
       >
-        <PushButton className="bg-(--gray-100) grid place-items-center w-full p-1 text-2xl rounded-sm shadow-md shadow-div">
+        {/*<PushButton className="bg-(--gray-100) grid place-items-center w-full p-1 text-2xl rounded-sm shadow-md shadow-div">
           <IoIosExpand />
-        </PushButton>
+        </PushButton>*/}
         <div className="relative flex flex-row gap-3 justify-center items-center">
           <ProjectLink href={project.demo}>
             <IoIosLink />
