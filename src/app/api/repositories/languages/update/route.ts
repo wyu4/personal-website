@@ -41,6 +41,10 @@ export async function GET(request: Request) {
       });
     }
 
+    if (languages.length === 0) {
+      throw Error("While overwritting the languages table, the received table was empty.")
+    }
+
     const success = await overwriteTable(client, "github_languages", languages);
     if (!success) throw Error("Something went wrong while overwriting the languages table.");
   };
