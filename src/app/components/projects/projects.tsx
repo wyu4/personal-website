@@ -11,7 +11,7 @@ import {
 } from "../reusable/div-presets";
 import { GlowBackground } from "../reusable/backgrounds";
 import { getProjects } from "@/utils/server-http-helpers";
-import { IoIosExpand, IoIosLink, IoLogoGithub } from "react-icons/io";
+import { IoIosExpand, IoIosLink, IoIosSkipForward, IoLogoGithub } from "react-icons/io";
 import PushButton, { PushAnchor } from "../reusable/push-button";
 import { convertDateToReadable } from "@/utils/time-helpers";
 
@@ -97,6 +97,7 @@ function Overlay({
   const container = useRef<HTMLDivElement>(null);
   const translationContainer = useRef<HTMLDivElement>(null);
   const textContainer = useRef<HTMLDivElement>(null);
+  const skipButton = useRef<HTMLButtonElement>(null);
   const headings = useRef<(HTMLHeadingElement | null)[]>([]);
   const timeline = useRef(gsap.timeline());
   const [animationFinised, setAnimationFinished] = useState(false);
@@ -129,6 +130,22 @@ function Overlay({
       gsap.set(translationContainer.current, {
         y: clampedDesiredY - currentTop,
       });
+
+      if (skipButton.current) {
+        const button = skipButton.current;
+        const buttonY = (gsap.getProperty(button, "y") as number) || 0;
+        const buttonRect = button.getBoundingClientRect();
+        const buttonTop = buttonRect.top - buttonY;
+
+        const desiredButtonY = window.innerHeight * 0.95 - buttonRect.height;
+        const clampedButtonY = gsap.utils.clamp(
+          parentRect.top,
+          parentRect.bottom - buttonRect.height,
+          desiredButtonY,
+        );
+
+        gsap.set(button, { y: clampedButtonY - buttonTop });
+      }
 
       id = requestAnimationFrame(update);
     };
@@ -248,6 +265,11 @@ function Overlay({
     };
   }, [triggered]);
 
+  const skip = () => {
+    if (animationFinised) return;
+    timeline.current.timeScale(20);
+  };
+
   return (
     <div ref={parent} className="absolute top-0 left-0 right-0 bottom-0">
       <div
@@ -289,6 +311,14 @@ function Overlay({
             </h2>
           </div>
         </div>
+        <button
+          ref={skipButton}
+          onClick={skip}
+          aria-label="Skip animation"
+          className="absolute top-0 right-0 m-5 z-10 text-2xl md:text-4xl text-(--gray-100) cursor-pointer"
+        >
+          <IoIosSkipForward />
+        </button>
       </div>
     </div>
   );
@@ -320,9 +350,9 @@ function ProjectDiv({ project }: { project: ProjectMetadata }) {
         ref={interactionDiv}
         className="relative flex flex-col items-center justify-center gap-3 p-3 rounded-sm"
       >
-        {/*<PushButton className="bg-(--gray-100) grid place-items-center w-full p-1 text-2xl rounded-sm shadow-md shadow-div">
+        <PushButton className="bg-(--gray-100) grid place-items-center w-full p-1 text-2xl rounded-sm shadow-md shadow-div">
           <IoIosExpand />
-        </PushButton>*/}
+        </PushButton>
         <div className="relative flex flex-row gap-3 justify-center items-center">
           <ProjectLink href={project.demo}>
             <IoIosLink />
