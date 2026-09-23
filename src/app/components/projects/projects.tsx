@@ -372,6 +372,7 @@ function ProjectDiv({
 }) {
   const createDate = convertDateToReadable(new Date(project.created));
 
+  const scopeDiv = useRef<HTMLDivElement>(null);
   const placeholderFocusDiv = useRef<HTMLDivElement>(null);
   const focusDiv = useRef<HTMLDivElement>(null);
   const focusContentDiv = useRef<HTMLDivElement>(null);
@@ -418,6 +419,14 @@ function ProjectDiv({
         { opacity: 0, pointerEvents: "none" },
         { opacity: 1, pointerEvents: "all", duration: 0.25 },
       )
+      .fromTo(
+        scopeDiv.current,
+        { opacity: 1 },
+        {
+          opacity: 0,
+          duration: 0.01
+        },
+      )
       .add(flipTween)
       .fromTo(
         focusContentDiv.current,
@@ -451,7 +460,10 @@ function ProjectDiv({
   }, [lockScroll]);
 
   return (
-    <PopupDiv className="relative bg-(--gray-100) rounded-2xl flex flex-col max-w-100 p-8 gap-8 justify-center items-center">
+    <PopupDiv
+      ref={scopeDiv}
+      className="relative bg-(--gray-100) rounded-2xl flex flex-col max-w-100 p-8 gap-8 justify-center items-center"
+    >
       <div
         ref={placeholderFocusDiv}
         data-flip-id={project.name}
@@ -463,7 +475,7 @@ function ProjectDiv({
           <PopupDiv
             ref={focusDiv}
             data-flip-id={project.name}
-            className="fixed overflow-clip flex flex-col justify-start items-center left-5 right-5 top-20 md:left-20 md:right-20 bottom-20 pointer-events-none z-20 bg-(--gray-100) rounded-2xl"
+            className="fixed drop-shadow-none overflow-clip flex flex-col justify-start items-center left-5 right-5 top-20 md:left-20 md:right-20 bottom-20 pointer-events-none z-20 bg-(--gray-100) rounded-2xl"
           >
             <FocusedProjectDiv
               ref={focusContentDiv}

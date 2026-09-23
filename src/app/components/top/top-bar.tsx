@@ -26,6 +26,7 @@ export default function TopBar() {
   }, []);
 
   useGSAP(() => {
+    console.log(visible);
     gsap.to(container.current, {
       opacity: visible ? 1 : 0,
       duration: 0.5,

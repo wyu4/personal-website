@@ -200,7 +200,7 @@ export const PushAnchor = forwardRef<
       <a
         className={`text-(--gray-900) ${className}`}
         ref={(node) => bindRefAndForwardRef(node, forwardedRef, buttonRef)}
-        href={href}
+        href={disabled ? undefined : href}
         target="_blank"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
