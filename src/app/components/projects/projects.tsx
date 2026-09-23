@@ -511,7 +511,7 @@ function ProjectDiv({
   );
 }
 
-function ProjectLink({
+export function ProjectLink({
   href,
   children,
   disabled = false,
