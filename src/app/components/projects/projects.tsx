@@ -460,12 +460,13 @@ function ProjectDiv({
           <PopupDiv
             ref={focusDiv}
             data-flip-id={project.name}
-            className="fixed flex flex-col justify-start items-center top-20 left-20 right-20 bottom-20 pointer-events-none z-20 bg-(--gray-100) rounded-2xl"
+            className="fixed overflow-clip flex flex-col justify-start items-center top-20 left-20 right-20 bottom-20 pointer-events-none z-20 bg-(--gray-100) rounded-2xl"
           >
             <FocusedProjectDiv
               ref={focusContentDiv}
               project={project}
               onClose={onUnfocus}
+              createDate={createDate}
             />
           </PopupDiv>,
 

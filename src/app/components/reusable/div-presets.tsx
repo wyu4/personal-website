@@ -71,12 +71,34 @@ export const MarkdownDiv = forwardRef<
               {children}
             </PushAnchor>
           ),
+          p: ({ ...props }) => <p {...props} className="my-4 first:mt-0 last:mb-0" />,
+          h1: ({ ...props }) => <h1 {...props} className="mt-10 mb-3 first:mt-0 text-[2em] font-bold" />,
+          h2: ({ ...props }) => <h2 {...props} className="mt-8 mb-3 first:mt-0 text-[1.6em] font-bold" />,
+          h3: ({ ...props }) => <h3 {...props} className="mt-6 mb-2 first:mt-0 text-[1.35em] font-bold" />,
+          h4: ({ ...props }) => <h4 {...props} className="mt-5 mb-2 first:mt-0 text-[1.15em] font-bold" />,
+          h5: ({ ...props }) => <h5 {...props} className="mt-4 mb-1 first:mt-0 text-[1em] font-bold" />,
+          h6: ({ ...props }) => <h6 {...props} className="mt-4 mb-1 first:mt-0 text-[0.9em] font-bold" />,
           ul: ({ ...props }) => <ul {...props} className="list-disc list-inside my-2 space-y-1" />,
           ol: ({ ...props }) => (
             <ol {...props} className="list-decimal list-inside my-2 space-y-1" />
           ),
           li: ({ ...props }) => <li {...props} className="my-1" />,
           hr: ({ ...props }) => <hr {...props} className="my-6 border-t border(--gray-900)" />,
+          blockquote: ({ ...props }) => (
+            <blockquote
+              {...props}
+              className="my-4 border-l-4 border-(--gray-400) pl-4 italic opacity-80"
+            />
+          ),
+          table: ({ ...props }) => (
+            <div className="my-4 overflow-x-auto">
+              <table {...props} className="w-full border-collapse text-left" />
+            </div>
+          ),
+          thead: ({ ...props }) => <thead {...props} className="bg-(--gray-200)" />,
+          tr: ({ ...props }) => <tr {...props} className="border-b border-(--gray-400)" />,
+          th: ({ ...props }) => <th {...props} className="px-3 py-2 font-bold" />,
+          td: ({ ...props }) => <td {...props} className="px-3 py-2" />,
         }}
       >
         {text}
