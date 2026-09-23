@@ -28,6 +28,7 @@ import PushButton, { PushAnchor } from "../reusable/push-button";
 import { convertDateToReadable } from "@/utils/time-helpers";
 import { useGSAP } from "@gsap/react";
 import { createPortal } from "react-dom";
+import FocusedProjectDiv from "./focused-projects";
 
 type ProjectsProps = {
   maintenance: boolean;
@@ -99,6 +100,7 @@ export default function Projects({ maintenance }: ProjectsProps) {
                 focused={focusedProject === data.name}
                 disabled={focusedProject !== null}
                 onFocus={() => setFocusedProject(data.name)}
+                onUnfocus={() => setFocusedProject(null)}
               />
             ))}
           </div>
@@ -360,26 +362,38 @@ function ProjectDiv({
   disabled = false,
   focused,
   onFocus,
+  onUnfocus,
 }: {
   project: ProjectMetadata;
   disabled?: boolean;
   focused: boolean;
   onFocus: () => void;
+  onUnfocus: () => void;
 }) {
   const createDate = convertDateToReadable(new Date(project.created));
 
   const placeholderFocusDiv = useRef<HTMLDivElement>(null);
   const focusDiv = useRef<HTMLDivElement>(null);
+  const focusContentDiv = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
+  const [showFocus, setShowFocus] = useState(false);
   const focusTimeline = useRef<gsap.core.Timeline | null>(null);
   const focusState = useRef<Flip.FlipState | null>(null);
 
   useEffect(() => setMounted(true), []);
 
   useGSAP(() => {
-    if (!focusTimeline.current) {
-      focusTimeline.current = gsap.timeline();
+    if (!focused) {
+      focusTimeline.current?.reverse();
+      return;
     }
+
+    // Still reversing from a previous unfocus: just play it forward again
+    if (focusTimeline.current) {
+      focusTimeline.current.play();
+      return;
+    }
+
     if (!focusState.current || !focusDiv.current) return;
     const flipTween = Flip.from(focusState.current, {
       targets: focusDiv.current,
@@ -388,14 +402,29 @@ function ProjectDiv({
       scale: false,
     });
 
-    focusTimeline.current
-      .clear()
-      .fromTo(focusDiv.current, { opacity: 0 }, { opacity: 1, duration: 0.25 })
+    focusTimeline.current = gsap
+      .timeline({
+        onReverseComplete: () => {
+          focusTimeline.current?.kill();
+          focusTimeline.current = null;
+          setShowFocus(false);
+        },
+      })
+      .fromTo(
+        focusDiv.current,
+        { opacity: 0, pointerEvents: "none" },
+        { opacity: 1, pointerEvents: "all", duration: 0.25 },
+      )
       .add(flipTween)
-      .play(0);
+      .fromTo(
+        focusContentDiv.current,
+        {
+          opacity: 0,
+        },
+        { opacity: 1, duration: 0.25, ease: "sine.inOut" },
+      );
 
     focusState.current = null;
-    return () => focusTimeline.current?.clear();
   }, [focused]);
 
   useEffect(() => {
@@ -426,13 +455,20 @@ function ProjectDiv({
         className={`absolute inset-0 pointer-events-none z-20 bg-(--gray-100) rounded-2xl opacity-0`}
       />
       {mounted &&
-        focused &&
+        showFocus &&
         createPortal(
-          <div
+          <PopupDiv
             ref={focusDiv}
             data-flip-id={project.name}
-            className="fixed top-0 left-0 w-screen h-screen pointer-events-none z-20 bg-(--gray-100) rounded-2xl"
-          ></div>,
+            className="fixed flex flex-col justify-start items-center top-20 left-20 right-20 bottom-20 pointer-events-none z-20 bg-(--gray-100) rounded-2xl"
+          >
+            <FocusedProjectDiv
+              ref={focusContentDiv}
+              project={project}
+              onClose={onUnfocus}
+            />
+          </PopupDiv>,
+
           document.body,
         )}
 
@@ -463,6 +499,7 @@ function ProjectDiv({
             focusState.current = Flip.getState(placeholderFocusDiv.current, {
               props: "borderRadius",
             });
+            setShowFocus(true);
             onFocus();
           }}
         >
