@@ -377,6 +377,7 @@ function ProjectDiv({
   const focusContentDiv = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const [showFocus, setShowFocus] = useState(false);
+  const [lockScroll, setLockScroll] = useState(false);
   const focusTimeline = useRef<gsap.core.Timeline | null>(null);
   const focusState = useRef<Flip.FlipState | null>(null);
 
@@ -408,8 +409,10 @@ function ProjectDiv({
           focusTimeline.current?.kill();
           focusTimeline.current = null;
           setShowFocus(false);
+          setLockScroll(false);
         },
       })
+      .call(() => setLockScroll(true))
       .fromTo(
         focusDiv.current,
         { opacity: 0, pointerEvents: "none" },
@@ -428,7 +431,7 @@ function ProjectDiv({
   }, [focused]);
 
   useEffect(() => {
-    if (!focused) return;
+    if (!lockScroll) return;
 
     const scrollY = window.scrollY;
 
@@ -445,7 +448,7 @@ function ProjectDiv({
 
       window.scrollTo(0, scrollY);
     };
-  }, [focused]);
+  }, [lockScroll]);
 
   return (
     <PopupDiv className="relative bg-(--gray-100) rounded-2xl flex flex-col max-w-100 p-8 gap-8 justify-center items-center">
