@@ -210,7 +210,6 @@ function Service({ src, name, href }: ServiceProps) {
       >
         <PopupDiv
           ref={background}
-          hoverEffectEnabled={false}
           className="absolute w-full h-full rounded-xl sm:rounded-2xl opacity-0 z-10"
           style={{
             backgroundColor: hue,

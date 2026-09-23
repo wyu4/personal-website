@@ -1,7 +1,5 @@
 import { bindRefAndForwardRef } from "@/utils/ref-helpers";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { forwardRef, useRef, useState } from "react";
+import { forwardRef, useRef } from "react";
 import { MdConstruction } from "react-icons/md";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -15,28 +13,14 @@ export const InsetDiv = forwardRef<HTMLDivElement, DivAttributes>(
 
 export const PopupDiv = forwardRef<
   HTMLDivElement,
-  DivAttributes & {
-    hoverEffectEnabled?: boolean;
-  }
->(({ className, hoverEffectEnabled = true, ...props }, forwardedRef) => {
+  DivAttributes
+>(({ className, ...props }, forwardedRef) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [hovering, setHovering] = useState(false);
-
-  useGSAP(() => {
-    const effectOn = hovering && hoverEffectEnabled;
-    gsap.to(ref.current, {
-      scale: effectOn ? 1.02 : 1,
-      duration: 0.2,
-      ease: "power2.inOut",
-    });
-  }, [hovering, hoverEffectEnabled]);
 
   return (
     <div
       ref={(node) => bindRefAndForwardRef(node, forwardedRef, ref)}
       className={`shadow-md shadow-div ${className}`}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
       {...props}
     />
   );
@@ -46,7 +30,6 @@ export const Sticker = forwardRef<HTMLDivElement, DivAttributes>(({ children }, 
   return (
     <PopupDiv
       ref={ref}
-      hoverEffectEnabled={false}
       className="text-3xl text-(--gray-900) aspect-square bg(--gray-200) rounded-md p-1 grid place-items-center"
     >
       {children}
@@ -64,7 +47,6 @@ export const ConstructionDiv = forwardRef<HTMLDivElement, DivAttributes>(
       >
         <PopupDiv
           className="rounded-2xl bg-(--gray-200)-1/2 text-3xl md:text-5xl p-2 md:p-3"
-          hoverEffectEnabled={false}
         >
           <MdConstruction />
         </PopupDiv>

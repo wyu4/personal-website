@@ -1,8 +1,15 @@
 import { useIsInView } from "@/app/hooks/view";
 import { getCookie } from "cookies-next/client";
 import gsap from "gsap";
-import { SplitText } from "gsap/all";
-import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react";
+import { Flip, SplitText } from "gsap/all";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   ConstructionDiv,
   InsetDiv,
@@ -11,13 +18,22 @@ import {
 } from "../reusable/div-presets";
 import { GlowBackground } from "../reusable/backgrounds";
 import { getProjects } from "@/utils/server-http-helpers";
-import { IoIosExpand, IoIosLink, IoIosSkipForward, IoLogoGithub } from "react-icons/io";
+import {
+  IoIosExpand,
+  IoIosLink,
+  IoIosSkipForward,
+  IoLogoGithub,
+} from "react-icons/io";
 import PushButton, { PushAnchor } from "../reusable/push-button";
 import { convertDateToReadable } from "@/utils/time-helpers";
+import { useGSAP } from "@gsap/react";
+import { createPortal } from "react-dom";
 
 type ProjectsProps = {
   maintenance: boolean;
 };
+
+gsap.registerPlugin(Flip);
 
 export default function Projects({ maintenance }: ProjectsProps) {
   const container = useRef<HTMLElement>(null);
@@ -25,7 +41,7 @@ export default function Projects({ maintenance }: ProjectsProps) {
   const [triggered, setTriggered] = useState(false);
   const [showSection, setShowSection] = useState(false);
   const [projects, setProjects] = useState<ProjectMetadata[] | null>(null);
-  const [opened, setOpened] = useState(false);
+  const [focusedProject, setFocusedProject] = useState<String | null>(null);
 
   useEffect(() => {
     getProjects().then((response) => {
@@ -36,11 +52,15 @@ export default function Projects({ maintenance }: ProjectsProps) {
   }, []);
 
   const viewTriggeredFlag = useRef(false);
-  const [enableIsInView, cleanupIsInView] = useIsInView((is) => {
-    if (!is || viewTriggeredFlag.current) return;
-    viewTriggeredFlag.current = true;
-    setTriggered(true);
-  }, trigger, 0.5);
+  const [enableIsInView, cleanupIsInView] = useIsInView(
+    (is) => {
+      if (!is || viewTriggeredFlag.current) return;
+      viewTriggeredFlag.current = true;
+      setTriggered(true);
+    },
+    trigger,
+    0.5,
+  );
 
   useEffect(() => {
     enableIsInView();
@@ -73,7 +93,13 @@ export default function Projects({ maintenance }: ProjectsProps) {
         {!maintenance && projects && (
           <div className="relative flex flex-row justify-center items-start flex-wrap z-15 gap-4 p-8">
             {projects.map((data) => (
-              <ProjectDiv key={data.name} project={data} />
+              <ProjectDiv
+                key={data.name}
+                project={data}
+                focused={focusedProject === data.name}
+                disabled={focusedProject !== null}
+                onFocus={() => setFocusedProject(data.name)}
+              />
             ))}
           </div>
         )}
@@ -112,7 +138,8 @@ function Overlay({
 
     let id: number | undefined = undefined;
     const update = () => {
-      if (animationFinised || !parent.current || !translationContainer.current) return;
+      if (animationFinised || !parent.current || !translationContainer.current)
+        return;
       const parentRect = parent.current.getBoundingClientRect();
       const child = translationContainer.current;
 
@@ -137,10 +164,10 @@ function Overlay({
         const buttonRect = button.getBoundingClientRect();
         const buttonTop = buttonRect.top - buttonY;
 
-        const desiredButtonY = window.innerHeight * 0.95 - buttonRect.height;
+        const desiredButtonY = window.innerHeight - 2 * buttonRect.height;
         const clampedButtonY = gsap.utils.clamp(
           parentRect.top,
-          parentRect.bottom - buttonRect.height,
+          parentRect.bottom - buttonRect.height * 2,
           desiredButtonY,
         );
 
@@ -159,7 +186,8 @@ function Overlay({
   }, [animationFinised, triggered]);
 
   useEffect(() => {
-    if (cutsceneDisabled.current || !triggered || headings.current.length < 3) return;
+    if (cutsceneDisabled.current || !triggered || headings.current.length < 3)
+      return;
     const split1 = new SplitText(headings.current[0], {
       type: "lines, words",
     });
@@ -277,7 +305,10 @@ function Overlay({
         ref={container}
         {...props}
       >
-        <div ref={translationContainer} className="relative grid place-items-center">
+        <div
+          ref={translationContainer}
+          className="relative grid place-items-center"
+        >
           <div
             ref={textContainer}
             className="relative flex flex-col justify-start items-center gap-2 md:gap-10 py-10 pointer-none:"
@@ -324,18 +355,87 @@ function Overlay({
   );
 }
 
-function ProjectDiv({ project }: { project: ProjectMetadata }) {
+function ProjectDiv({
+  project,
+  disabled = false,
+  focused,
+  onFocus,
+}: {
+  project: ProjectMetadata;
+  disabled?: boolean;
+  focused: boolean;
+  onFocus: () => void;
+}) {
   const createDate = convertDateToReadable(new Date(project.created));
 
-  const scopeDiv = useRef<HTMLDivElement>(null);
-  const interactionDiv = useRef<HTMLDivElement>(null);
+  const placeholderFocusDiv = useRef<HTMLDivElement>(null);
+  const focusDiv = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+  const focusTimeline = useRef<gsap.core.Timeline | null>(null);
+  const focusState = useRef<Flip.FlipState | null>(null);
+
+  useEffect(() => setMounted(true), []);
+
+  useGSAP(() => {
+    if (!focusTimeline.current) {
+      focusTimeline.current = gsap.timeline();
+    }
+    if (!focusState.current || !focusDiv.current) return;
+    const flipTween = Flip.from(focusState.current, {
+      targets: focusDiv.current,
+      duration: 0.5,
+      ease: "power2.inOut",
+      scale: false,
+    });
+
+    focusTimeline.current
+      .clear()
+      .fromTo(focusDiv.current, { opacity: 0 }, { opacity: 1, duration: 0.25 })
+      .add(flipTween)
+      .play(0);
+
+    focusState.current = null;
+    return () => focusTimeline.current?.clear();
+  }, [focused]);
+
+  useEffect(() => {
+    if (!focused) return;
+
+    const scrollY = window.scrollY;
+
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+    document.body.style.overflowY = "scroll";
+
+    return () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.style.overflowY = "";
+
+      window.scrollTo(0, scrollY);
+    };
+  }, [focused]);
 
   return (
-    <PopupDiv
-      ref={scopeDiv}
-      className="relative bg-(--gray-100) rounded-2xl flex flex-col max-w-100 p-8 gap-8 justify-center items-center"
-      hoverEffectEnabled={false}
-    >
+    <PopupDiv className="relative bg-(--gray-100) rounded-2xl flex flex-col max-w-100 p-8 gap-8 justify-center items-center">
+      <div
+        ref={placeholderFocusDiv}
+        data-flip-id={project.name}
+        className={`absolute inset-0 pointer-events-none z-20 bg-(--gray-100) rounded-2xl opacity-0`}
+      />
+      {mounted &&
+        focused &&
+        createPortal(
+          <div
+            ref={focusDiv}
+            data-flip-id={project.name}
+            className="fixed top-0 left-0 w-screen h-screen pointer-events-none z-20 bg-(--gray-100) rounded-2xl"
+          ></div>,
+          document.body,
+        )}
+
       <div className="relative flex flex-col justify-center items-center gap-1">
         <p className="text-sm">
           <i>{createDate}</i>
@@ -346,33 +446,49 @@ function ProjectDiv({ project }: { project: ProjectMetadata }) {
         <MarkdownDiv className="relative z-10" text={project.description} />
         <div className="absolute z-15 top-0 bottom-0 left-0 right-0 flex flex-col justify-end items-center p-2 bg-linear-to-t from-(--gray-100) to-(--gray-100)/0" />
       </div>
-      <InsetDiv
-        ref={interactionDiv}
-        className="relative flex flex-col items-center justify-center gap-3 p-3 rounded-sm"
-      >
-        <PushButton className="bg-(--gray-100) grid place-items-center w-full p-1 text-2xl rounded-sm shadow-md shadow-div">
-          <IoIosExpand />
-        </PushButton>
+      <InsetDiv className="relative flex flex-col items-center justify-center gap-3 p-3 rounded-sm">
         <div className="relative flex flex-row gap-3 justify-center items-center">
-          <ProjectLink href={project.demo}>
+          <ProjectLink href={project.demo} disabled={disabled}>
             <IoIosLink />
           </ProjectLink>
-          <ProjectLink href={project.repo}>
+          <ProjectLink href={project.repo} disabled={disabled}>
             <IoLogoGithub />
           </ProjectLink>
         </div>
+        <PushButton
+          className="bg-(--gray-100) grid place-items-center w-full p-1 text-2xl rounded-sm shadow-md shadow-div"
+          disabled={disabled}
+          onClick={() => {
+            if (disabled) return;
+            focusState.current = Flip.getState(placeholderFocusDiv.current, {
+              props: "borderRadius",
+            });
+            onFocus();
+          }}
+        >
+          <IoIosExpand />
+        </PushButton>
       </InsetDiv>
     </PopupDiv>
   );
 }
 
-function ProjectLink({ href, children }: { href?: string | null; children?: ReactNode }) {
+function ProjectLink({
+  href,
+  children,
+  disabled = false,
+}: {
+  href?: string | null;
+  children?: ReactNode;
+  disabled?: boolean;
+}) {
   return (
     <>
       {href && (
         <PushAnchor
           className="aspect-square grid place-items-center p-1 text-2xl rounded-sm shadow-md shadow-div"
           href={href}
+          disabled={disabled}
         >
           {children}
         </PushAnchor>
