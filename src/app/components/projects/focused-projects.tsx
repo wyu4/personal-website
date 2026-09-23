@@ -26,15 +26,15 @@ const FocusedProjectDiv = forwardRef<
         </PushButton>
       </div>
       <div className="flex flex-col justify-center items-start gap-3">
-        <h2 className="text-4xl md:text-5xl text-center">{project.name}</h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl text-center">{project.name}</h2>
         <p className="text-sm">
           <i>Updated on {createDate}</i>
         </p>
       </div>
-      <div className="relative px-20 flex flex-col flex-1 justify-start items-start min-h-0 overflow-y-scroll">
+      <div className="relative px-5 md:px-20 flex flex-col flex-1 justify-start items-start min-h-0 overflow-y-scroll">
         <div className="sticky z-15 top-0 h-30 -mb-10 shrink-0 w-full left-0 bg-linear-to-b from-(--gray-100) to-(--gray-100)/0" />
         <MarkdownDiv
-          className="relative text-xl text-wrap"
+          className="relative text-sm sm:text-xl text-wrap mb-30"
           text={project.description}
         />
       </div>

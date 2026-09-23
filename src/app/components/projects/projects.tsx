@@ -460,7 +460,7 @@ function ProjectDiv({
           <PopupDiv
             ref={focusDiv}
             data-flip-id={project.name}
-            className="fixed overflow-clip flex flex-col justify-start items-center top-20 left-20 right-20 bottom-20 pointer-events-none z-20 bg-(--gray-100) rounded-2xl"
+            className="fixed overflow-clip flex flex-col justify-start items-center top-0 left-0 right-0 bottom-0 md:top-20 md:left-20 md:right-20 md:bottom-20 pointer-events-none z-20 bg-(--gray-100) rounded-2xl"
           >
             <FocusedProjectDiv
               ref={focusContentDiv}
