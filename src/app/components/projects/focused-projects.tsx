@@ -36,7 +36,7 @@ const FocusedProjectDiv = forwardRef<
           {project.name}
         </h2>
         <p className="text-sm">
-          <i>Updated on {createDate}</i>
+          <i>~ {createDate}</i>
         </p>
       </div>
       <div className="relative px-5 md:px-20 flex flex-col flex-1 justify-start items-start min-h-0 overflow-y-scroll">
