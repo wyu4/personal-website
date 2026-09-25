@@ -475,7 +475,7 @@ function ProjectDiv({
           <PopupDiv
             ref={focusDiv}
             data-flip-id={project.name}
-            className="fixed drop-shadow-none overflow-clip flex flex-col justify-start items-center left-5 right-5 top-20 md:left-20 md:right-20 bottom-20 pointer-events-none z-20 bg-(--gray-100) rounded-2xl"
+            className="fixed drop-shadow-none overflow-clip flex flex-col justify-start items-center left-5 right-5 top-10 md:left-20 md:right-20 bottom-10 pointer-events-none z-20 bg-(--gray-100) rounded-2xl"
           >
             <FocusedProjectDiv
               ref={focusContentDiv}
@@ -494,8 +494,8 @@ function ProjectDiv({
         </p>
         <h2 className="text-3xl md:text-4xl text-center">{project.name}</h2>
       </div>
-      <div className="relative max-h-50 overflow-clip">
-        <MarkdownDiv className="relative z-10" text={project.description} />
+      <div className="relative max-w-full max-h-50 overflow-clip">
+        <MarkdownDiv className="relative z-10 text-wrap" text={project.description} />
         <div className="absolute z-15 top-0 bottom-0 left-0 right-0 flex flex-col justify-end items-center p-2 bg-linear-to-t from-(--gray-100) to-(--gray-100)/0" />
       </div>
       <InsetDiv className="relative flex flex-col items-center justify-center gap-3 p-3 rounded-sm">

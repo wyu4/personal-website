@@ -60,9 +60,9 @@ export const ConstructionDiv = forwardRef<HTMLDivElement, DivAttributes>(
 export const MarkdownDiv = forwardRef<
   HTMLDivElement,
   Omit<DivAttributes, "children"> & { text?: string }
->(({ text = "", ...props }, fref) => {
+>(({ text = "", className = "", ...props }, fref) => {
   return (
-    <div ref={fref} {...props}>
+    <div ref={fref} className={`min-w-0 max-w-full wrap-anywhere ${className}`} {...props}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -99,6 +99,13 @@ export const MarkdownDiv = forwardRef<
           tr: ({ ...props }) => <tr {...props} className="border-b border-(--gray-400)" />,
           th: ({ ...props }) => <th {...props} className="px-3 py-2 font-bold" />,
           td: ({ ...props }) => <td {...props} className="px-3 py-2" />,
+          pre: ({ ...props }) => (
+            <pre
+              {...props}
+              className="my-4 whitespace-pre-wrap rounded bg-black/10 p-3 [&_code]:bg-transparent [&_code]:p-0"
+            />
+          ),
+          code: ({ ...props }) => <code {...props} className="rounded bg-black/10 px-1 py-0.5" />,
         }}
       >
         {text}
