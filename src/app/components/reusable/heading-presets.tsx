@@ -1,4 +1,4 @@
-import { bindRefAndForwardRef } from "@/utils/ref-helpers";
+import { bindRefAndForwardRef } from "@/utils/helpers";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollToPlugin, SplitText } from "gsap/all";

@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, useEffect, useRef, useState } from "react";
-import { bindRefAndForwardRef } from "@/utils/ref-helpers";
+import { bindRefAndForwardRef, getVar } from "@/utils/helpers";
 import { useRetryEffect } from "@/app/hooks/retry";
 import { getLanguages } from "@/utils/client-http-helpers";
 import { Doughnut } from "react-chartjs-2";
@@ -12,7 +12,6 @@ import { ScrollTrigger, SplitText } from "gsap/all";
 import gsap from "gsap";
 import { InsetDiv, PopupDiv } from "../reusable/div-presets";
 import { useIsInView } from "@/app/hooks/view";
-import { getVar } from "@/utils/style-helpers";
 import { useRootClass } from "@/app/hooks/misc";
 import { GlowBackground } from "../reusable/backgrounds";
 import Contributions from "./github-contributions";

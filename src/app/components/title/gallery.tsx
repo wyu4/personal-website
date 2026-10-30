@@ -1,7 +1,6 @@
 "use client";
 
-import { bindRefAndForwardRef } from "@/utils/ref-helpers";
-import { limitText } from "@/utils/text-helpers";
+import { bindRefAndForwardRef, limitText } from "@/utils/helpers";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { forwardRef, useEffect, useRef } from "react";

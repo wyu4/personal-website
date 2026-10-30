@@ -25,7 +25,7 @@ import {
   IoLogoGithub,
 } from "react-icons/io";
 import PushButton, { PushAnchor } from "../reusable/push-button";
-import { convertDateToReadable } from "@/utils/time-helpers";
+import { convertDateToReadable } from "@/utils/helpers";
 import { useGSAP } from "@gsap/react";
 import { createPortal } from "react-dom";
 import FocusedProjectDiv from "./focused-projects";

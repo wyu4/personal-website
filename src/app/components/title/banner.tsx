@@ -14,7 +14,7 @@ import PushButton from "../reusable/push-button";
 import { GoChevronDown } from "react-icons/go";
 import { ScrollToPlugin } from "gsap/all";
 import { useRootClass } from "@/app/hooks/misc";
-import { getVar } from "@/utils/style-helpers";
+import { getVar } from "@/utils/helpers";
 
 const RETRY_TIME = 1000; // Milliseconds
 

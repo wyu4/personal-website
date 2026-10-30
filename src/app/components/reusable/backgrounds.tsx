@@ -1,7 +1,6 @@
 import { useRootClass } from "@/app/hooks/misc";
 import { useIsInView } from "@/app/hooks/view";
-import { bindRefAndForwardRef } from "@/utils/ref-helpers";
-import { getVar } from "@/utils/style-helpers";
+import { bindRefAndForwardRef, getVar } from "@/utils/helpers";
 import gsap from "gsap";
 import { DrawSVGPlugin, MotionPathHelper } from "gsap/all";
 import { forwardRef, useEffect, useRef, useState } from "react";

@@ -1,3 +1,44 @@
+import type { ForwardedRef, RefObject } from "react";
+
+/**
+ * Get the value of a CSS variable
+ * @param name Name of the variable (ie: --name-of-variable)
+ * @returns Value set inside of the CSS
+ */
+export const getVar = (name: string) => {
+  const style = getComputedStyle(document.documentElement);
+  return style.getPropertyValue(name).trim();
+};
+
+/**
+ * Bind a ref object and a forwarded ref object ot the same node.
+ * @param node Node to bind to
+ * @param forwardedRef Forwarded ref object to bind
+ * @param ref Ref object to bind
+ */
+export function bindRefAndForwardRef<T>(
+  node: T | null,
+  forwardedRef: ForwardedRef<T>,
+  ref: RefObject<T | null> | RefObject<T>,
+) {
+  ref.current = node;
+  if (forwardedRef) {
+    if (typeof forwardedRef === "function") forwardedRef(node);
+    else forwardedRef.current = node;
+  }
+}
+
+/**
+ * Limit text length by truncating excess and appending `'...'`
+ * @param text Original text
+ * @param characterLimit Character limit
+ * @returns New truncated text
+ */
+export function limitText(text: string, characterLimit: number) {
+  if (characterLimit < 0 || text.length <= characterLimit) return text;
+  return text.substring(0, characterLimit) + "...";
+}
+
 /**
  * Formulate a time difference given the magnitude and the unit of the time elapsed
  * @param n Magnitude

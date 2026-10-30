@@ -1,4 +1,4 @@
-import { bindRefAndForwardRef } from "@/utils/ref-helpers";
+import { bindRefAndForwardRef } from "@/utils/helpers";
 import { forwardRef, useRef } from "react";
 import { MdConstruction } from "react-icons/md";
 import ReactMarkdown from "react-markdown";
