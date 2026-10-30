@@ -2,7 +2,7 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { JSX, useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import AnimatedName from "./animated-name";
 import { getRepositories } from "@/utils/client-http-helpers";
 import { GITHUB_GALLERY_SIZE } from "@/utils/environment";
@@ -224,13 +224,19 @@ function Background({ repositories, ready }: BackgroundProps) {
     if (!visible.current) {
       timeline.fromTo(
         plane.current,
-        { filter: "blur(20px)", scale: 50, x: "100%", y: "100%" },
+        {
+          filter: "blur(20px)",
+          scale: 50,
+          x: "100%",
+          y: "100%",
+          visibility: "visible",
+        },
         {
           delay: 0.5,
           x: 0,
           y: -verticalPadding,
           scale: 1,
-          filter: "blur(0px)",
+          filter: "blur(1px)",
           duration: 4,
           ease: "power4.out",
           onStart: () => (visible.current = true),
@@ -254,7 +260,7 @@ function Background({ repositories, ready }: BackgroundProps) {
     >
       <div
         ref={plane}
-        className="relative flex flex-col-reverse justify-center items-center rotate-x-20"
+        className="relative flex flex-col-reverse justify-center items-center rotate-x-20 invisible"
         style={{
           gap: verticalPadding,
         }}

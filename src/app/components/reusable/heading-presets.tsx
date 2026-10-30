@@ -11,11 +11,11 @@ export const FadeInHeading = forwardRef<HTMLHeadingElement, Heading2Attributes>(
 
     useGSAP(() => {
       const splitHeading = new SplitText(ref.current, {
-        type: "words, chars",
+        type: "words",
       });
       gsap.fromTo(
-        splitHeading.chars,
-        { opacity: 0, y: "1rem" },
+        splitHeading.words,
+        { opacity: 0, y: "2rem" },
         {
           scrollTrigger: ref.current,
           opacity: 1,
