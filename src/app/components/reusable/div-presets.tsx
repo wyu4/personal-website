@@ -1,5 +1,5 @@
 import { bindRefAndForwardRef } from "@/utils/helpers";
-import { forwardRef, useRef } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 import { MdConstruction } from "react-icons/md";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -7,35 +7,42 @@ import { PushAnchor } from "./push-button";
 
 export const InsetDiv = forwardRef<HTMLDivElement, DivAttributes>(
   ({ className, ...props }, ref) => {
-    return <div ref={ref} className={`inset-shadow-div inset-shadow-sm ${className}`} {...props} />;
+    return (
+      <div
+        ref={ref}
+        className={`inset-shadow-div inset-shadow-sm ${className}`}
+        {...props}
+      />
+    );
   },
 );
 
-export const PopupDiv = forwardRef<
-  HTMLDivElement,
-  DivAttributes
->(({ className, ...props }, forwardedRef) => {
-  const ref = useRef<HTMLDivElement>(null);
+export const PopupDiv = forwardRef<HTMLDivElement, DivAttributes>(
+  ({ className, ...props }, forwardedRef) => {
+    const ref = useRef<HTMLDivElement>(null);
 
-  return (
-    <div
-      ref={(node) => bindRefAndForwardRef(node, forwardedRef, ref)}
-      className={`shadow-md shadow-div ${className}`}
-      {...props}
-    />
-  );
-});
+    return (
+      <div
+        ref={(node) => bindRefAndForwardRef(node, forwardedRef, ref)}
+        className={`shadow-md shadow-div ${className}`}
+        {...props}
+      />
+    );
+  },
+);
 
-export const Sticker = forwardRef<HTMLDivElement, DivAttributes>(({ children }, ref) => {
-  return (
-    <PopupDiv
-      ref={ref}
-      className="text-3xl text-(--gray-900) aspect-square bg(--gray-200) rounded-md p-1 grid place-items-center"
-    >
-      {children}
-    </PopupDiv>
-  );
-});
+export const Sticker = forwardRef<HTMLDivElement, DivAttributes>(
+  ({ children }, ref) => {
+    return (
+      <PopupDiv
+        ref={ref}
+        className="text-3xl text-(--gray-900) aspect-square bg(--gray-200) rounded-md p-1 grid place-items-center"
+      >
+        {children}
+      </PopupDiv>
+    );
+  },
+);
 
 export const ConstructionDiv = forwardRef<HTMLDivElement, DivAttributes>(
   ({ className, ...props }, forwardedRef) => {
@@ -45,13 +52,13 @@ export const ConstructionDiv = forwardRef<HTMLDivElement, DivAttributes>(
         {...props}
         className={`relative rounded-2xl flex flex-col justify-center items-center p-5 gap-5 z-15 ${className}`}
       >
-        <PopupDiv
-          className="rounded-2xl bg-(--gray-200)-1/2 text-3xl md:text-5xl p-2 md:p-3"
-        >
+        <PopupDiv className="rounded-2xl bg-(--gray-200)-1/2 text-3xl md:text-5xl p-2 md:p-3">
           <MdConstruction />
         </PopupDiv>
 
-        <p className="code text-xl text-center">[This section is under construction.]</p>
+        <p className="code text-xl text-center">
+          [This section is under construction.]
+        </p>
       </InsetDiv>
     );
   },
@@ -62,7 +69,11 @@ export const MarkdownDiv = forwardRef<
   Omit<DivAttributes, "children"> & { text?: string }
 >(({ text = "", className = "", ...props }, fref) => {
   return (
-    <div ref={fref} className={`min-w-0 max-w-full wrap-anywhere ${className}`} {...props}>
+    <div
+      ref={fref}
+      className={`min-w-0 max-w-full wrap-anywhere ${className}`}
+      {...props}
+    >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -71,19 +82,58 @@ export const MarkdownDiv = forwardRef<
               {children}
             </PushAnchor>
           ),
-          p: ({ ...props }) => <p {...props} className="my-4 first:mt-0 last:mb-0" />,
-          h1: ({ ...props }) => <h1 {...props} className="mt-10 mb-3 first:mt-0 text-[2em] font-bold" />,
-          h2: ({ ...props }) => <h2 {...props} className="mt-8 mb-3 first:mt-0 text-[1.6em] font-bold" />,
-          h3: ({ ...props }) => <h3 {...props} className="mt-6 mb-2 first:mt-0 text-[1.35em] font-bold" />,
-          h4: ({ ...props }) => <h4 {...props} className="mt-5 mb-2 first:mt-0 text-[1.15em] font-bold" />,
-          h5: ({ ...props }) => <h5 {...props} className="mt-4 mb-1 first:mt-0 text-[1em] font-bold" />,
-          h6: ({ ...props }) => <h6 {...props} className="mt-4 mb-1 first:mt-0 text-[0.9em] font-bold" />,
-          ul: ({ ...props }) => <ul {...props} className="list-disc list-inside my-2 space-y-1" />,
+          p: ({ ...props }) => (
+            <p {...props} className="my-4 first:mt-0 last:mb-0" />
+          ),
+          h1: ({ ...props }) => (
+            <h1
+              {...props}
+              className="mt-10 mb-3 first:mt-0 text-[2em] font-bold"
+            />
+          ),
+          h2: ({ ...props }) => (
+            <h2
+              {...props}
+              className="mt-8 mb-3 first:mt-0 text-[1.6em] font-bold"
+            />
+          ),
+          h3: ({ ...props }) => (
+            <h3
+              {...props}
+              className="mt-6 mb-2 first:mt-0 text-[1.35em] font-bold"
+            />
+          ),
+          h4: ({ ...props }) => (
+            <h4
+              {...props}
+              className="mt-5 mb-2 first:mt-0 text-[1.15em] font-bold"
+            />
+          ),
+          h5: ({ ...props }) => (
+            <h5
+              {...props}
+              className="mt-4 mb-1 first:mt-0 text-[1em] font-bold"
+            />
+          ),
+          h6: ({ ...props }) => (
+            <h6
+              {...props}
+              className="mt-4 mb-1 first:mt-0 text-[0.9em] font-bold"
+            />
+          ),
+          ul: ({ ...props }) => (
+            <ul {...props} className="list-disc list-inside my-2 space-y-1" />
+          ),
           ol: ({ ...props }) => (
-            <ol {...props} className="list-decimal list-inside my-2 space-y-1" />
+            <ol
+              {...props}
+              className="list-decimal list-inside my-2 space-y-1"
+            />
           ),
           li: ({ ...props }) => <li {...props} className="my-1" />,
-          hr: ({ ...props }) => <hr {...props} className="my-6 border-t border(--gray-900)" />,
+          hr: ({ ...props }) => (
+            <hr {...props} className="my-6 border-t border(--gray-900)" />
+          ),
           blockquote: ({ ...props }) => (
             <blockquote
               {...props}
@@ -95,9 +145,15 @@ export const MarkdownDiv = forwardRef<
               <table {...props} className="w-full border-collapse text-left" />
             </div>
           ),
-          thead: ({ ...props }) => <thead {...props} className="bg-(--gray-200)" />,
-          tr: ({ ...props }) => <tr {...props} className="border-b border-(--gray-400)" />,
-          th: ({ ...props }) => <th {...props} className="px-3 py-2 font-bold" />,
+          thead: ({ ...props }) => (
+            <thead {...props} className="bg-(--gray-200)" />
+          ),
+          tr: ({ ...props }) => (
+            <tr {...props} className="border-b border-(--gray-400)" />
+          ),
+          th: ({ ...props }) => (
+            <th {...props} className="px-3 py-2 font-bold" />
+          ),
           td: ({ ...props }) => <td {...props} className="px-3 py-2" />,
           pre: ({ ...props }) => (
             <pre
@@ -105,7 +161,9 @@ export const MarkdownDiv = forwardRef<
               className="my-4 whitespace-pre-wrap rounded bg-black/10 p-3 [&_code]:bg-transparent [&_code]:p-0"
             />
           ),
-          code: ({ ...props }) => <code {...props} className="rounded bg-black/10 px-1 py-0.5" />,
+          code: ({ ...props }) => (
+            <code {...props} className="rounded bg-black/10 px-1 py-0.5" />
+          ),
         }}
       >
         {text}
@@ -113,3 +171,63 @@ export const MarkdownDiv = forwardRef<
     </div>
   );
 });
+
+const railAlign = {
+  start: "top-[calc(var(--rail-h,0px)+var(--rail-h-offset,0px))]",
+  center: "top-[calc(50dvh-var(--rail-h,0px)/2+var(--rail-h-offset,0px))]",
+  end: "top-[calc(100dvh-var(--rail-h,0px)+var(--rail-h-offset,0px))]",
+};
+
+const railJustify = {
+  start: "mr-auto",
+  center: "mx-auto",
+  end: "ml-auto",
+};
+
+export const RailDiv = forwardRef<
+  HTMLDivElement,
+  DivAttributes & {
+    align?: keyof typeof railAlign;
+    justify?: keyof typeof railJustify;
+    offset?: string;
+  }
+>(
+  (
+    {
+      children,
+      className = "",
+      align = "center",
+      justify = "center",
+      offset = "0px",
+      ...props
+    },
+    fref,
+  ) => {
+    const container = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      const c = container.current;
+      if (!c) return;
+      c.style.setProperty("--rail-h-offset", offset);
+
+      const observer = new ResizeObserver(() => {
+        c.style.setProperty("--rail-h", `${c.offsetHeight}px`);
+      });
+      observer.observe(c);
+
+      return () => observer.disconnect();
+    }, [offset]);
+
+    return (
+      <div className="absolute inset-0 pointer-events-none">
+        <div
+          className={`sticky w-fit pointer-events-auto ${railAlign[align]} ${railJustify[justify]} ${className}`}
+          {...props}
+          ref={(n) => bindRefAndForwardRef(n, fref, container)}
+        >
+          {children}
+        </div>
+      </div>
+    );
+  },
+);

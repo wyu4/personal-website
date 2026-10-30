@@ -15,6 +15,7 @@ import {
   InsetDiv,
   MarkdownDiv,
   PopupDiv,
+  RailDiv,
 } from "../reusable/div-presets";
 import { GlowBackground } from "../reusable/backgrounds";
 import { getProjects } from "@/utils/server-http-helpers";
@@ -121,11 +122,8 @@ function Overlay({
   setShowSection: Dispatch<SetStateAction<boolean>>;
 }) {
   const cutsceneDisabled = useRef(true);
-  const parent = useRef<HTMLDivElement>(null);
   const container = useRef<HTMLDivElement>(null);
-  const translationContainer = useRef<HTMLDivElement>(null);
   const textContainer = useRef<HTMLDivElement>(null);
-  const skipButton = useRef<HTMLButtonElement>(null);
   const headings = useRef<(HTMLHeadingElement | null)[]>([]);
   const timeline = useRef(gsap.timeline());
   const [animationFinised, setAnimationFinished] = useState(false);
@@ -134,58 +132,6 @@ function Overlay({
     const savedFlag = getCookie("user_cutscene_disabled");
     cutsceneDisabled.current = savedFlag === "true";
   }, []);
-
-  useEffect(() => {
-    if (!triggered || animationFinised) return;
-
-    let id: number | undefined = undefined;
-    const update = () => {
-      if (animationFinised || !parent.current || !translationContainer.current)
-        return;
-      const parentRect = parent.current.getBoundingClientRect();
-      const child = translationContainer.current;
-
-      const currentY = (gsap.getProperty(child, "y") as number) || 0;
-      const childRect = child.getBoundingClientRect();
-      const currentTop = childRect.top - currentY;
-
-      const desiredY = window.innerHeight / 2 - childRect.height / 2;
-      const clampedDesiredY = gsap.utils.clamp(
-        parentRect.top,
-        parentRect.height - childRect.height,
-        desiredY,
-      );
-
-      gsap.set(translationContainer.current, {
-        y: clampedDesiredY - currentTop,
-      });
-
-      if (skipButton.current) {
-        const button = skipButton.current;
-        const buttonY = (gsap.getProperty(button, "y") as number) || 0;
-        const buttonRect = button.getBoundingClientRect();
-        const buttonTop = buttonRect.top - buttonY;
-
-        const desiredButtonY = window.innerHeight - 2 * buttonRect.height;
-        const clampedButtonY = gsap.utils.clamp(
-          parentRect.top,
-          parentRect.bottom - buttonRect.height * 2,
-          desiredButtonY,
-        );
-
-        gsap.set(button, { y: clampedButtonY - buttonTop });
-      }
-
-      id = requestAnimationFrame(update);
-    };
-
-    id = requestAnimationFrame(update);
-    return () => {
-      if (id) {
-        cancelAnimationFrame(id);
-      }
-    };
-  }, [animationFinised, triggered]);
 
   useEffect(() => {
     if (cutsceneDisabled.current || !triggered || headings.current.length < 3)
@@ -301,16 +247,13 @@ function Overlay({
   };
 
   return (
-    <div ref={parent} className="absolute top-0 left-0 right-0 bottom-0">
+    <div className="absolute top-0 left-0 right-0 bottom-0">
       <div
         className={`relative w-full h-full bg-(--gray-950) flex flex-col justify-start items-center pointer-events-none opacity-0 overflow-clip z-100 ${className}`}
         ref={container}
         {...props}
       >
-        <div
-          ref={translationContainer}
-          className="relative grid place-items-center"
-        >
+        <RailDiv className="grid place-items-center">
           <div
             ref={textContainer}
             className="relative flex flex-col justify-start items-center gap-2 md:gap-10 py-10 pointer-none:"
@@ -343,15 +286,16 @@ function Overlay({
               - Linus Torvalds
             </h2>
           </div>
-        </div>
-        <button
-          ref={skipButton}
-          onClick={skip}
-          aria-label="Skip animation"
-          className="absolute top-0 right-0 m-5 z-10 text-2xl md:text-4xl text-(--gray-100) cursor-pointer"
-        >
-          <IoIosSkipForward />
-        </button>
+        </RailDiv>
+        <RailDiv align="end" justify="end" className="p-10 z-10">
+          <button
+            onClick={skip}
+            aria-label="Skip animation"
+            className="text-sm md:text-xl text-(--gray-100) cursor-pointer"
+          >
+            skip
+          </button>
+        </RailDiv>
       </div>
     </div>
   );
@@ -424,7 +368,7 @@ function ProjectDiv({
         { opacity: 1 },
         {
           opacity: 0,
-          duration: 0.01
+          duration: 0.01,
         },
       )
       .add(flipTween)
@@ -495,7 +439,10 @@ function ProjectDiv({
         <h2 className="text-3xl md:text-4xl text-center">{project.name}</h2>
       </div>
       <div className="relative max-w-full max-h-50 overflow-clip">
-        <MarkdownDiv className="relative z-10 text-wrap" text={project.description} />
+        <MarkdownDiv
+          className="relative z-10 text-wrap"
+          text={project.description}
+        />
         <div className="absolute z-15 top-0 bottom-0 left-0 right-0 flex flex-col justify-end items-center p-2 bg-linear-to-t from-(--gray-100) to-(--gray-100)/0" />
       </div>
       <InsetDiv className="relative flex flex-col items-center justify-center gap-3 p-3 rounded-sm">
