@@ -105,7 +105,8 @@ export const GlowBackground = forwardRef<
         for (const glow of glows) {
           glow.x += glow.velX * deltaStep;
           glow.y += glow.velY * deltaStep;
-          const isOutOfBounds = glow.x > 1 || glow.x < 0 || glow.y > 1 || glow.y < 0;
+          const isOutOfBounds =
+            glow.x > 1 || glow.x < 0 || glow.y > 1 || glow.y < 0;
           if (isOutOfBounds) {
             glow.opacity -= 0.5 * deltaStep;
           } else {
@@ -208,12 +209,18 @@ export const BeamBackground = forwardRef<HTMLDivElement, BeamBackgroundProps>(
     useEffect(() => {
       if (!pathGroupRef.current || beamPaths.length === 0) return;
 
-      const tracePaths = Array.from(pathGroupRef.current.querySelectorAll("path"));
+      const tracePaths = Array.from(
+        pathGroupRef.current.querySelectorAll("path"),
+      );
       const animations: gsap.core.Timeline[] = [];
 
       gsap.set(tracePaths, { drawSVG: "0% 0%" });
 
-      const animatePath = (index: number, path: Element, firstTime: boolean = false) => {
+      const animatePath = (
+        index: number,
+        path: Element,
+        firstTime: boolean = false,
+      ) => {
         if (!animations[index]) {
           animations[index] = gsap.timeline();
         }
@@ -232,7 +239,11 @@ export const BeamBackground = forwardRef<HTMLDivElement, BeamBackgroundProps>(
             duration,
             ease: `power${easeIn}.in`,
           })
-          .to(path, { drawSVG: "100% 100%", duration, ease: `power${easeOut}.out` })
+          .to(path, {
+            drawSVG: "100% 100%",
+            duration,
+            ease: `power${easeOut}.out`,
+          })
           .call(() => animatePath(index, path), [], `+=${downTime}`);
       };
 
@@ -281,17 +292,98 @@ export const BeamBackground = forwardRef<HTMLDivElement, BeamBackgroundProps>(
   },
 );
 
-type LaserBackgroundProps = DivAttributes & {
-  color?: string;
-};
-export const LaserBackground = forwardRef<HTMLDivElement, LaserBackgroundProps>(
-  ({ className, color = "var(--gray-100)" }, forwardedRef) => {
+// type LaserBackgroundProps = DivAttributes & {
+//   color?: string;
+// };
+// export const LaserBackground = forwardRef<HTMLDivElement, LaserBackgroundProps>(
+//   ({ className, color = "var(--gray-100)" }, forwardedRef) => {
+//     const container = useRef<HTMLDivElement>(null);
+//     return (
+//       <div
+//         ref={(node) => bindRefAndForwardRef(node, forwardedRef, container)}
+//         className={` ${className}`}
+//       ></div>
+//     );
+//   },
+// );
+
+export const SpamBackground = forwardRef<
+  HTMLDivElement,
+  DivAttributes & {
+    index?: string;
+    intervalMs?: number;
+  }
+>(
+  (
+    {
+      className,
+      color = "var(--gray-900)",
+      index = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-=_+,./;'[]<>?:\"{}\\|~` ",
+      intervalMs = 50,
+      ...props
+    },
+    forwardedRef,
+  ) => {
     const container = useRef<HTMLDivElement>(null);
+    const probeRef = useRef<HTMLSpanElement>(null);
+    const [text, setText] = useState("");
+    const [charCount, setCharCount] = useState(0);
+
+    useEffect(() => {
+      if (!container.current) return;
+      const measure = () => {
+        if (!container.current || !probeRef.current) return;
+        const probe = probeRef.current.getBoundingClientRect();
+        const lineH =
+          parseFloat(getComputedStyle(container.current).lineHeight) ||
+          probe.height;
+        const pairW = probe.width / index.length;
+        if (pairW === 0 || lineH === 0) return;
+        const { width, height } = container.current.getBoundingClientRect();
+        const pairsPerLine = Math.floor(width / pairW);
+        const rows = Math.ceil(height / lineH) + 2;
+        setCharCount(pairsPerLine * rows * 2);
+      };
+      const observer = new ResizeObserver(measure);
+      observer.observe(container.current);
+      document.fonts.ready.then(measure);
+      return () => observer.disconnect();
+    }, [index]);
+
+    const getRandString = (size: number) => {
+      if (index.length === 0) return "";
+      let artifact = "";
+      for (let i = 0; i < size / 2; i++) {
+        artifact += index.charAt(Math.floor(Math.random() * index.length));
+        artifact += " ";
+      }
+      return artifact;
+    };
+
+    useEffect(() => {
+      if (charCount === 0) return;
+      const id = setInterval(() => {
+        setText(getRandString(charCount));
+      }, intervalMs);
+
+      return () => clearInterval(id);
+    }, [intervalMs, index, charCount]);
+
     return (
       <div
         ref={(node) => bindRefAndForwardRef(node, forwardedRef, container)}
-        className={` ${className}`}
-      ></div>
+        className={`pointer-events-none place-items-center overflow-clip text-6xl font-light font-mono whitespace-pre-wrap wrap-break-word text-center ${className}`}
+        {...props}
+      >
+        <span
+          ref={probeRef}
+          aria-hidden
+          className="absolute invisible whitespace-pre"
+        >
+          {index.replace(/(.)/g, "$1 ")}
+        </span>
+        {text}
+      </div>
     );
   },
 );
