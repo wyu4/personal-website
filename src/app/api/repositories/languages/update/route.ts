@@ -1,4 +1,4 @@
-import { CRON_SECRET } from "@/utils/environment";
+import { CRON_SECRET, GITHUB_LANGUAGE_POOL } from "@/utils/environment";
 import {
   createSupabase,
   getTable,
@@ -31,7 +31,9 @@ export async function GET(request: Request) {
       | undefined;
     if (!repositories) throw Error("Repositories lookup failed.");
 
-    const languageIndex = await lookupLanguages(repositories);
+    const slice = repositories.slice(0, GITHUB_LANGUAGE_POOL);
+
+    const languageIndex = await lookupLanguages(slice);
 
     const languages: LanguageMetadata[] = [];
     for (const name in languageIndex) {
@@ -42,11 +44,16 @@ export async function GET(request: Request) {
     }
 
     if (languages.length === 0) {
-      throw Error("While overwritting the languages table, the received table was empty.")
+      throw Error(
+        "While overwritting the languages table, the received table was empty.",
+      );
     }
 
     const success = await overwriteTable(client, "github_languages", languages);
-    if (!success) throw Error("Something went wrong while overwriting the languages table.");
+    if (!success)
+      throw Error(
+        "Something went wrong while overwriting the languages table.",
+      );
   };
 
   const error = await timedCache(client, "github_languages", syncJob);
@@ -57,5 +64,7 @@ export async function GET(request: Request) {
     });
   }
 
-  return NextResponse.json("Cache request sent.", { headers: createCacheHeaders() });
+  return NextResponse.json("Cache request sent.", {
+    headers: createCacheHeaders(),
+  });
 }

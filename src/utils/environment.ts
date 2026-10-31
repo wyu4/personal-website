@@ -1,4 +1,6 @@
-export const REPOSITORY_REFRESH: number = +(process.env.REPOSITORY_REFRESH ?? 1800);
+export const REPOSITORY_REFRESH: number = +(
+  process.env.REPOSITORY_REFRESH ?? 1800
+);
 export const LANGUAGE_REFRESH: number = +(process.env.LANGUAGE_REFRESH ?? 3600);
 export const GITHUB_LOGIN: string = process.env.GITHUB_LOGIN ?? "wyu4";
 export const GITHUB_API_KEY: string | undefined = process.env.GITHUB_API_KEY;
@@ -11,6 +13,9 @@ export const GITHUB_GALLERY_SIZE: number = +(
 );
 export const GITHUB_LANGUAGE_SIZE: number = +(
   process.env.NEXT_PUBLIC_GITHUB_LANGUAGE_SIZE ?? 6
+);
+export const GITHUB_LANGUAGE_POOL: number = +(
+  process.env.NEXT_PUBLIC_GITHUB_LANUGAGE_RECENCY_POOL ?? 10
 );
 export const PROJECTS_MAINTENANCE: boolean =
   (process.env.PROJECTS_MAINTENANCE ?? "0") === "1";
