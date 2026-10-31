@@ -9,7 +9,7 @@ import { getCookie, setCookie } from "cookies-next/client";
 import TechStack from "./stack/tech-stack";
 import Projects from "./projects/projects";
 import Footer from "./footer/footer";
-import Stats from "./stats/github-stats";
+import Stats from "./stats/stats";
 
 type PageComponentProps = {
   repositories?: Repository[];

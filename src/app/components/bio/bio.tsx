@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger, SplitText } from "gsap/all";
 import { useRef } from "react";
 import { IoCalendarOutline, IoLocationOutline } from "react-icons/io5";
-import { SpamBackground } from "../reusable/backgrounds";
+import { GlowBackground, SpamBackground } from "../reusable/backgrounds";
 import { PopupDiv, RailDiv } from "../reusable/div-presets";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -49,23 +49,14 @@ export default function Bio() {
         new SplitText(bioRef.current[2], bioSplitVars),
       ];
 
-      gsap.to(bgRef.current, {
-        yPercent: 50,
-        ease: "none",
-        scrollTrigger: {
-          trigger: container.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: container.current,
           start: "top center",
+          end: "bottom top",
           scrub: false,
           pin: false,
+          toggleActions: "play pause resume reverse",
         },
       });
 
@@ -83,7 +74,7 @@ export default function Bio() {
           titleLineRef.current,
           {
             width: 0,
-            duration: 1,
+            duration: 0.5,
             ease: "power2.inOut",
           },
           "-=0.25",
@@ -93,7 +84,7 @@ export default function Bio() {
           {
             opacity: 0,
             y: "1rem",
-            duration: 1,
+            duration: 0.5,
             ease: "power2.inOut",
           },
           "<+=0.5",
@@ -105,7 +96,7 @@ export default function Bio() {
             opacity: 0,
             pointerEvents: "none",
             marginLeft: "-50%",
-            duration: 1.5,
+            duration: 1,
             ease: "power2.inOut",
           },
           "<+=0.1",
@@ -116,7 +107,7 @@ export default function Bio() {
             opacity: 0,
             y: "1rem",
             rotate: 5,
-            stagger: 0.05,
+            stagger: 0.02,
             duration: 0.25,
           },
           "-=0.25",
@@ -127,7 +118,7 @@ export default function Bio() {
             opacity: 0,
             y: "1rem",
             rotate: 5,
-            stagger: 0.05,
+            stagger: 0.02,
             duration: 0.25,
           },
           "+=0.1",
@@ -138,7 +129,7 @@ export default function Bio() {
             opacity: 0,
             y: "1rem",
             rotate: 5,
-            stagger: 0.05,
+            stagger: 0.02,
             duration: 0.25,
           },
           "+=0.1",
@@ -153,14 +144,16 @@ export default function Bio() {
   return (
     <section
       ref={container}
-      className="relative w-full flex flex-col md:flex-row justify-start md:justify-center items-center md:items-start px-10 py-30 md:py-60 min-h-screen z-20 bg-bio overflow-clip"
+      className="relative w-full flex flex-col md:flex-row justify-start md:justify-center items-center md:items-start px-10 py-30 md:py-60 min-h-screen z-20 overflow-clip"
       id="about"
     >
-      <SpamBackground
+      <GlowBackground
         ref={bgRef}
-        className="absolute -left-10 -top-1/2 -right-10 -bottom-10 z-10 blur-xs opacity-10"
-        index="1234567890"
+        cssVariable="--gray-400"
+        count={4}
+        className="absolute top-0 left-0 w-full h-full z-10"
       />
+
       <div
         ref={titleContainer}
         className="relative self-stretch mb-50 md:mb-0 md:flex-1 z-20"
@@ -219,34 +212,31 @@ export default function Bio() {
           Now, I'm proud to be in my first year studying computer science at
           Carleton University, specializing in the AI stream.
         </p>
-
-        {/* <div className="relative flex flex-1 flex-col">
-          <SpecDiv text="Hi" />
-        </div> */}
       </div>
+      <div className="absolute bottom-0 left-0 right-0 h-[50vh] bio-to-stats z-12" />
     </section>
   );
 }
 
-function SpecDiv({
-  className = "",
-  children,
-  text = "empty spec",
-  ...props
-}: DivAttributes & {
-  text?: string;
-}) {
-  return (
-    <PopupDiv
-      className={
-        "relative flex flex-row p-5 gap-2.5 bg-(--gray-100) rounded-xl border border-(--gray-400) text-xl" +
-        className
-      }
-      {...props}
-    >
-      {children}
-      <div className="self-stretch w-px bg-(--gray-400)" />
-      <p>{text}</p>
-    </PopupDiv>
-  );
-}
+// function SpecDiv({
+//   className = "",
+//   children,
+//   text = "empty spec",
+//   ...props
+// }: DivAttributes & {
+//   text?: string;
+// }) {
+//   return (
+//     <PopupDiv
+//       className={
+//         "relative flex flex-row p-5 gap-2.5 bg-(--gray-100) rounded-xl border border-(--gray-400) text-xl" +
+//         className
+//       }
+//       {...props}
+//     >
+//       {children}
+//       <div className="self-stretch w-px bg-(--gray-400)" />
+//       <p>{text}</p>
+//     </PopupDiv>
+//   );
+// }

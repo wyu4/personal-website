@@ -1,11 +1,9 @@
 "use client";
 import gsap from "gsap";
-import PushButton, { PushAnchor } from "../reusable/push-button";
+import PushButton from "../reusable/push-button";
 import { ScrollToPlugin } from "gsap/all";
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
-import { CiMail } from "react-icons/ci";
-import { FaGithub } from "react-icons/fa";
 import Contacts from "../reusable/contacts";
 
 gsap.registerPlugin(ScrollToPlugin);

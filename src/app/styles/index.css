@@ -59,7 +59,15 @@
     );
   }
 
-  .bg-bio {
+  .bio-to-stats {
+    background-image: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--gray-200) 0%, transparent),
+      var(--gray-200)
+    );
+  }
+
+  .bg-stats {
     background-image: radial-gradient(
       at 50% 50%,
       var(--gray-0) 10%,
@@ -134,8 +142,7 @@ h1 {
 
 h2,
 h3,
-p,
-div {
+p {
   font-family: var(--font-open-sans), sans-serif;
 }
 

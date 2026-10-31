@@ -372,7 +372,7 @@ export const SpamBackground = forwardRef<
     return (
       <div
         ref={(node) => bindRefAndForwardRef(node, forwardedRef, container)}
-        className={`pointer-events-none place-items-center overflow-clip text-6xl font-light font-mono whitespace-pre-wrap wrap-break-word text-center ${className}`}
+        className={`pointer-events-none select-none place-items-center overflow-clip text-6xl font-mono whitespace-pre-wrap wrap-break-word text-center ${className}`}
         {...props}
       >
         <span

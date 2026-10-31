@@ -25,7 +25,7 @@ type MonthlyContributions = {
   month: (typeof MONTH_NAMES)[number];
   dailyContributionLevels: number[];
 };
-const Contributions = forwardRef<HTMLDivElement, DivAttributes>(
+const GitContributionCalendar = forwardRef<HTMLDivElement, DivAttributes>(
   ({ className }, forwardedRef) => {
     const container = useRef<HTMLDivElement>(null);
     const [contributions, setContributions] = useState<MonthlyContributions[]>([]);
@@ -118,7 +118,7 @@ const Contributions = forwardRef<HTMLDivElement, DivAttributes>(
   },
 );
 
-export default Contributions;
+export default GitContributionCalendar;
 
 type MonthPanelProps = {
   data: MonthlyContributions;
