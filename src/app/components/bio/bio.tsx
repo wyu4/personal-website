@@ -153,7 +153,7 @@ export default function Bio() {
   return (
     <section
       ref={container}
-      className="relative w-full flex flex-col md:flex-row justify-start md:justify-center items-center md:items-start px-10 py-60 min-h-screen z-20 bg-bio overflow-clip"
+      className="relative w-full flex flex-col md:flex-row justify-start md:justify-center items-center md:items-start px-10 py-30 md:py-60 min-h-screen z-20 bg-bio overflow-clip"
       id="about"
     >
       <SpamBackground
