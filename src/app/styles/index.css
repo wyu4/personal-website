@@ -62,8 +62,8 @@
   .bg-bio {
     background-image: radial-gradient(
       at 50% 50%,
-      var(--gray-100) 5%,
-      var(--gray-200) 95%
+      var(--gray-0) 10%,
+      var(--gray-200) 90%
     );
   }
 
