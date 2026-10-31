@@ -153,7 +153,7 @@ export default function Bio() {
   return (
     <section
       ref={container}
-      className="relative w-full flex flex-row justify-center items-start px-10 py-60 min-h-screen z-20 bg-bio overflow-clip"
+      className="relative w-full flex flex-col md:flex-row justify-start md:justify-center items-center md:items-start px-10 py-60 min-h-screen z-20 bg-bio overflow-clip"
       id="about"
     >
       <SpamBackground
@@ -161,7 +161,10 @@ export default function Bio() {
         className="absolute -left-10 -top-1/2 -right-10 -bottom-10 z-10 blur-xs opacity-10"
         index="1234567890"
       />
-      <div ref={titleContainer} className="relative self-stretch flex-1 z-20">
+      <div
+        ref={titleContainer}
+        className="relative self-stretch mb-50 md:mb-0 md:flex-1 z-20"
+      >
         <RailDiv className="flex flex-col justify-center items-center gap-4">
           <h2
             ref={titleRef}
@@ -190,7 +193,7 @@ export default function Bio() {
       </div>
       <div
         ref={bioContainer}
-        className="relative w-1/2 flex flex-col self-stretch justify-center items-center gap-10 text-wrap text-3xl text-(--gray-900)/80 text-center font-light bg-radial z-20"
+        className="relative w-full md:w-1/2 flex flex-col self-stretch justify-center items-center gap-10 text-wrap text-xl md:text-3xl text-(--gray-900)/80 text-center md:font-light bg-radial z-20"
       >
         <p
           ref={(n) => {
